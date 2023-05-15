@@ -1,3 +1,3 @@
 export const fizzbuzz = (value: number): string => {
-  return "";
+  return value.toString();
 };
