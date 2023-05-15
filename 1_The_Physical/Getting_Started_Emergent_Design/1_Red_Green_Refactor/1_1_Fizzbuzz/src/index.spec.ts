@@ -8,4 +8,8 @@ describe("fizzbuzz", () => {
   it("returns an empty string when provided with an invalid number", () => {
     expect(fizzbuzz(-20)).toBe("");
   });
+
+  it("returns an empty string when provided with an invalid number", () => {
+    expect(fizzbuzz(101)).toBe("");
+  });
 });
