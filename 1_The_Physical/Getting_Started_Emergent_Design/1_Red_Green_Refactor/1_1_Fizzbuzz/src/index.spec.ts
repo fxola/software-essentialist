@@ -12,4 +12,8 @@ describe("fizzbuzz", () => {
   it("returns an empty string when provided with an invalid number", () => {
     expect(fizzbuzz(101)).toBe("");
   });
+
+  it("returns an empty string when provided with a non number", () => {
+    expect(fizzbuzz(Number("smooth"))).toBe("");
+  });
 });
