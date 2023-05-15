@@ -2,6 +2,7 @@ import { fizzbuzz } from "./fizzbuzz";
 
 describe("fizzbuzz", () => {
   const mulitplesOfThree = [3, 9, 42];
+  const mulitplesOfFive = [5, 20, 50];
   it("returns a string when provided with a valid number", () => {
     expect(typeof fizzbuzz(60)).toBe("string");
   });
@@ -25,9 +26,12 @@ describe("fizzbuzz", () => {
     }
   );
 
-  it(`returns "Buzz" when provided with multiples of 5`, () => {
-    expect(fizzbuzz(20)).toBe("Buzz");
-  });
+  it.each(mulitplesOfFive)(
+    `returns "Buzz" when provided with multiples of 5`,
+    (value) => {
+      expect(fizzbuzz(value)).toBe("Buzz");
+    }
+  );
 
   it(`returns "FizzBuzz" when provided with a multiples of 3 and 5`, () => {
     expect(fizzbuzz(45)).toBe("FizzBuzz");
