@@ -16,4 +16,8 @@ describe("fizzbuzz", () => {
   it("returns an empty string when provided with a non number", () => {
     expect(fizzbuzz(Number("smooth"))).toBe("");
   });
+
+  it(`returns "Fizz" when provided with multiples of 3`, () => {
+    expect(fizzbuzz(9)).toBe("Fizz");
+  });
 });
