@@ -1,1 +1,3 @@
-export const fizzbuzz = (value: number) => {};
+export const fizzbuzz = (value: number): string => {
+  return "";
+};
