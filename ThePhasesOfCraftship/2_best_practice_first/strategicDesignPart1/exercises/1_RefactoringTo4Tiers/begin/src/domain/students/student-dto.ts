@@ -7,7 +7,7 @@ import { isMissingKeys } from "../../shared/utils";
 export class CreateStudentDTO {
   constructor(public name: string) {}
 
-  public static build(body: unknown) {
+  public static prepare(body: unknown) {
     const requiredKeys = ["name"];
 
     const missingkeys = isMissingKeys(body, requiredKeys);
@@ -21,7 +21,6 @@ export class CreateStudentDTO {
       throw new InvalidTypeException("name", "string");
     }
 
-    const dto = body as { name: string };
-    return new CreateStudentDTO(dto.name);
+    return new CreateStudentDTO(name);
   }
 }

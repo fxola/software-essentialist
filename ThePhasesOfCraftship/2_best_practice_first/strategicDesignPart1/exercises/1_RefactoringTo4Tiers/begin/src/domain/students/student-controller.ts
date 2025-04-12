@@ -5,13 +5,14 @@ import { parseForResponse } from "../../shared/utils";
 
 export class StudentController {
   constructor(private studentService: StudentService) {}
+
   async createStudentController(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const dto = CreateStudentDTO.build(req.body);
+      const dto = CreateStudentDTO.prepare(req.body);
       const student = this.studentService.createStudent(dto);
 
       res.status(201).json({

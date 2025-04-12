@@ -8,7 +8,7 @@ export class ClassController {
 
   async createClass(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto = CreateClassDTO.build(req.body);
+      const dto = CreateClassDTO.prepare(req.body);
       const response = this.classService.createClass(dto);
 
       res.status(201).json({
@@ -23,7 +23,7 @@ export class ClassController {
 
   async createClassEnrollment(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto = CreateClassEnrollmentDTO.build(req.body);
+      const dto = CreateClassEnrollmentDTO.prepare(req.body);
       const response = this.classService.createClassEnrollment(dto);
 
       res.status(201).json({

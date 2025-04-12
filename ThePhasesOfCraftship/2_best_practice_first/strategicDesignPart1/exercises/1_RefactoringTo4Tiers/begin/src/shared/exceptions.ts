@@ -6,7 +6,7 @@ class InvalidRequestBodyException extends Error {
 
 class InvalidTypeException extends Error {
   constructor(field: string, expectedType: string) {
-    super(`${field} must be a ${expectedType}`);
+    super(`${field} must be of type: ${expectedType}`);
   }
 }
 

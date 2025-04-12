@@ -5,8 +5,8 @@ class StudentService {
   constructor(private db: Database) {}
 
   async createStudent(dto: CreateStudentDTO) {
-    const response = await this.db.students.save(dto.name);
-    return response;
+    const result = await this.db.students.save(dto.name);
+    return result;
   }
 }
 

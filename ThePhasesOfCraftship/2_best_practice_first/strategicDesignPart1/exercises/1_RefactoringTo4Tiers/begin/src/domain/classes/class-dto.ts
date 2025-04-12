@@ -7,7 +7,7 @@ import { isMissingKeys } from "../../shared/utils";
 export class CreateClassDTO {
   constructor(public name: string) {}
 
-  public static build(body: unknown) {
+  public static prepare(body: unknown) {
     const requiredKeys = ["name"];
 
     const missingkeys = isMissingKeys(body, requiredKeys);
@@ -28,7 +28,7 @@ export class CreateClassDTO {
 export class CreateClassEnrollmentDTO {
   constructor(public studentId: string, public classId: string) {}
 
-  public static build(body: unknown) {
+  public static prepare(body: unknown) {
     const requiredKeys = ["studentId", "classId"];
 
     const missingkeys = isMissingKeys(body, requiredKeys);
