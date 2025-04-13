@@ -8,6 +8,11 @@ class StudentService {
     const result = await this.db.students.save(dto.name);
     return result;
   }
+
+  async getAllstudents() {
+    const result = await this.db.students.getAll();
+    return result;
+  }
 }
 
 export default StudentService;
