@@ -9,6 +9,7 @@ import {
   SaveAssignmentDTO,
   GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
+  GetAssignmentDTO,
 } from "./assignment-dto";
 
 class AssignmentService {
@@ -71,6 +72,17 @@ class AssignmentService {
 
     const response = await this.db.assignments.grade(id, grade);
     return response;
+  }
+
+  async getAssignment(dto: GetAssignmentDTO) {
+    const { id } = dto;
+
+    const assignment = await this.db.assignments.getById(id);
+    if (!assignment) {
+      throw new AssignmentNotFoundException();
+    }
+
+    return assignment;
   }
 }
 

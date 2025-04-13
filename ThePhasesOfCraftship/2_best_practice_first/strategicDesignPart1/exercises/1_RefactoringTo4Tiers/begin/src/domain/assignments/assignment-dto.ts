@@ -132,3 +132,28 @@ export class GradeStudentAssignmentDTO {
     return new GradeStudentAssignmentDTO(id, grade);
   }
 }
+
+export class GetAssignmentDTO {
+  constructor(public id: string) {}
+
+  public static prepare(params: unknown) {
+    const requiredKeys = ["id"];
+
+    const missingkeys = isMissingKeys(params, requiredKeys);
+    if (missingkeys) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { id } = params as { id: unknown };
+
+    if (typeof id !== "string") {
+      throw new InvalidTypeException("id", "string");
+    }
+
+    if (!isUUID(id)) {
+      throw new InvalidUUIDException(id);
+    }
+
+    return new GetAssignmentDTO(id);
+  }
+}

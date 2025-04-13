@@ -5,6 +5,7 @@ import {
   SaveAssignmentDTO,
   GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
+  GetAssignmentDTO,
 } from "./assignment-dto";
 import { parseForResponse } from "../../shared/utils";
 
@@ -64,6 +65,21 @@ export class AssignmentController {
     try {
       const dto = GradeStudentAssignmentDTO.prepare(req.body);
       const response = this.assignmentService.gradeAssignment(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(response),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAssignment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const dto = GetAssignmentDTO.prepare(req.params);
+      const response = this.assignmentService.getAssignment(dto);
 
       res.status(200).json({
         error: undefined,
