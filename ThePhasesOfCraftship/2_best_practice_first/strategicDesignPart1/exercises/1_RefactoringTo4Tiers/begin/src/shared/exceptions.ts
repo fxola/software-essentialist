@@ -10,6 +10,12 @@ class InvalidTypeException extends Error {
   }
 }
 
+class InvalidUUIDException extends Error {
+  constructor(field: string) {
+    super(`${field} is not a valid uuid`);
+  }
+}
+
 class StudentNotFoundException extends Error {
   constructor() {
     super("Student not found");
@@ -45,6 +51,7 @@ class StudentAssignmentNotFoundException extends Error {
 export {
   InvalidRequestBodyException,
   InvalidTypeException,
+  InvalidUUIDException,
   StudentNotFoundException,
   ClassNotFoundException,
   StudentAlreadyEnrolledException,

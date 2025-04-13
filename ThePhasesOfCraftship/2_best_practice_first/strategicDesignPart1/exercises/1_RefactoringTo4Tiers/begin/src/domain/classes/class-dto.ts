@@ -1,8 +1,9 @@
 import {
   InvalidRequestBodyException,
   InvalidTypeException,
+  InvalidUUIDException,
 } from "../../shared/exceptions";
-import { isMissingKeys } from "../../shared/utils";
+import { isMissingKeys, isUUID } from "../../shared/utils";
 
 export class CreateClassDTO {
   constructor(public name: string) {}
@@ -47,6 +48,14 @@ export class CreateClassEnrollmentDTO {
 
     if (typeof classId !== "string") {
       throw new InvalidTypeException("classId", "string");
+    }
+
+    if (!isUUID(studentId)) {
+      throw new InvalidUUIDException(studentId);
+    }
+
+    if (!isUUID(classId)) {
+      throw new InvalidUUIDException(classId);
     }
 
     return new CreateClassEnrollmentDTO(studentId, classId);

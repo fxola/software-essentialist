@@ -12,6 +12,7 @@ class Assignments {
     return {
       save: this.saveAssignment,
       getById: this.getAssignment,
+      getStudentAssignment: this.getStudentAssignment,
       addStudent: this.saveStudentAssignment,
       submit: this.submitAssignment,
       grade: this.gradeAssignment,
@@ -69,6 +70,14 @@ class Assignments {
       },
       data: {
         grade,
+      },
+    });
+  };
+
+  private getStudentAssignment = async (id: string) => {
+    return await this.prisma.studentAssignment.findUnique({
+      where: {
+        id,
       },
     });
   };

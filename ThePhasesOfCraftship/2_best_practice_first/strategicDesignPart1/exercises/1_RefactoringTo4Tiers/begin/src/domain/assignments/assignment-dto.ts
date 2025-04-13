@@ -1,8 +1,9 @@
 import {
   InvalidRequestBodyException,
   InvalidTypeException,
+  InvalidUUIDException,
 } from "../../shared/exceptions";
-import { isMissingKeys } from "../../shared/utils";
+import { isMissingKeys, isUUID } from "../../shared/utils";
 
 export class SaveAssignmentDTO {
   constructor(public classId: string, public title: string) {}
@@ -26,6 +27,10 @@ export class SaveAssignmentDTO {
 
     if (typeof classId !== "string") {
       throw new InvalidTypeException("classId", "string");
+    }
+
+    if (!isUUID(classId)) {
+      throw new InvalidUUIDException(classId);
     }
 
     return new SaveAssignmentDTO(classId, title);
@@ -56,6 +61,38 @@ export class SaveStudentAssignmentDTO {
       throw new InvalidTypeException("assignmentId", "string");
     }
 
+    if (!isUUID(assignmentId)) {
+      throw new InvalidUUIDException(assignmentId);
+    }
+
+    if (!isUUID(studentId)) {
+      throw new InvalidUUIDException(studentId);
+    }
+
     return new SaveStudentAssignmentDTO(studentId, assignmentId);
+  }
+}
+
+export class SubmitAssignmentDTO {
+  constructor(public id: string) {}
+  public static prepare(body: unknown) {
+    const requiredKeys = ["id"];
+
+    const missingkeys = isMissingKeys(body, requiredKeys);
+    if (missingkeys) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { id } = body as { id: unknown };
+
+    if (typeof id !== "string") {
+      throw new InvalidTypeException("id", "string");
+    }
+
+    if (!isUUID(id)) {
+      throw new InvalidUUIDException(id);
+    }
+
+    return new SubmitAssignmentDTO(id);
   }
 }

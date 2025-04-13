@@ -1,9 +1,14 @@
 import Database from "../../persistence";
 import {
   AssignmentNotFoundException,
+  StudentAssignmentNotFoundException,
   StudentNotFoundException,
 } from "../../shared/exceptions";
-import { SaveAssignmentDTO, SaveStudentAssignmentDTO } from "./assignment-dto";
+import {
+  SaveAssignmentDTO,
+  SaveStudentAssignmentDTO,
+  SubmitAssignmentDTO,
+} from "./assignment-dto";
 
 class AssignmentService {
   constructor(private db: Database) {}
@@ -35,6 +40,22 @@ class AssignmentService {
     );
 
     return studentAssignment;
+  }
+
+  async submitAssignment(dto: SubmitAssignmentDTO) {
+    const { id } = dto;
+
+    const studentAssignment = await this.db.assignments.getStudentAssignment(
+      id
+    );
+
+    if (!studentAssignment) {
+      throw new StudentAssignmentNotFoundException();
+    }
+
+    const result = await this.db.assignments.submit(id);
+
+    return result;
   }
 }
 

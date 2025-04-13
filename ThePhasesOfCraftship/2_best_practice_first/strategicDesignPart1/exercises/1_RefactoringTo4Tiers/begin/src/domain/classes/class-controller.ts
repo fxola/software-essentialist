@@ -4,7 +4,7 @@ import { CreateClassDTO, CreateClassEnrollmentDTO } from "./class-dto";
 import { parseForResponse } from "../../shared/utils";
 
 export class ClassController {
-  constructor(public classService: ClassService) {}
+  constructor(private classService: ClassService) {}
 
   async createClass(req: Request, res: Response, next: NextFunction) {
     try {
