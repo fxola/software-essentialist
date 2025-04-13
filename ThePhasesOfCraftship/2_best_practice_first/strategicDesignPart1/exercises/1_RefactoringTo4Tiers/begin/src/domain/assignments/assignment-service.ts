@@ -1,6 +1,7 @@
 import Database from "../../persistence";
 import {
   AssignmentNotFoundException,
+  ClassNotFoundException,
   StudentAssignmentNotFoundException,
   StudentNotFoundException,
 } from "../../shared/exceptions";
@@ -10,6 +11,7 @@ import {
   GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
   GetAssignmentDTO,
+  GetAllAssignmentsDTO,
 } from "./assignment-dto";
 
 class AssignmentService {
@@ -83,6 +85,18 @@ class AssignmentService {
     }
 
     return assignment;
+  }
+
+  async getAllAssignments(dto: GetAllAssignmentsDTO) {
+    const { classId } = dto;
+    const classResult = await this.db.classrooms.getById(classId);
+
+    if (!classResult) {
+      throw new ClassNotFoundException(classId);
+    }
+
+    const assignments = await this.db.assignments.getAllAssignments(classId);
+    return assignments;
   }
 }
 

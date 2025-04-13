@@ -13,6 +13,7 @@ class Assignments {
       save: this.saveAssignment,
       getById: this.getAssignment,
       getStudentAssignment: this.getStudentAssignment,
+      getAllAssignments: this.getAllAssignments,
       giveStudent: this.giveStudentAssignment,
       submit: this.submitAssignment,
       grade: this.gradeAssignment,
@@ -36,6 +37,18 @@ class Assignments {
       },
       where: {
         id,
+      },
+    });
+  };
+
+  private getAllAssignments = async (id: string) => {
+    return await this.prisma.assignment.findMany({
+      where: {
+        classId: id,
+      },
+      include: {
+        class: true,
+        studentTasks: true,
       },
     });
   };

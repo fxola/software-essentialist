@@ -6,6 +6,7 @@ import {
   GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
   GetAssignmentDTO,
+  GetAllAssignmentsDTO,
 } from "./assignment-dto";
 import { parseForResponse } from "../../shared/utils";
 
@@ -15,11 +16,11 @@ export class AssignmentController {
   async saveAssignment(req: Request, res: Response, next: NextFunction) {
     try {
       const dto = SaveAssignmentDTO.prepare(req.body);
-      const result = this.assignmentService.saveAssignment(dto);
+      const response = this.assignmentService.saveAssignment(dto);
 
       res.status(201).json({
         error: undefined,
-        data: parseForResponse(result),
+        data: parseForResponse(response),
         success: true,
       });
     } catch (error) {
@@ -80,6 +81,21 @@ export class AssignmentController {
     try {
       const dto = GetAssignmentDTO.prepare(req.params);
       const response = this.assignmentService.getAssignment(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(response),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAllAssignments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const dto = GetAllAssignmentsDTO.prepare(req.params);
+      const response = this.assignmentService.getAllAssignments(dto);
 
       res.status(200).json({
         error: undefined,
