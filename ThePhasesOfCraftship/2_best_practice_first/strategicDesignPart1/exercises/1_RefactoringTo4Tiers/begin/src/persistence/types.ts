@@ -16,7 +16,7 @@ export interface ClassPersistence {
 
 export interface AssignmentPersistence {
   save: (classId: string, title: string) => any;
-  addStudent: (studentId: string, assignmentId: string) => any;
+  giveStudent: (studentId: string, assignmentId: string) => any;
   getStudentAssignment: (id: string) => any;
   submit: (assignmentId: string) => any;
   grade: (assignmentId: string, grade: string) => any;

@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import AssignmentService from "./assignment-service";
 import {
+  GradeStudentAssignmentDTO,
   SaveAssignmentDTO,
-  SaveStudentAssignmentDTO,
+  GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
 } from "./assignment-dto";
 import { parseForResponse } from "../../shared/utils";
@@ -25,10 +26,10 @@ export class AssignmentController {
     }
   }
 
-  async saveStudentAssignment(req: Request, res: Response, next: NextFunction) {
+  async giveStudentAssignment(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto = SaveStudentAssignmentDTO.prepare(req.body);
-      const response = await this.assignmentService.saveStudentAssignment(dto);
+      const dto = GiveStudentAssignmentDTO.prepare(req.body);
+      const response = await this.assignmentService.giveStudentAssignment(dto);
 
       res.status(201).json({
         error: undefined,
@@ -48,6 +49,21 @@ export class AssignmentController {
     try {
       const dto = SubmitAssignmentDTO.prepare(req.body);
       const response = this.assignmentService.submitAssignment(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(response),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async gradeAssignment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const dto = GradeStudentAssignmentDTO.prepare(req.body);
+      const response = this.assignmentService.gradeAssignment(dto);
 
       res.status(200).json({
         error: undefined,

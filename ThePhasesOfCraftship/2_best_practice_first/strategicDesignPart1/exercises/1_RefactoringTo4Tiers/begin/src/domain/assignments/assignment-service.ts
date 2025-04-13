@@ -5,8 +5,9 @@ import {
   StudentNotFoundException,
 } from "../../shared/exceptions";
 import {
+  GradeStudentAssignmentDTO,
   SaveAssignmentDTO,
-  SaveStudentAssignmentDTO,
+  GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
 } from "./assignment-dto";
 
@@ -21,7 +22,7 @@ class AssignmentService {
     return result;
   }
 
-  async saveStudentAssignment(dto: SaveStudentAssignmentDTO) {
+  async giveStudentAssignment(dto: GiveStudentAssignmentDTO) {
     const { studentId, assignmentId } = dto;
 
     const student = await this.db.students.getById(studentId);
@@ -34,7 +35,7 @@ class AssignmentService {
       throw new AssignmentNotFoundException();
     }
 
-    const studentAssignment = await this.db.assignments.addStudent(
+    const studentAssignment = await this.db.assignments.giveStudent(
       studentId,
       assignmentId
     );
@@ -56,6 +57,20 @@ class AssignmentService {
     const result = await this.db.assignments.submit(id);
 
     return result;
+  }
+
+  async gradeAssignment(dto: GradeStudentAssignmentDTO) {
+    const { grade, id } = dto;
+    const studentAssignment = await this.db.assignments.getStudentAssignment(
+      id
+    );
+
+    if (!studentAssignment) {
+      throw new StudentAssignmentNotFoundException();
+    }
+
+    const response = await this.db.assignments.grade(id, grade);
+    return response;
   }
 }
 

@@ -13,7 +13,7 @@ class Assignments {
       save: this.saveAssignment,
       getById: this.getAssignment,
       getStudentAssignment: this.getStudentAssignment,
-      addStudent: this.saveStudentAssignment,
+      giveStudent: this.giveStudentAssignment,
       submit: this.submitAssignment,
       grade: this.gradeAssignment,
     };
@@ -40,7 +40,7 @@ class Assignments {
     });
   };
 
-  private saveStudentAssignment = async (
+  private giveStudentAssignment = async (
     studentId: string,
     assignmentId: string
   ) => {

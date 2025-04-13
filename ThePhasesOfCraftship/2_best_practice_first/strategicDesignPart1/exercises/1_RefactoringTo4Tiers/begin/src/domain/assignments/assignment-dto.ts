@@ -37,7 +37,7 @@ export class SaveAssignmentDTO {
   }
 }
 
-export class SaveStudentAssignmentDTO {
+export class GiveStudentAssignmentDTO {
   constructor(public studentId: string, public assignmentId: string) {}
 
   public static prepare(body: unknown) {
@@ -69,7 +69,7 @@ export class SaveStudentAssignmentDTO {
       throw new InvalidUUIDException(studentId);
     }
 
-    return new SaveStudentAssignmentDTO(studentId, assignmentId);
+    return new GiveStudentAssignmentDTO(studentId, assignmentId);
   }
 }
 
@@ -94,5 +94,41 @@ export class SubmitAssignmentDTO {
     }
 
     return new SubmitAssignmentDTO(id);
+  }
+}
+
+export type Grade = "A" | "B" | "C" | "D";
+export class GradeStudentAssignmentDTO {
+  constructor(public id: string, public grade: Grade) {}
+
+  public static prepare(body: unknown) {
+    const requiredKeys = ["id", "grade"];
+    const validGrades = ["A", "B", "C", "D"];
+
+    const isValidGrade = (value: unknown): value is Grade => {
+      return typeof value === "string" && validGrades.includes(value);
+    };
+
+    const missingkeys = isMissingKeys(body, requiredKeys);
+
+    if (missingkeys) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { id, grade } = body as { id: unknown; grade: unknown };
+
+    if (typeof id !== "string") {
+      throw new InvalidTypeException("id", "string");
+    }
+
+    if (!isUUID(id)) {
+      throw new InvalidUUIDException(id);
+    }
+
+    if (!isValidGrade(grade)) {
+      throw new InvalidTypeException("grade", validGrades.join(" or "));
+    }
+
+    return new GradeStudentAssignmentDTO(id, grade);
   }
 }
