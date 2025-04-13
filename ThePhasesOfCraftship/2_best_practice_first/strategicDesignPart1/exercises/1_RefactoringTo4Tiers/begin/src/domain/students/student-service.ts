@@ -1,5 +1,6 @@
 import Database from "../../persistence";
-import { CreateStudentDTO } from "./student-dto";
+import { StudentNotFoundException } from "../../shared/exceptions";
+import { CreateStudentDTO, GetStudentDTO } from "./student-dto";
 
 class StudentService {
   constructor(private db: Database) {}
@@ -12,6 +13,17 @@ class StudentService {
   async getAllstudents() {
     const result = await this.db.students.getAll();
     return result;
+  }
+
+  async getStudent(dto: GetStudentDTO) {
+    const { id } = dto;
+
+    const student = await this.db.students.getById(id);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    return student;
   }
 }
 

@@ -1,8 +1,9 @@
 import {
   InvalidRequestBodyException,
   InvalidTypeException,
+  InvalidUUIDException,
 } from "../../shared/exceptions";
-import { isMissingKeys } from "../../shared/utils";
+import { isMissingKeys, isUUID } from "../../shared/utils";
 
 export class CreateStudentDTO {
   constructor(public name: string) {}
@@ -22,5 +23,29 @@ export class CreateStudentDTO {
     }
 
     return new CreateStudentDTO(name);
+  }
+}
+
+export class GetStudentDTO {
+  constructor(public id: string) {}
+
+  public static prepare(params: unknown) {
+    const requiredKeys = ["id"];
+
+    const missingkeys = isMissingKeys(params, requiredKeys);
+    if (missingkeys) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { id } = params as { id: unknown };
+
+    if (typeof id !== "string") {
+      throw new InvalidTypeException("id", "string");
+    }
+
+    if (!isUUID(id)) {
+      throw new InvalidUUIDException(id);
+    }
+    return new GetStudentDTO(id);
   }
 }

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CreateStudentDTO } from "./student-dto";
+import { CreateStudentDTO, GetStudentDTO } from "./student-dto";
 import StudentService from "./student-service";
 import { parseForResponse } from "../../shared/utils";
 
@@ -28,6 +28,21 @@ export class StudentController {
       res.status(200).json({
         error: undefined,
         data: parseForResponse(students),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getStudent(req: Request, res: Response, next: NextFunction) {
+    try {
+      const dto = GetStudentDTO.prepare(req.params);
+      const student = await this.studentService.getStudent(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(student),
         success: true,
       });
     } catch (error) {
