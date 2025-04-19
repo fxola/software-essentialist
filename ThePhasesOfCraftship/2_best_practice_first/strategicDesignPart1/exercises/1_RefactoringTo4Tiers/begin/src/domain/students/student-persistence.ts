@@ -4,6 +4,10 @@ import { StudentPersistence } from "../../persistence/types";
 class Students {
   public persistence: StudentPersistence;
 
+  public getPersistence() {
+    return this.persistence;
+  }
+
   constructor(private prisma: PrismaClient) {
     this.persistence = this.createStudentPersistence();
   }

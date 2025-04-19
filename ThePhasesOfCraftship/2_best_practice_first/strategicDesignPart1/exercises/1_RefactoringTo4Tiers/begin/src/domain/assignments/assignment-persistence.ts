@@ -13,6 +13,7 @@ class Assignments {
       save: this.saveAssignment,
       getById: this.getAssignment,
       getStudentAssignment: this.getStudentAssignment,
+      getStudentAssignments: this.getStudentAssignments,
       getAllAssignments: this.getAllAssignments,
       giveStudent: this.giveStudentAssignment,
       submit: this.submitAssignment,
@@ -91,6 +92,18 @@ class Assignments {
     return await this.prisma.studentAssignment.findUnique({
       where: {
         id,
+      },
+    });
+  };
+
+  private getStudentAssignments = async (id: string) => {
+    return await this.prisma.studentAssignment.findMany({
+      where: {
+        studentId: id,
+        status: "submitted",
+      },
+      include: {
+        assignment: true,
       },
     });
   };

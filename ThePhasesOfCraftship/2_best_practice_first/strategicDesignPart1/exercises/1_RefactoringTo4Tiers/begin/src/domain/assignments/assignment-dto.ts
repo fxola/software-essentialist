@@ -181,3 +181,28 @@ export class GetAllAssignmentsDTO {
     return new GetAllAssignmentsDTO(id);
   }
 }
+
+export class GetStudentAssignmentsDTO {
+  constructor(public studentId: string) {}
+
+  public static prepare(params: unknown) {
+    const requiredKeys = ["id"];
+
+    const missingkeys = isMissingKeys(params, requiredKeys);
+    if (missingkeys) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { id } = params as { id: unknown };
+
+    if (typeof id !== "string") {
+      throw new InvalidTypeException("id", "string");
+    }
+
+    if (!isUUID(id)) {
+      throw new InvalidUUIDException(id);
+    }
+
+    return new GetStudentAssignmentsDTO(id);
+  }
+}
