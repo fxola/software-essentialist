@@ -20,6 +20,7 @@ export interface AssignmentPersistence {
   getStudentAssignment: (id: string) => any;
   getAllAssignments: (classId: string) => any;
   getStudentAssignments: (id: string) => any;
+  getStudentGradedAssignments: (id: string) => any;
   submit: (assignmentId: string) => any;
   grade: (assignmentId: string, grade: string) => any;
   getById: (assignmentId: string) => any;

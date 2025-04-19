@@ -114,6 +114,21 @@ class AssignmentService {
 
     return assignments;
   }
+
+  async getStudentGradedAssignments(dto: GetStudentAssignmentsDTO) {
+    const { studentId } = dto;
+
+    const student = await this.db.students.getById(studentId);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const assignments = await this.db.assignments.getStudentAssignments(
+      studentId
+    );
+
+    return assignments;
+  }
 }
 
 export default AssignmentService;

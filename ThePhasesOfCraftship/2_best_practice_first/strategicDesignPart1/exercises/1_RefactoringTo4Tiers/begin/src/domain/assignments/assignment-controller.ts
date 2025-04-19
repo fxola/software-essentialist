@@ -122,4 +122,23 @@ export class AssignmentController {
       next(error);
     }
   }
+
+  async getStudentGradedAssignments(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const dto = GetStudentAssignmentsDTO.prepare(req.params);
+      const response = this.assignmentService.getStudentGradedAssignments(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(response),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
