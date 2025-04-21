@@ -2,10 +2,14 @@ import { PrismaClient } from "@prisma/client";
 import { AssignmentPersistence } from "../../persistence/types";
 
 class Assignments {
-  public persistence: AssignmentPersistence;
+  private persistence: AssignmentPersistence;
 
   constructor(private prisma: PrismaClient) {
     this.persistence = this.createAssignmentPersistence();
+  }
+
+  public getPersistence() {
+    return this.persistence;
   }
 
   private createAssignmentPersistence = (): AssignmentPersistence => {

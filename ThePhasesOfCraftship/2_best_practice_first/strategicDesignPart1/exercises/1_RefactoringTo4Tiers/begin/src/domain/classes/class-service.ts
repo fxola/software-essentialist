@@ -23,12 +23,10 @@ class ClassService {
     }
 
     const classResult = await this.db.classrooms.getById(classId);
-    // check if class exists
     if (!classResult) {
       throw new ClassNotFoundException(classId);
     }
 
-    // check if student is already enrolled in class
     const duplicatedClassEnrollment = this.db.classrooms.getEnrollment(
       studentId,
       classId

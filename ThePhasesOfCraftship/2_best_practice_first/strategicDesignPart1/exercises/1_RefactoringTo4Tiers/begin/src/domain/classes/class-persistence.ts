@@ -2,10 +2,14 @@ import { PrismaClient } from "@prisma/client";
 import { ClassPersistence } from "../../persistence/types";
 
 class Classrooms {
-  public persistence: ClassPersistence;
+  private persistence: ClassPersistence;
 
   constructor(private prisma: PrismaClient) {
     this.persistence = this.createClassroomPersistence();
+  }
+
+  public getPersistence() {
+    return this.persistence;
   }
 
   private createClassroomPersistence = (): ClassPersistence => {

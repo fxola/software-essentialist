@@ -15,9 +15,9 @@ class Database {
   public assignments: AssignmentPersistence;
 
   constructor(db: PrismaClient) {
-    this.students = new Students(db).persistence;
-    this.classrooms = new Classrooms(db).persistence;
-    this.assignments = new Assignments(db).persistence;
+    this.students = new Students(db).getPersistence();
+    this.classrooms = new Classrooms(db).getPersistence();
+    this.assignments = new Assignments(db).getPersistence();
   }
 }
 

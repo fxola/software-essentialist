@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { StudentPersistence } from "../../persistence/types";
 
 class Students {
-  public persistence: StudentPersistence;
+  private persistence: StudentPersistence;
 
   public getPersistence() {
     return this.persistence;

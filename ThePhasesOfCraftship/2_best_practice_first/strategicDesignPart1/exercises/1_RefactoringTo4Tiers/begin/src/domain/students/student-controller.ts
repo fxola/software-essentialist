@@ -1,12 +1,36 @@
-import { NextFunction, Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { CreateStudentDTO, GetStudentDTO } from "./student-dto";
 import StudentService from "./student-service";
 import { parseForResponse } from "../../shared/utils";
+import { ErrorExceptionHandler } from "../../shared/errors";
 
 export class StudentController {
-  constructor(private studentService: StudentService) {}
+  private router: express.Router;
 
-  async createStudent(req: Request, res: Response, next: NextFunction) {
+  constructor(
+    private studentService: StudentService,
+    private errorHandler: ErrorExceptionHandler
+  ) {
+    this.router = express.Router();
+    this.setupRoutes();
+    this.setupErrorHandler();
+  }
+
+  public getRouter() {
+    return this.router;
+  }
+
+  private setupRoutes() {
+    this.router.post("/", this.createStudent);
+    this.router.get("/", this.getAllStudents);
+    this.router.get("/:id", this.getStudent);
+  }
+
+  private setupErrorHandler() {
+    this.router.use(this.errorHandler.handle);
+  }
+
+  createStudent = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const dto = CreateStudentDTO.prepare(req.body);
       const student = await this.studentService.createStudent(dto);
@@ -19,9 +43,9 @@ export class StudentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  async getAllStudents(_: Request, res: Response, next: NextFunction) {
+  getAllStudents = async (_: Request, res: Response, next: NextFunction) => {
     try {
       const students = await this.studentService.getAllstudents();
 
@@ -31,11 +55,12 @@ export class StudentController {
         success: true,
       });
     } catch (error) {
+      console.log({ error });
       next(error);
     }
-  }
+  };
 
-  async getStudent(req: Request, res: Response, next: NextFunction) {
+  getStudent = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const dto = GetStudentDTO.prepare(req.params);
       const student = await this.studentService.getStudent(dto);
@@ -48,5 +73,5 @@ export class StudentController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }
