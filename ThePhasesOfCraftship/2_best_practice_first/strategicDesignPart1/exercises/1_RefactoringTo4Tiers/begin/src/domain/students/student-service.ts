@@ -1,6 +1,14 @@
 import Database from "../../persistence";
-import { StudentNotFoundException } from "../../shared/exceptions";
-import { CreateStudentDTO, GetStudentDTO } from "./student-dto";
+import {
+  AssignmentNotFoundException,
+  StudentNotFoundException,
+} from "../../shared/exceptions";
+import {
+  CreateStudentDTO,
+  GetStudentAssignmentsDTO,
+  GetStudentDTO,
+  GiveStudentAssignmentDTO,
+} from "./student-dto";
 
 class StudentService {
   constructor(private db: Database) {}
@@ -24,6 +32,53 @@ class StudentService {
     }
 
     return student;
+  }
+
+  async giveStudentAssignment(dto: GiveStudentAssignmentDTO) {
+    const { studentId, assignmentId } = dto;
+
+    const student = await this.db.students.getById(studentId);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const assignment = await this.db.assignments.getById(assignmentId);
+    if (!assignment) {
+      throw new AssignmentNotFoundException();
+    }
+
+    const studentAssignment = await this.db.students.giveAssignment(
+      studentId,
+      assignmentId
+    );
+
+    return studentAssignment;
+  }
+
+  async getStudentAssignments(dto: GetStudentAssignmentsDTO) {
+    const { studentId } = dto;
+
+    const student = await this.db.students.getById(studentId);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const assignments = await this.db.students.getAllAssignments(studentId);
+
+    return assignments;
+  }
+
+  async getAllGrades(dto: GetStudentAssignmentsDTO) {
+    const { studentId } = dto;
+
+    const student = await this.db.students.getById(studentId);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const assignments = await this.db.students.getAllGrades(studentId);
+
+    return assignments;
   }
 }
 

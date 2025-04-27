@@ -1,18 +1,15 @@
 import Database from "../../persistence";
 import {
   AssignmentNotFoundException,
-  ClassNotFoundException,
   StudentAssignmentNotFoundException,
   StudentNotFoundException,
 } from "../../shared/exceptions";
+import { GetStudentAssignmentsDTO } from "../students/student-dto";
 import {
   GradeStudentAssignmentDTO,
   SaveAssignmentDTO,
-  GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
   GetAssignmentDTO,
-  GetAllAssignmentsDTO,
-  GetStudentAssignmentsDTO,
 } from "./assignment-dto";
 
 class AssignmentService {
@@ -24,27 +21,6 @@ class AssignmentService {
     const result = await this.db.assignments.save(classId, title);
 
     return result;
-  }
-
-  async giveStudentAssignment(dto: GiveStudentAssignmentDTO) {
-    const { studentId, assignmentId } = dto;
-
-    const student = await this.db.students.getById(studentId);
-    if (!student) {
-      throw new StudentNotFoundException();
-    }
-
-    const assignment = await this.db.assignments.getById(assignmentId);
-    if (!assignment) {
-      throw new AssignmentNotFoundException();
-    }
-
-    const studentAssignment = await this.db.assignments.giveStudent(
-      studentId,
-      assignmentId
-    );
-
-    return studentAssignment;
   }
 
   async submitAssignment(dto: SubmitAssignmentDTO) {
@@ -86,48 +62,6 @@ class AssignmentService {
     }
 
     return assignment;
-  }
-
-  async getAllAssignments(dto: GetAllAssignmentsDTO) {
-    const { classId } = dto;
-    const classResult = await this.db.classrooms.getById(classId);
-
-    if (!classResult) {
-      throw new ClassNotFoundException(classId);
-    }
-
-    const assignments = await this.db.assignments.getAllAssignments(classId);
-    return assignments;
-  }
-
-  async getStudentAssignments(dto: GetStudentAssignmentsDTO) {
-    const { studentId } = dto;
-
-    const student = await this.db.students.getById(studentId);
-    if (!student) {
-      throw new StudentNotFoundException();
-    }
-
-    const assignments = await this.db.assignments.getStudentAssignments(
-      studentId
-    );
-
-    return assignments;
-  }
-
-  async getStudentGradedAssignments(dto: GetStudentAssignmentsDTO) {
-    const { studentId } = dto;
-
-    const student = await this.db.students.getById(studentId);
-    if (!student) {
-      throw new StudentNotFoundException();
-    }
-
-    const assignments = await this.db.assignments.getStudentAssignments(
-      studentId
-    );
-
-    return assignments;
   }
 }
 

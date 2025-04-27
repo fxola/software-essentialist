@@ -1,5 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
-import { CreateStudentDTO, GetStudentDTO } from "./student-dto";
+import {
+  CreateStudentDTO,
+  GetStudentAssignmentsDTO,
+  GetStudentDTO,
+  GiveStudentAssignmentDTO,
+} from "./student-dto";
 import StudentService from "./student-service";
 import { parseForResponse } from "../../shared/utils";
 import { ErrorExceptionHandler } from "../../shared/errors";
@@ -24,6 +29,9 @@ export class StudentController {
     this.router.post("/", this.createStudent);
     this.router.get("/", this.getAllStudents);
     this.router.get("/:id", this.getStudent);
+    this.router.post("/assignments", this.giveStudentAssignment);
+    this.router.get("/:id/assignments", this.getStudentAssignments);
+    this.router.get("/:id/grades", this.getStudentGradedAssignments);
   }
 
   private setupErrorHandler() {
@@ -68,6 +76,63 @@ export class StudentController {
       res.status(200).json({
         error: undefined,
         data: parseForResponse(student),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  giveStudentAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = GiveStudentAssignmentDTO.prepare(req.body);
+      const response = await this.studentService.giveStudentAssignment(dto);
+
+      res.status(201).json({
+        error: undefined,
+        data: parseForResponse(response),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getStudentAssignments = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = GetStudentAssignmentsDTO.prepare(req.params);
+      const response = await this.studentService.getStudentAssignments(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(response),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getStudentGradedAssignments = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = GetStudentAssignmentsDTO.prepare(req.params);
+      const response = await this.studentService.getAllGrades(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(response),
         success: true,
       });
     } catch (error) {

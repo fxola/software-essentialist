@@ -18,7 +18,7 @@ class Classrooms {
       getById: this.getClassroom,
       saveEnrollment: this.saveClassEnrollment,
       getEnrollment: this.getClassEnrollment,
-      getAllAssignments: this.getAssignments,
+      getAllAssignments: this.getAllAssignments,
     };
   };
 
@@ -39,7 +39,7 @@ class Classrooms {
     });
   };
 
-  private getAssignments = async (id: string) => {
+  private getAllAssignments = async (id: string) => {
     return await this.prisma.assignment.findMany({
       where: {
         classId: id,

@@ -18,6 +18,7 @@ class Students {
       getAll: this.getAllStudents,
       getById: this.getStudent,
       getAllAssignments: this.getAllAssignments,
+      giveAssignment: this.giveStudentAssignment,
       getAllGrades: this.getAllGrades,
     };
   };
@@ -26,6 +27,18 @@ class Students {
     return await this.prisma.student.create({
       data: {
         name,
+      },
+    });
+  };
+
+  private giveStudentAssignment = async (
+    studentId: string,
+    assignmentId: string
+  ) => {
+    return await this.prisma.studentAssignment.create({
+      data: {
+        studentId,
+        assignmentId,
       },
     });
   };

@@ -37,42 +37,6 @@ export class SaveAssignmentDTO {
   }
 }
 
-export class GiveStudentAssignmentDTO {
-  constructor(public studentId: string, public assignmentId: string) {}
-
-  public static prepare(body: unknown) {
-    const requiredKeys = ["studentId", "assignmentId"];
-
-    const missingkeys = isMissingKeys(body, requiredKeys);
-    if (missingkeys) {
-      throw new InvalidRequestBodyException(requiredKeys);
-    }
-
-    const { studentId, assignmentId } = body as {
-      studentId: unknown;
-      assignmentId: unknown;
-    };
-
-    if (typeof studentId !== "string") {
-      throw new InvalidTypeException("studentId", "string");
-    }
-
-    if (typeof assignmentId !== "string") {
-      throw new InvalidTypeException("assignmentId", "string");
-    }
-
-    if (!isUUID(assignmentId)) {
-      throw new InvalidUUIDException(assignmentId);
-    }
-
-    if (!isUUID(studentId)) {
-      throw new InvalidUUIDException(studentId);
-    }
-
-    return new GiveStudentAssignmentDTO(studentId, assignmentId);
-  }
-}
-
 export class SubmitAssignmentDTO {
   constructor(public id: string) {}
   public static prepare(body: unknown) {
@@ -155,54 +119,5 @@ export class GetAssignmentDTO {
     }
 
     return new GetAssignmentDTO(id);
-  }
-}
-export class GetAllAssignmentsDTO {
-  constructor(public classId: string) {}
-
-  public static prepare(params: unknown) {
-    const requiredKeys = ["id"];
-
-    const missingkeys = isMissingKeys(params, requiredKeys);
-    if (missingkeys) {
-      throw new InvalidRequestBodyException(requiredKeys);
-    }
-
-    const { id } = params as { id: unknown };
-
-    if (typeof id !== "string") {
-      throw new InvalidTypeException("id", "string");
-    }
-
-    if (!isUUID(id)) {
-      throw new InvalidUUIDException(id);
-    }
-
-    return new GetAllAssignmentsDTO(id);
-  }
-}
-
-export class GetStudentAssignmentsDTO {
-  constructor(public studentId: string) {}
-
-  public static prepare(params: unknown) {
-    const requiredKeys = ["id"];
-
-    const missingkeys = isMissingKeys(params, requiredKeys);
-    if (missingkeys) {
-      throw new InvalidRequestBodyException(requiredKeys);
-    }
-
-    const { id } = params as { id: unknown };
-
-    if (typeof id !== "string") {
-      throw new InvalidTypeException("id", "string");
-    }
-
-    if (!isUUID(id)) {
-      throw new InvalidUUIDException(id);
-    }
-
-    return new GetStudentAssignmentsDTO(id);
   }
 }

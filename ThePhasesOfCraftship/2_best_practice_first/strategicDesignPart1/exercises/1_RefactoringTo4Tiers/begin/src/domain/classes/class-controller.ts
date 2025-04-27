@@ -1,6 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import ClassService from "./class-service";
-import { CreateClassDTO, CreateClassEnrollmentDTO } from "./class-dto";
+import {
+  CreateClassDTO,
+  CreateClassEnrollmentDTO,
+  GetAllAssignmentsDTO,
+} from "./class-dto";
 import { parseForResponse } from "../../shared/utils";
 import { ErrorExceptionHandler } from "../../shared/errors";
 
@@ -23,6 +27,7 @@ export class ClassController {
   private setupRoutes() {
     this.router.post("/", this.createClass);
     this.router.post("/enrollments", this.createClassEnrollment);
+    this.router.get("/:id/assignments", this.getAllAssignments);
   }
 
   private setupErrorHandler() {
@@ -54,6 +59,25 @@ export class ClassController {
       const response = await this.classService.createClassEnrollment(dto);
 
       res.status(201).json({
+        error: undefined,
+        data: parseForResponse(response),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getAllAssignments = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = GetAllAssignmentsDTO.prepare(req.params);
+      const response = await this.classService.getAllAssignments(dto);
+
+      res.status(200).json({
         error: undefined,
         data: parseForResponse(response),
         success: true,

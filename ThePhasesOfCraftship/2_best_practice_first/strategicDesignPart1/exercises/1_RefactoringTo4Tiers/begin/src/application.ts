@@ -1,19 +1,13 @@
 import { Server } from "http";
-import { AssignmentController } from "./domain/assignments/assignment-controller";
-import { ClassController } from "./domain/classes/class-controller";
-import { StudentController } from "./domain/students/student-controller";
 import express, { Express } from "express";
+import { Routes } from "./routes";
 const cors = require("cors");
 
 export class Application {
   private instance: Express;
   private server?: Server;
 
-  constructor(
-    private assignmentController: AssignmentController,
-    private classController: ClassController,
-    private studentController: StudentController
-  ) {
+  constructor(private routes: Routes) {
     this.instance = express();
     this.setupMiddlewares();
     this.mountRoutes();
@@ -25,10 +19,7 @@ export class Application {
   }
 
   private mountRoutes() {
-    this.instance.use("/assignments", this.assignmentController.getRouter());
-    this.instance.use("/students", this.studentController.getRouter());
-    this.instance.use("/classes", this.classController.getRouter());
-
+    this.instance.use("/", this.routes.getRouter());
     this.instance.use((req, res) =>
       res
         .status(404)

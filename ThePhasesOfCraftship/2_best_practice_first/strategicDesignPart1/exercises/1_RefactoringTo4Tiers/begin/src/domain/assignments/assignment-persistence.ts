@@ -17,10 +17,6 @@ class Assignments {
       save: this.saveAssignment,
       getById: this.getAssignment,
       getStudentAssignment: this.getStudentAssignment,
-      getStudentAssignments: this.getStudentAssignments,
-      getAllAssignments: this.getAllAssignments,
-      getStudentGradedAssignments: this.getStudentGradedAssignments,
-      giveStudent: this.giveStudentAssignment,
       submit: this.submitAssignment,
       grade: this.gradeAssignment,
     };
@@ -43,30 +39,6 @@ class Assignments {
       },
       where: {
         id,
-      },
-    });
-  };
-
-  private getAllAssignments = async (id: string) => {
-    return await this.prisma.assignment.findMany({
-      where: {
-        classId: id,
-      },
-      include: {
-        class: true,
-        studentTasks: true,
-      },
-    });
-  };
-
-  private giveStudentAssignment = async (
-    studentId: string,
-    assignmentId: string
-  ) => {
-    return await this.prisma.studentAssignment.create({
-      data: {
-        studentId,
-        assignmentId,
       },
     });
   };
@@ -97,33 +69,6 @@ class Assignments {
     return await this.prisma.studentAssignment.findUnique({
       where: {
         id,
-      },
-    });
-  };
-
-  private getStudentAssignments = async (id: string) => {
-    return await this.prisma.studentAssignment.findMany({
-      where: {
-        studentId: id,
-        status: "submitted",
-      },
-      include: {
-        assignment: true,
-      },
-    });
-  };
-
-  private getStudentGradedAssignments = async (id: string) => {
-    return await this.prisma.studentAssignment.findMany({
-      where: {
-        studentId: id,
-        status: "submitted",
-        grade: {
-          not: null,
-        },
-      },
-      include: {
-        assignment: true,
       },
     });
   };

@@ -3,11 +3,8 @@ import AssignmentService from "./assignment-service";
 import {
   GradeStudentAssignmentDTO,
   SaveAssignmentDTO,
-  GiveStudentAssignmentDTO,
   SubmitAssignmentDTO,
   GetAssignmentDTO,
-  GetAllAssignmentsDTO,
-  GetStudentAssignmentsDTO,
 } from "./assignment-dto";
 import { parseForResponse } from "../../shared/utils";
 import { ErrorExceptionHandler } from "../../shared/errors";
@@ -29,13 +26,9 @@ export class AssignmentController {
 
   private setupRoutes() {
     this.router.post("/", this.saveAssignment);
-    this.router.post("/student", this.giveStudentAssignment);
     this.router.post("/submit", this.submitStudentAssignment);
     this.router.post("/grade", this.gradeAssignment);
     this.router.get("/:id", this.getAssignment);
-    this.router.get("/:id/classes", this.getAllAssignments);
-    this.router.get("/:id/student", this.getStudentAssignments);
-    this.router.get("/:id/grades", this.getStudentGradedAssignments);
   }
 
   private setupErrorHandler() {
@@ -46,25 +39,6 @@ export class AssignmentController {
     try {
       const dto = SaveAssignmentDTO.prepare(req.body);
       const response = await this.assignmentService.saveAssignment(dto);
-
-      res.status(201).json({
-        error: undefined,
-        data: parseForResponse(response),
-        success: true,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  giveStudentAssignment = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = GiveStudentAssignmentDTO.prepare(req.body);
-      const response = await this.assignmentService.giveStudentAssignment(dto);
 
       res.status(201).json({
         error: undefined,
@@ -114,65 +88,6 @@ export class AssignmentController {
     try {
       const dto = GetAssignmentDTO.prepare(req.params);
       const response = await this.assignmentService.getAssignment(dto);
-
-      res.status(200).json({
-        error: undefined,
-        data: parseForResponse(response),
-        success: true,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  getAllAssignments = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = GetAllAssignmentsDTO.prepare(req.params);
-      const response = await this.assignmentService.getAllAssignments(dto);
-
-      res.status(200).json({
-        error: undefined,
-        data: parseForResponse(response),
-        success: true,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  getStudentAssignments = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = GetStudentAssignmentsDTO.prepare(req.params);
-      const response = await this.assignmentService.getStudentAssignments(dto);
-
-      res.status(200).json({
-        error: undefined,
-        data: parseForResponse(response),
-        success: true,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  getStudentGradedAssignments = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const dto = GetStudentAssignmentsDTO.prepare(req.params);
-      const response = await this.assignmentService.getStudentGradedAssignments(
-        dto
-      );
 
       res.status(200).json({
         error: undefined,
