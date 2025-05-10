@@ -7,8 +7,12 @@
 // Lastly, it should also be able to detect palindromes
 // in phrases like "Was It A Rat I Saw" and "Never Odd or Even" too.
 
+import { checkPalindrome } from ".";
+
 describe("palindrome checker", () => {
-  it("knows that 'mom' is a palindrome", () => {});
+  it("knows that 'mom' is a palindrome", () => {
+    expect(checkPalindrome("mom")).toBeTruthy();
+  });
   it.todo("knows that 'wow' is a palindrome");
   it.todo("knows that 'tut' is a palindrome");
 

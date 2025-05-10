@@ -1,1 +1,3 @@
-export const checkPalindrome = (str: string) => {};
+export const checkPalindrome = (str: string) => {
+  return true;
+};
