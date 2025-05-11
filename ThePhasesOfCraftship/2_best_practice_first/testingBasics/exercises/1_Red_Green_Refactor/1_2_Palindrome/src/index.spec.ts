@@ -10,39 +10,28 @@
 import { checkPalindrome } from ".";
 
 describe("palindrome checker", () => {
-  it("knows that 'mom' is a palindrome", () => {
-    expect(checkPalindrome("mom")).toBeTruthy();
-  });
-  it("knows that 'wow' is a palindrome", () => {
-    expect(checkPalindrome("wow")).toBeTruthy();
-  });
-  it("knows that 'tut' is a palindrome", () => {
-    expect(checkPalindrome("tut")).toBeTruthy();
+  it.each(["mom", "wow", "tut"])("knows that %s is a palindrome", (value) => {
+    expect(checkPalindrome(value)).toBeTruthy();
   });
 
-  it('knows that "bill" is not a palindrome', () => {
-    expect(checkPalindrome("bill")).toBeFalsy();
-  });
-  it('knows that "competition" is not a palindrome', () => {
-    expect(checkPalindrome("competition")).toBeFalsy();
-  });
-  it('knows that "camouflage" is not a palindrome', () => {
-    expect(checkPalindrome("camouflage")).toBeFalsy();
-  });
-  it('knows that "Mom" is still a palindrome when the casing is not uniform', () => {
-    expect(checkPalindrome("Mom")).toBeTruthy();
-  });
-  it('knows that "boB" is still a palindrome when the casing is not uniform', () => {
-    expect(checkPalindrome("boB")).toBeTruthy();
-  });
-  it('knows that "wOw" is still a palindrome when the casing is not uniform', () => {
-    expect(checkPalindrome("wOw")).toBeTruthy();
-  });
+  it.each(["bill", "competition", "camouflage"])(
+    "knows that %s is not a palindrome",
+    (value) => {
+      expect(checkPalindrome(value)).toBeFalsy();
+    }
+  );
 
-  it('knows that "Was It A Rat I Saw" is a palindrome when there is spacing between the words', () => {
-    expect(checkPalindrome("Was It A Rat I Saw")).toBeTruthy();
-  });
-  it('knows that "Never Odd or Even" is a palindrome when there is spacing between the words', () => {
-    expect(checkPalindrome("Never Odd or Even")).toBeTruthy();
-  });
+  it.each(["Mom", "boB", "wOw"])(
+    "knows that %s is still a palindrome when the casing is not uniform",
+    (value) => {
+      expect(checkPalindrome(value)).toBeTruthy();
+    }
+  );
+
+  it.each(["Was It A Rat I Saw", "Never Odd or Even"])(
+    "knows that %s is a palindrome when there is spacing between the words",
+    (value) => {
+      expect(checkPalindrome(value)).toBeTruthy();
+    }
+  );
 });
