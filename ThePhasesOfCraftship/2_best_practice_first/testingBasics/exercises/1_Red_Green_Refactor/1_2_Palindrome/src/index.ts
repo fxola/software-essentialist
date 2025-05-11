@@ -7,5 +7,14 @@ export const checkPalindrome = (str: string) => {
     return input.toLowerCase();
   };
 
-  return normalizeCasing(str) === normalizeCasing(reverseString(str));
+  const removeWhiteSpace = (input: string) => {
+    let whiteSpaceRegex = /\s/g;
+    const result = input.replace(whiteSpaceRegex, "");
+    return result;
+  };
+
+  return (
+    removeWhiteSpace(normalizeCasing(str)) ===
+    removeWhiteSpace(normalizeCasing(reverseString(str)))
+  );
 };
