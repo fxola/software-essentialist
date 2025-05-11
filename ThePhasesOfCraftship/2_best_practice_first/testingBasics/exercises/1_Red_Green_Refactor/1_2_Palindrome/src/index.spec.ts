@@ -32,9 +32,9 @@ describe("palindrome checker", () => {
   it('knows that "Mom" is still a palindrome when the casing is not uniform', () => {
     expect(checkPalindrome("Mom")).toBeTruthy();
   });
-  it.todo(
-    'knows that "boB" is still a palindrome when the casing is not uniform'
-  );
+  it('knows that "boB" is still a palindrome when the casing is not uniform', () => {
+    expect(checkPalindrome("boB")).toBeTruthy();
+  });
   it.todo(
     'knows that "wOw" is still a palindrome when the casing is not uniform'
   );
