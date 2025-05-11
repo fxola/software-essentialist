@@ -13,8 +13,10 @@ export const checkPalindrome = (str: string) => {
     return result;
   };
 
-  return (
-    removeWhiteSpace(normalizeCasing(str)) ===
-    removeWhiteSpace(normalizeCasing(reverseString(str)))
+  const sanitizedOriginalString = removeWhiteSpace(normalizeCasing(str));
+  const sanitizedReversedString = removeWhiteSpace(
+    normalizeCasing(reverseString(str))
   );
+
+  return sanitizedOriginalString === sanitizedReversedString;
 };
