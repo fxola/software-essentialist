@@ -3,5 +3,9 @@ export const checkPalindrome = (str: string) => {
     return input.split("").reverse().join("");
   };
 
-  return str.toLowerCase() === reverseString(str).toLowerCase();
+  const normalizeCasing = (input: string) => {
+    return input.toLowerCase();
+  };
+
+  return normalizeCasing(str) === normalizeCasing(reverseString(str));
 };
