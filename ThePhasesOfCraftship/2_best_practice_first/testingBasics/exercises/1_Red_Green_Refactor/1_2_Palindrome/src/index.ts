@@ -1,3 +1,7 @@
 export const checkPalindrome = (str: string) => {
-  return str === str.split("").reverse().join("");
+  const reverseString = (input: string) => {
+    return input.split("").reverse().join("");
+  };
+
+  return str === reverseString(str);
 };
