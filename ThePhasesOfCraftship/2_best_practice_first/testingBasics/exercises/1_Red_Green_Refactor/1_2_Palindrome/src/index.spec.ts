@@ -14,21 +14,21 @@ describe("palindrome checker", () => {
     expect(checkPalindrome(value)).toBeTruthy();
   });
 
-  it.each(["bill", "competition", "camouflage"])(
+  it.each(["bill", "competition", "camouflage", "Momx", "Never Odd or Even1"])(
     "knows that %s is not a palindrome",
     (value) => {
       expect(checkPalindrome(value)).toBeFalsy();
     }
   );
 
-  it.each(["Mom", "boB", "wOw"])(
+  it.each(["Mom", "boB", "wOw", "MoM"])(
     "knows that %s is still a palindrome when the casing is not uniform",
     (value) => {
       expect(checkPalindrome(value)).toBeTruthy();
     }
   );
 
-  it.each(["Was It A Rat I Saw", "Never Odd or Even"])(
+  it.each(["Was It A Rat I Saw", "Never Odd or Even", "1Never Odd or Even1"])(
     "knows that %s is a palindrome when there is spacing between the words",
     (value) => {
       expect(checkPalindrome(value)).toBeTruthy();
