@@ -26,7 +26,9 @@ describe("palindrome checker", () => {
   it('knows that "competition" is not a palindrome', () => {
     expect(checkPalindrome("competition")).toBeFalsy();
   });
-  it.todo('knows that "camouflage" is not a palindrome');
+  it('knows that "camouflage" is not a palindrome', () => {
+    expect(checkPalindrome("camouflage")).toBeFalsy();
+  });
   it.todo(
     'knows that "Mom" is still a palindrome when the casing is not uniform'
   );
