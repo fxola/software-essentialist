@@ -13,7 +13,9 @@ describe("palindrome checker", () => {
   it("knows that 'mom' is a palindrome", () => {
     expect(checkPalindrome("mom")).toBeTruthy();
   });
-  it.todo("knows that 'wow' is a palindrome");
+  it("knows that 'wow' is a palindrome", () => {
+    expect(checkPalindrome("wow")).toBeTruthy();
+  });
   it.todo("knows that 'tut' is a palindrome");
 
   it.todo('knows that "bill" is not a palindrome');
