@@ -39,9 +39,9 @@ describe("palindrome checker", () => {
     expect(checkPalindrome("wOw")).toBeTruthy();
   });
 
-  it.todo(
-    'knows that "Was It A Rat I Saw" is a palindrome when there is spacing between the words'
-  );
+  it('knows that "Was It A Rat I Saw" is a palindrome when there is spacing between the words', () => {
+    expect(checkPalindrome("Was It A Rat I Saw")).toBeTruthy();
+  });
   it.todo(
     'knows that "Never Odd or Even" is a palindrome when there is spacing between the words'
   );
