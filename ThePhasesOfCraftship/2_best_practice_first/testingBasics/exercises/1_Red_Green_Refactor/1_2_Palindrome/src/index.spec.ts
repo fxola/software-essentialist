@@ -20,7 +20,9 @@ describe("palindrome checker", () => {
     expect(checkPalindrome("tut")).toBeTruthy();
   });
 
-  it.todo('knows that "bill" is not a palindrome');
+  it('knows that "bill" is not a palindrome', () => {
+    expect(checkPalindrome("bill")).toBeFalsy();
+  });
   it.todo('knows that "competition" is not a palindrome');
   it.todo('knows that "camouflage" is not a palindrome');
   it.todo(
