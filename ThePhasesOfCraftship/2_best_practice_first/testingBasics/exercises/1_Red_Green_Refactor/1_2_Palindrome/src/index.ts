@@ -3,5 +3,5 @@ export const checkPalindrome = (str: string) => {
     return input.split("").reverse().join("");
   };
 
-  return str === reverseString(str);
+  return str.toLowerCase() === reverseString(str).toLowerCase();
 };
