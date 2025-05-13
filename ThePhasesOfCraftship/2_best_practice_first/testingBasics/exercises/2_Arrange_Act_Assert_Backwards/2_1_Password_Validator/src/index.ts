@@ -23,7 +23,7 @@ export default class PasswordValidator {
   public static validate(password: string): ValidationResult {
     let errors: ErrorMessages[] = [];
 
-    const isValidPasswordLength = password.length >= 5;
+    const isValidPasswordLength = password.length >= 5 && password.length <= 15;
     if (!isValidPasswordLength) {
       errors.push(errorTypes.invalidPasswordLength);
     }
