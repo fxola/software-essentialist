@@ -35,7 +35,12 @@ describe("password validator", () => {
     expect(output.errors.length).toBeGreaterThanOrEqual(1);
     expect(output.errors).toContain(errorTypes.noDigitsInPassword);
   });
-  it.todo("knows that password containing atleast 1 digit is valid");
+  it("knows that password containing atleast 1 digit is valid", () => {
+    const output = PasswordValidator.validate("Smithereens20");
+
+    expect(output.result).toBeTruthy();
+    expect(output.errors.length).toBe(0);
+  });
   it.todo("knows that password containing no uppercase letter is invalid");
   it.todo("knows that password containing atleast 1 uppercase letter is valid");
 });
