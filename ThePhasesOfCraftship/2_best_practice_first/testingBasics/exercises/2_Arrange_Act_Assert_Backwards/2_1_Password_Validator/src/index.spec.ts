@@ -48,5 +48,10 @@ describe("password validator", () => {
     expect(output.errors.length).toBeGreaterThanOrEqual(1);
     expect(output.errors).toContain(errorTypes.noUppercaseLetterInPassword);
   });
-  it.todo("knows that password containing atleast 1 uppercase letter is valid");
+  it("knows that password containing atleast 1 uppercase letter is valid", () => {
+    const output = PasswordValidator.validate("Valid01passworD");
+
+    expect(output.result).toBeTruthy();
+    expect(output.errors.length).toBe(0);
+  });
 });
