@@ -15,6 +15,7 @@ type ValidationResult = {
 
 export const errorTypes = {
   invalidPasswordLength: "Invalid password length. Must be between 5 and 15",
+  noDigitsInPassword: "Password must contain atleast 1 digit",
 } as const;
 
 type ErrorMessages = (typeof errorTypes)[keyof typeof errorTypes];
@@ -22,6 +23,14 @@ type ErrorMessages = (typeof errorTypes)[keyof typeof errorTypes];
 export default class PasswordValidator {
   public static validate(password: string): ValidationResult {
     let errors: ErrorMessages[] = [];
+
+    const hasDigit = (str: string) => {
+      return /\d/.test(str);
+    };
+
+    if (!hasDigit(password)) {
+      errors.push(errorTypes.noDigitsInPassword);
+    }
 
     const isValidPasswordLength = password.length >= 5 && password.length <= 15;
     if (!isValidPasswordLength) {
