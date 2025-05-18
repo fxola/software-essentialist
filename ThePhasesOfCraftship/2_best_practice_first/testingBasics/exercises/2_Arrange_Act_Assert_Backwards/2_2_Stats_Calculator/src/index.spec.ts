@@ -49,4 +49,10 @@ describe("stats calculator", () => {
     const result = StatsCalculator.compute(input);
     expect(result.maximum).toBe(20);
   });
+
+  it("knows that 4 is the number of elements in  [-1, 20, 4, 5]", () => {
+    const input = [-1, 20, 4, 5];
+    const result = StatsCalculator.compute(input);
+    expect(result.total).toBe(4);
+  });
 });

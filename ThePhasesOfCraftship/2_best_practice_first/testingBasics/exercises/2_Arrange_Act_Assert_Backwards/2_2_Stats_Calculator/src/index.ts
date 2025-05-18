@@ -27,11 +27,13 @@ export class StatsCalculator {
       return max;
     };
 
+    const total = arr.length;
+
     return {
       maximum: getMaximum(arr),
       minimum: getMinimum(arr),
       average: 2.5,
-      total: 4,
+      total,
     };
   }
 }
