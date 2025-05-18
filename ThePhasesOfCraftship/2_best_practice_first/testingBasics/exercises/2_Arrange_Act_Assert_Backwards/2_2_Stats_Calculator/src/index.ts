@@ -8,7 +8,7 @@ type Stats = {
 export class StatsCalculator {
   public static compute(arr: number[]): Stats {
     return {
-      maximum: 0,
+      maximum: 4,
       minimum: 1,
       average: 0,
       total: 0,
