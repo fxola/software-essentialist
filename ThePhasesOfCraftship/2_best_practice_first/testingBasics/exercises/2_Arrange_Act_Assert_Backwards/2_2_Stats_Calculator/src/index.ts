@@ -29,10 +29,20 @@ export class StatsCalculator {
 
     const total = arr.length;
 
+    const getSum = (arr: number[]) => {
+      let sum = 0;
+      for (let num of arr) {
+        sum += num;
+      }
+      return sum;
+    };
+
+    const average = getSum(arr) / total;
+
     return {
       maximum: getMaximum(arr),
       minimum: getMinimum(arr),
-      average: 2.5,
+      average: average,
       total,
     };
   }

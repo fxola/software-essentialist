@@ -55,4 +55,10 @@ describe("stats calculator", () => {
     const result = StatsCalculator.compute(input);
     expect(result.total).toBe(4);
   });
+
+  it("knows that 7 is the average value in  [-1, 20, 4, 5]", () => {
+    const input = [-1, 20, 4, 5];
+    const result = StatsCalculator.compute(input);
+    expect(result.average).toBe(7);
+  });
 });
