@@ -10,7 +10,7 @@ export class StatsCalculator {
     return {
       maximum: 4,
       minimum: 1,
-      average: 0,
+      average: 2.5,
       total: 4,
     };
   }

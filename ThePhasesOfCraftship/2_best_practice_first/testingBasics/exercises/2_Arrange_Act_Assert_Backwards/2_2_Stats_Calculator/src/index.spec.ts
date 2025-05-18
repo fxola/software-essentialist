@@ -30,5 +30,8 @@ describe("stats calculator", () => {
     expect(result.total).toBe(4);
   });
 
-  it.todo("knows that 2.5 is the average value in [1,2,3,4]");
+  it("knows that 2.5 is the average value in [1,2,3,4]", () => {
+    const result = StatsCalculator.compute(input);
+    expect(result.average).toBe(2.5);
+  });
 });
