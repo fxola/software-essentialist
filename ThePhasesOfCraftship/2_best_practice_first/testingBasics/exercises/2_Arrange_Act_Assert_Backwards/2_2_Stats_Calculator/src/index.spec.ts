@@ -6,6 +6,8 @@
 // number of elements in the sequence = 6,
 // average value = 18.666666666667
 
+import { StatsCalculator } from ".";
+
 //doings -
 // compute minimum value
 // compute max value
@@ -13,7 +15,11 @@
 // compute average value
 
 describe("stats calculator", () => {
-  it.todo("knows that 1 is the minimum value in [1,2,3,4]");
+  const input = [1, 2, 3, 4];
+  it("knows that 1 is the minimum value in [1,2,3,4]", () => {
+    const result = StatsCalculator.compute(input);
+    expect(result.minimum).toBe(1);
+  });
   it.todo("knows that 4 is the minimum value in [1,2,3,4]");
 
   it.todo("knows that 4 is the number of elements in [1,2,3,4]");
