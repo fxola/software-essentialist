@@ -11,7 +11,7 @@ export class StatsCalculator {
       maximum: 4,
       minimum: 1,
       average: 0,
-      total: 0,
+      total: 4,
     };
   }
 }
