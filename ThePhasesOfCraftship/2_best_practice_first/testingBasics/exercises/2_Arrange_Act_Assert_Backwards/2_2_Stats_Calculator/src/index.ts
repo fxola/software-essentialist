@@ -27,8 +27,6 @@ export class StatsCalculator {
       return max;
     };
 
-    const total = arr.length;
-
     const getSum = (arr: number[]) => {
       let sum = 0;
       for (let num of arr) {
@@ -37,12 +35,15 @@ export class StatsCalculator {
       return sum;
     };
 
-    const average = getSum(arr) / total;
+    const minimum = getMinimum(arr);
+    const maximum = getMaximum(arr);
+    const total = arr.length;
+    const average = Number((getSum(arr) / total).toFixed(12));
 
     return {
-      maximum: getMaximum(arr),
-      minimum: getMinimum(arr),
-      average: Number(average.toFixed(12)),
+      maximum,
+      minimum,
+      average,
       total,
     };
   }
