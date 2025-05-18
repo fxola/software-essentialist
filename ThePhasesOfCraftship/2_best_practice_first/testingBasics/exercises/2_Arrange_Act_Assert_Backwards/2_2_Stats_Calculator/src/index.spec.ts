@@ -15,22 +15,25 @@ import { StatsCalculator } from ".";
 // compute average value
 
 describe("stats calculator", () => {
-  const input = [1, 2, 3, 4];
   it("knows that 1 is the minimum value in [1,2,3,4]", () => {
+    const input = [1, 2, 3, 4];
     const result = StatsCalculator.compute(input);
     expect(result.minimum).toBe(1);
   });
   it("knows that 4 is the maximum value in [1,2,3,4]", () => {
+    const input = [1, 2, 3, 4];
     const result = StatsCalculator.compute(input);
     expect(result.maximum).toBe(4);
   });
 
   it("knows that 4 is the number of elements in [1,2,3,4]", () => {
+    const input = [1, 2, 3, 4];
     const result = StatsCalculator.compute(input);
     expect(result.total).toBe(4);
   });
 
   it("knows that 2.5 is the average value in [1,2,3,4]", () => {
+    const input = [1, 2, 3, 4];
     const result = StatsCalculator.compute(input);
     expect(result.average).toBe(2.5);
   });
