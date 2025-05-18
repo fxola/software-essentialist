@@ -6,7 +6,7 @@
 // number of elements in the sequence = 6,
 // average value = 18.666666666667
 
-import { StatsCalculator } from ".";
+import { Stats, StatsCalculator } from ".";
 
 //doings -
 // compute minimum value
@@ -15,50 +15,31 @@ import { StatsCalculator } from ".";
 // compute average value
 
 describe("stats calculator", () => {
-  it("knows that 1 is the minimum value in [1,2,3,4]", () => {
-    const input = [1, 2, 3, 4];
-    const result = StatsCalculator.compute(input);
-    expect(result.minimum).toBe(1);
-  });
-  it("knows that 4 is the maximum value in [1,2,3,4]", () => {
-    const input = [1, 2, 3, 4];
-    const result = StatsCalculator.compute(input);
-    expect(result.maximum).toBe(4);
-  });
+  it.each([
+    { value: 1, resultKey: "minimum", input: [1, 2, 3, 4] },
+    { value: 4, resultKey: "maximum", input: [1, 2, 3, 4] },
+    { value: 4, resultKey: "total", input: [1, 2, 3, 4] },
+    { value: 2.5, resultKey: "average", input: [1, 2, 3, 4] },
+  ])(
+    "knows that $value is the $resultKey value in $input",
+    ({ value, resultKey, input }) => {
+      const result = StatsCalculator.compute(input);
+      const stat = result[resultKey as keyof Stats];
+      expect(stat).toBe(value);
+    }
+  );
 
-  it("knows that 4 is the number of elements in [1,2,3,4]", () => {
-    const input = [1, 2, 3, 4];
-    const result = StatsCalculator.compute(input);
-    expect(result.total).toBe(4);
-  });
-
-  it("knows that 2.5 is the average value in [1,2,3,4]", () => {
-    const input = [1, 2, 3, 4];
-    const result = StatsCalculator.compute(input);
-    expect(result.average).toBe(2.5);
-  });
-
-  it("knows that -1 is the minimum value in  [-1, 20, 4, 5]", () => {
-    const input = [-1, 20, 4, 5];
-    const result = StatsCalculator.compute(input);
-    expect(result.minimum).toBe(-1);
-  });
-
-  it("knows that 20 is the maximum value in  [-1, 20, 4, 5]", () => {
-    const input = [-1, 20, 4, 5];
-    const result = StatsCalculator.compute(input);
-    expect(result.maximum).toBe(20);
-  });
-
-  it("knows that 4 is the number of elements in  [-1, 20, 4, 5]", () => {
-    const input = [-1, 20, 4, 5];
-    const result = StatsCalculator.compute(input);
-    expect(result.total).toBe(4);
-  });
-
-  it("knows that 7 is the average value in  [-1, 20, 4, 5]", () => {
-    const input = [-1, 20, 4, 5];
-    const result = StatsCalculator.compute(input);
-    expect(result.average).toBe(7);
-  });
+  it.each([
+    { value: -1, resultKey: "minimum", input: [-1, 20, 4, 5] },
+    { value: 20, resultKey: "maximum", input: [-1, 20, 4, 5] },
+    { value: 4, resultKey: "total", input: [-1, 20, 4, 5] },
+    { value: 7, resultKey: "average", input: [-1, 20, 4, 5] },
+  ])(
+    "knows that $value is the $resultKey value in $input",
+    ({ value, resultKey, input }) => {
+      const result = StatsCalculator.compute(input);
+      const stat = result[resultKey as keyof Stats];
+      expect(stat).toBe(value);
+    }
+  );
 });
