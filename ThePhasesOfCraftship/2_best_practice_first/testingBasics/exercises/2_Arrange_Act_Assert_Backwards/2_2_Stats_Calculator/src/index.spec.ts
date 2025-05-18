@@ -42,4 +42,22 @@ describe("stats calculator", () => {
       expect(stat).toBe(value);
     }
   );
+
+  it.each([
+    { value: -8, resultKey: "minimum", input: [2, 4, 21, -8, 53, 40] },
+    { value: 53, resultKey: "maximum", input: [2, 4, 21, -8, 53, 40] },
+    { value: 6, resultKey: "total", input: [2, 4, 21, -8, 53, 40] },
+    {
+      value: 18.666666666667,
+      resultKey: "average",
+      input: [2, 4, 21, -8, 53, 40],
+    },
+  ])(
+    "knows that $value is the $resultKey value in $input",
+    ({ value, resultKey, input }) => {
+      const result = StatsCalculator.compute(input);
+      const stat = result[resultKey as keyof Stats];
+      expect(stat).toBe(value);
+    }
+  );
 });

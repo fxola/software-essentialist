@@ -42,7 +42,7 @@ export class StatsCalculator {
     return {
       maximum: getMaximum(arr),
       minimum: getMinimum(arr),
-      average: average,
+      average: Number(average.toFixed(12)),
       total,
     };
   }
