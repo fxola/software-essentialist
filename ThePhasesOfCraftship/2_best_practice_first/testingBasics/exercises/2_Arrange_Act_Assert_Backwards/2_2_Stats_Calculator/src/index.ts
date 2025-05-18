@@ -16,8 +16,19 @@ export class StatsCalculator {
       }
       return min;
     };
+
+    const getMaximum = (arr: number[]) => {
+      let max = arr[0];
+      for (let num of arr) {
+        if (num > max) {
+          max = num;
+        }
+      }
+      return max;
+    };
+
     return {
-      maximum: 4,
+      maximum: getMaximum(arr),
       minimum: getMinimum(arr),
       average: 2.5,
       total: 4,

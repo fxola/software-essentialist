@@ -38,9 +38,15 @@ describe("stats calculator", () => {
     expect(result.average).toBe(2.5);
   });
 
-  it("knows that 1 is the minimum value in  [-1, 20, 4, 5]", () => {
+  it("knows that -1 is the minimum value in  [-1, 20, 4, 5]", () => {
     const input = [-1, 20, 4, 5];
     const result = StatsCalculator.compute(input);
     expect(result.minimum).toBe(-1);
+  });
+
+  it("knows that 20 is the maximum value in  [-1, 20, 4, 5]", () => {
+    const input = [-1, 20, 4, 5];
+    const result = StatsCalculator.compute(input);
+    expect(result.maximum).toBe(20);
   });
 });
