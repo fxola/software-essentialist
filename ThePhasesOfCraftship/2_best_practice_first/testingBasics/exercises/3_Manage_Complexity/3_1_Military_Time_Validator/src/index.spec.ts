@@ -39,5 +39,35 @@ describe("military time validator", () => {
     it('knows that "23:58 - 23:59" is valid', () => {
       expect(MilitaryTime.validate("23:58 - 23:59")).toBeTruthy();
     });
+
+    it('knows that "23:58 - 23:58" is valid', () => {
+      expect(MilitaryTime.validate("23:58 - 23:59")).toBeTruthy();
+    });
+  });
+
+  describe("Knows that malformed time strings should be invalid", () => {
+    it('knows that "AS:00 - BO:01" is invalid', () => {
+      expect(MilitaryTime.validate("AS:00 - BO:01")).toBeFalsy();
+    });
+
+    it('knows that "AS:aa - BO:bb" is invalid', () => {
+      expect(MilitaryTime.validate("AS:aa - BO:bb")).toBeFalsy();
+    });
+
+    it('knows that "abc - def" is invalid', () => {
+      expect(MilitaryTime.validate("abc - def")).toBeFalsy();
+    });
+
+    it('knows that "00:00 23:00" is invalid', () => {
+      expect(MilitaryTime.validate("00:00 23:00")).toBeFalsy();
+    });
+
+    it('knows that "0000 - 2300" is invalid', () => {
+      expect(MilitaryTime.validate("0000 - 2300")).toBeFalsy();
+    });
+
+    it('knows that "23-45 - 23-46" is invalid', () => {
+      expect(MilitaryTime.validate("23-45 - 23-46")).toBeFalsy();
+    });
   });
 });
