@@ -7,10 +7,11 @@ export class MilitaryTime {
     const [endTimeHour, endTimeMinute] = endTime.split(":").map(Number);
 
     if (isNaN(startTimeHour) || isNaN(endTimeHour)) return false;
-
     if (startTimeHour > endTimeHour) return false;
 
-    const isValidTimeRange = (hr: number, min: number) => hr <= 23 && min <= 59;
+    const isValidTimeRange = (hr: number, min: number) => {
+      return hr >= 0 && hr <= 23 && min >= 0 && min <= 59;
+    };
 
     return (
       isValidTimeRange(startTimeHour, startTimeMinute) &&
