@@ -1,5 +1,9 @@
 export class MilitaryTime {
   public static validate(timeString: string) {
-    return false;
+    const [startTime, endTime] = timeString.split(" - ");
+    const [startTimeHour, startTimeMinute] = startTime.split(":");
+    const [endTimeHour, endTimeMinute] = endTime.split(":");
+
+    return startTimeHour <= endTimeHour;
   }
 }
