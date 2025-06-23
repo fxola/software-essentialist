@@ -3,7 +3,7 @@ import { parseForResponse } from "../../shared/utils";
 import { createAssigmentDTO } from "./assignment-dto";
 import { AssigmentsService } from "./assignment-service";
 
-export function AssigmentController(assigmentsService: AssigmentsService) {
+function assigmentController(assigmentsService: AssigmentsService) {
   const createAssignment = async (
     req: Request,
     res: Response,
@@ -11,7 +11,7 @@ export function AssigmentController(assigmentsService: AssigmentsService) {
   ) => {
     try {
       const dto = createAssigmentDTO(req.body);
-      const result = assigmentsService.saveAssignment(dto);
+      const result = await assigmentsService.saveAssignment(dto);
 
       res.status(201).json({
         error: undefined,
@@ -25,3 +25,5 @@ export function AssigmentController(assigmentsService: AssigmentsService) {
 
   return { createAssignment };
 }
+
+export type AssigmentController = ReturnType<typeof assigmentController>;

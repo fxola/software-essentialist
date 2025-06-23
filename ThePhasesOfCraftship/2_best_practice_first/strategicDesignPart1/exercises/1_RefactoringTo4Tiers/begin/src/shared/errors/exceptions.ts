@@ -4,6 +4,12 @@ class InvalidRequestBodyException extends Error {
   }
 }
 
+class InvalidTypeException extends Error {
+  constructor(key: string, value: string) {
+    super(`${key} should be of type ${value}`);
+  }
+}
+
 class StudentNotFoundException extends Error {
   constructor() {
     super("Student not found");
@@ -38,6 +44,7 @@ class StudentAssignmentNotFoundException extends Error {
 
 export {
   InvalidRequestBodyException,
+  InvalidTypeException,
   StudentNotFoundException,
   ClassNotFoundException,
   StudentAlreadyEnrolledException,

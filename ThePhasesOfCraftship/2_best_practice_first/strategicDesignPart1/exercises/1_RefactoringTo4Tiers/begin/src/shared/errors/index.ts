@@ -9,7 +9,12 @@ import {
 } from "./exceptions";
 import ErrorExceptionType from "./constants";
 
-type ErrorHandler = ReturnType<typeof errorHandler>;
+type ErrorHandler = (
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => Response;
 
 function errorHandler(
   error: Error,
