@@ -4,7 +4,7 @@ import {
 } from "../../shared/errors/exceptions";
 import { isMissingKeys } from "../../shared/utils";
 
-function studentDTO() {
+function classDTO() {
   const forCreate = (body: unknown) => {
     const requiredKeys = ["name"];
     const isInvalid =
@@ -26,4 +26,4 @@ function studentDTO() {
   return { forCreate };
 }
 
-export type StudentDTO = ReturnType<typeof studentDTO>;
+export type ClassDTO = ReturnType<typeof classDTO>;

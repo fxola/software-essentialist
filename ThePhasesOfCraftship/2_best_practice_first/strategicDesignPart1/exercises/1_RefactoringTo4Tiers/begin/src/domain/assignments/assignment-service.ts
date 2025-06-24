@@ -1,8 +1,10 @@
 import { Database } from "../../persistence";
-import { CreateAssignmentDTO } from "./assignment-dto";
+import { AssignmentDTO } from "./assignment-dto";
 
 function assigmentsService(db: Database) {
-  const saveAssignment = async (dto: CreateAssignmentDTO) => {
+  const saveAssignment = async (
+    dto: ReturnType<AssignmentDTO["forCreate"]>
+  ) => {
     const { title, classId } = dto;
     return await db.assignments.save(classId, title);
   };

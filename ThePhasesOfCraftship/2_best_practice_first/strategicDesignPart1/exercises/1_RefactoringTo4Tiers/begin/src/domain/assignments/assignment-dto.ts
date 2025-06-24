@@ -4,25 +4,30 @@ import {
 } from "../../shared/errors/exceptions";
 import { isMissingKeys } from "../../shared/utils";
 
-export const createAssigmentDTO = (body: unknown) => {
-  const requiredFields = ["classId", "title"];
-  const isInvalid =
-    !body || typeof body !== "object" || isMissingKeys(body, requiredFields);
+const assigmentDTO = () => {
+  const forCreate = (body: unknown) => {
+    const requiredFields = ["classId", "title"];
+    const isInvalid =
+      !body || typeof body !== "object" || isMissingKeys(body, requiredFields);
 
-  if (isInvalid) {
-    throw new InvalidRequestBodyException(requiredFields);
-  }
+    if (isInvalid) {
+      throw new InvalidRequestBodyException(requiredFields);
+    }
 
-  const { classId, title } = body as { classId: unknown; title: unknown };
-  if (typeof classId !== "string") {
-    throw new Error("classId must be a string");
-  }
+    const { classId, title } = body as { classId: unknown; title: unknown };
 
-  if (typeof title !== "string") {
-    throw new InvalidTypeException("classId", "string");
-  }
+    if (typeof classId !== "string") {
+      throw new Error("classId must be a string");
+    }
 
-  return { classId, title };
+    if (typeof title !== "string") {
+      throw new InvalidTypeException("classId", "string");
+    }
+
+    return { classId, title };
+  };
+
+  return { forCreate };
 };
 
-export type CreateAssignmentDTO = ReturnType<typeof createAssigmentDTO>;
+export type AssignmentDTO = ReturnType<typeof assigmentDTO>;

@@ -1,16 +1,19 @@
 import { Request, Response, NextFunction } from "express";
-import { createStudentDTO } from "./student-dto";
+import { StudentDTO } from "./student-dto";
 import { StudentService } from "./student-service";
 import { parseForResponse } from "../../shared/utils";
 
-function studentController(studentService: StudentService) {
+function studentController(
+  studentService: StudentService,
+  studentDTO: StudentDTO
+) {
   const createStudent = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      const dto = createStudentDTO(req.body);
+      const dto = studentDTO.forCreate(req.body);
       const student = await studentService.save(dto);
 
       res.status(201).json({
