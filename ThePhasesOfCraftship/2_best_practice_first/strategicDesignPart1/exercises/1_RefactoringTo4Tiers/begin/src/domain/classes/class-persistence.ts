@@ -11,9 +11,38 @@ function classPersistence(db: PrismaClient) {
     return result;
   };
 
+  const getById = async (classId: string) => {
+    return await db.class.findUnique({
+      where: {
+        id: classId,
+      },
+    });
+  };
+
+  const getEnrollment = async (classId: string, studentId: string) => {
+    return await db.classEnrollment.findFirst({
+      where: {
+        studentId,
+        classId,
+      },
+    });
+  };
+
+  const saveEnrollment = async (classId: string, studentId: string) => {
+    return await db.classEnrollment.create({
+      data: {
+        studentId,
+        classId,
+      },
+    });
+  };
+
   const build = () => {
     return {
       save,
+      getById,
+      getEnrollment,
+      saveEnrollment,
     };
   };
 

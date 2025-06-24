@@ -10,9 +10,18 @@ function studentPersistence(db: PrismaClient) {
     return student;
   };
 
+  const getById = async (studentId: string) => {
+    return await db.student.findUnique({
+      where: {
+        id: studentId,
+      },
+    });
+  };
+
   const build = () => {
     return {
       save,
+      getById,
     };
   };
 

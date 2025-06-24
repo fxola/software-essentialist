@@ -6,6 +6,7 @@ function classRouter(controller: ClassController, errorHandler: ErrorHandler) {
   const router = Router();
 
   router.post("/", controller.createClass);
+  router.post("/enrollment", controller.createEnrollment);
 
   router.use(errorHandler);
 

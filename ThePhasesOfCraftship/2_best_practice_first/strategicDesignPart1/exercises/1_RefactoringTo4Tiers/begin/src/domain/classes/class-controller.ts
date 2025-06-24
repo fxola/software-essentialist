@@ -11,7 +11,7 @@ function classController(classService: ClassService, classDTO: ClassDTO) {
   ) => {
     try {
       const dto = classDTO.forCreate(req.body);
-      const result = classService.save(dto);
+      const result = await classService.save(dto);
 
       res.status(201).json({
         error: undefined,
@@ -23,7 +23,26 @@ function classController(classService: ClassService, classDTO: ClassDTO) {
     }
   };
 
-  return { createClass };
+  const createEnrollment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = classDTO.forCreateEnrollment(req.body);
+      const result = await classService.saveEnrollment(dto);
+
+      res.status(201).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return { createClass, createEnrollment };
 }
 
 export type ClassController = ReturnType<typeof classController>;

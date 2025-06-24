@@ -23,7 +23,31 @@ function classDTO() {
     return { name };
   };
 
-  return { forCreate };
+  const forCreateEnrollment = (body: unknown) => {
+    const requiredKeys = ["studentId", "classId"];
+    const isInvalid =
+      !body || typeof body !== "object" || isMissingKeys(body, requiredKeys);
+
+    if (isInvalid) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { studentId, classId } = body as {
+      studentId: unknown;
+      classId: unknown;
+    };
+
+    if (typeof studentId !== "string") {
+      throw new InvalidTypeException("studentId", "string");
+    }
+
+    if (typeof classId !== "string") {
+      throw new InvalidTypeException("classId", "string");
+    }
+    return { classId, studentId };
+  };
+
+  return { forCreate, forCreateEnrollment };
 }
 
 export type ClassDTO = ReturnType<typeof classDTO>;
