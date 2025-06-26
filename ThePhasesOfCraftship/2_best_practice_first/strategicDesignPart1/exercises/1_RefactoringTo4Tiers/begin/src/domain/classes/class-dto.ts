@@ -1,8 +1,9 @@
 import {
   InvalidRequestBodyException,
   InvalidTypeException,
+  InvalidUUIDException,
 } from "../../shared/errors/exceptions";
-import { isMissingKeys } from "../../shared/utils";
+import { isMissingKeys, isUUID } from "../../shared/utils";
 
 function classDTO() {
   const forCreate = (body: unknown) => {
@@ -44,6 +45,10 @@ function classDTO() {
     if (typeof classId !== "string") {
       throw new InvalidTypeException("classId", "string");
     }
+
+    if (!isUUID(classId)) throw new InvalidUUIDException(classId);
+    if (!isUUID(studentId)) throw new InvalidUUIDException(studentId);
+
     return { classId, studentId };
   };
 

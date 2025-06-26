@@ -9,6 +9,7 @@ function studentRouter(
   const router = Router();
 
   router.post("/", controller.createStudent);
+  router.post("/assignments", controller.giveAssignment);
 
   router.use(errorHandler);
 

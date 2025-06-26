@@ -9,6 +9,7 @@ function assignmentRouter(
   const router = Router();
 
   router.post("/", controller.createAssignment);
+  router.post("/submit", controller.submitAssignment);
 
   router.use(errorHandler);
 

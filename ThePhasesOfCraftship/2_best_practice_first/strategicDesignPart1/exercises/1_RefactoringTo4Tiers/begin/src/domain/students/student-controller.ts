@@ -14,7 +14,7 @@ function studentController(
   ) => {
     try {
       const dto = studentDTO.forCreate(req.body);
-      const student = await studentService.save(dto);
+      const student = await studentService.create(dto);
 
       res.status(201).json({
         error: undefined,
@@ -26,8 +26,28 @@ function studentController(
     }
   };
 
+  const giveAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = studentDTO.forGiveAssignment(req.body);
+      const result = await studentService.giveAssignment(dto);
+
+      res.status(201).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     createStudent,
+    giveAssignment,
   };
 }
 

@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 function classPersistence(db: PrismaClient) {
-  const save = async (name: string) => {
+  const create = async (name: string) => {
     const result = await db.class.create({
       data: {
         name,
@@ -28,7 +28,7 @@ function classPersistence(db: PrismaClient) {
     });
   };
 
-  const saveEnrollment = async (classId: string, studentId: string) => {
+  const createEnrollment = async (classId: string, studentId: string) => {
     return await db.classEnrollment.create({
       data: {
         studentId,
@@ -39,10 +39,10 @@ function classPersistence(db: PrismaClient) {
 
   const build = () => {
     return {
-      save,
+      create,
       getById,
       getEnrollment,
-      saveEnrollment,
+      createEnrollment,
     };
   };
 

@@ -1,8 +1,9 @@
 import {
   InvalidRequestBodyException,
   InvalidTypeException,
+  InvalidUUIDException,
 } from "../../shared/errors/exceptions";
-import { isMissingKeys } from "../../shared/utils";
+import { isMissingKeys, isUUID } from "../../shared/utils";
 
 function studentDTO() {
   const forCreate = (body: unknown) => {
@@ -23,7 +24,34 @@ function studentDTO() {
     return { name };
   };
 
-  return { forCreate };
+  const forGiveAssignment = (body: unknown) => {
+    const requiredKeys = ["studentId", "assignmentId"];
+    const isInvalid =
+      !body || typeof body !== "object" || isMissingKeys(body, requiredKeys);
+
+    if (isInvalid) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { studentId, assignmentId } = body as {
+      studentId: unknown;
+      assignmentId: unknown;
+    };
+
+    if (typeof studentId !== "string") {
+      throw new InvalidTypeException("studentId", "string");
+    }
+    if (typeof assignmentId !== "string") {
+      throw new InvalidTypeException("assignmentId", "string");
+    }
+
+    if (!isUUID(studentId)) throw new InvalidUUIDException(studentId);
+    if (!isUUID(assignmentId)) throw new InvalidUUIDException(assignmentId);
+
+    return { studentId, assignmentId };
+  };
+
+  return { forCreate, forGiveAssignment };
 }
 
 export type StudentDTO = ReturnType<typeof studentDTO>;

@@ -1,12 +1,40 @@
 import { Database } from "../../persistence";
+import {
+  AssignmentNotFoundException,
+  StudentNotFoundException,
+} from "../../shared/errors/exceptions";
 import { StudentDTO } from "./student-dto";
 
 function studentService(db: Database) {
-  const save = async (dto: ReturnType<StudentDTO["forCreate"]>) => {
-    return await db.students.save(dto.name);
+  const create = async (dto: ReturnType<StudentDTO["forCreate"]>) => {
+    return await db.students.create(dto.name);
   };
 
-  return { save };
+  const giveAssignment = async (
+    dto: ReturnType<StudentDTO["forGiveAssignment"]>
+  ) => {
+    const { studentId, assignmentId } = dto;
+
+    const student = await db.students.getById(studentId);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const assignment = await db.assignments.getById(assignmentId);
+
+    if (!assignment) {
+      throw new AssignmentNotFoundException();
+    }
+
+    const studentAssignment = await db.students.giveAssignment(
+      studentId,
+      assignmentId
+    );
+
+    return studentAssignment;
+  };
+
+  return { create, giveAssignment };
 }
 
 export type StudentService = ReturnType<typeof studentService>;

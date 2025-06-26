@@ -11,7 +11,7 @@ function classController(classService: ClassService, classDTO: ClassDTO) {
   ) => {
     try {
       const dto = classDTO.forCreate(req.body);
-      const result = await classService.save(dto);
+      const result = await classService.create(dto);
 
       res.status(201).json({
         error: undefined,
@@ -30,7 +30,7 @@ function classController(classService: ClassService, classDTO: ClassDTO) {
   ) => {
     try {
       const dto = classDTO.forCreateEnrollment(req.body);
-      const result = await classService.saveEnrollment(dto);
+      const result = await classService.createEnrollment(dto);
 
       res.status(201).json({
         error: undefined,

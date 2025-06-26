@@ -7,11 +7,11 @@ import {
 import { ClassDTO } from "./class-dto";
 
 function classService(db: Database) {
-  const save = async (dto: ReturnType<ClassDTO["forCreate"]>) => {
-    return await db.classes.save(dto.name);
+  const create = async (dto: ReturnType<ClassDTO["forCreate"]>) => {
+    return await db.classes.create(dto.name);
   };
 
-  const saveEnrollment = async (
+  const createEnrollment = async (
     dto: ReturnType<ClassDTO["forCreateEnrollment"]>
   ) => {
     const { classId, studentId } = dto;
@@ -31,10 +31,10 @@ function classService(db: Database) {
       throw new StudentAlreadyEnrolledException();
     }
 
-    return await db.classes.saveEnrollment(classId, studentId);
+    return await db.classes.createEnrollment(classId, studentId);
   };
 
-  return { save, saveEnrollment };
+  return { create, createEnrollment };
 }
 
 export type ClassService = ReturnType<typeof classService>;
