@@ -34,7 +34,12 @@ function studentService(db: Database) {
     return studentAssignment;
   };
 
-  return { create, giveAssignment };
+  const getAll = async () => {
+    const students = await db.students.getAll();
+    return students;
+  };
+
+  return { create, giveAssignment, getAll };
 }
 
 export type StudentService = ReturnType<typeof studentService>;

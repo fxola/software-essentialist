@@ -8,6 +8,7 @@ function studentRouter(
 ) {
   const router = Router();
 
+  router.get("/", controller.getAllStudents);
   router.post("/", controller.createStudent);
   router.post("/assignments", controller.giveAssignment);
 

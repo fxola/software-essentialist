@@ -20,22 +20,23 @@ function studentPersistence(db: PrismaClient) {
 
   const giveAssignment = async (studentId: string, assignmentId: string) => {
     return await db.studentAssignment.create({
-      data: {
-        studentId,
-        assignmentId,
-      },
+      data: { studentId, assignmentId },
     });
   };
 
-  const build = () => {
-    return {
-      create,
-      getById,
-      giveAssignment,
-    };
+  const getAll = async () => {
+    return await db.student.findMany({
+      include: { classes: true, assignments: true, reportCards: true },
+      orderBy: { name: "asc" },
+    });
   };
 
-  return build();
+  return {
+    create,
+    getAll,
+    getById,
+    giveAssignment,
+  };
 }
 
 export type StudentPersistence = ReturnType<typeof studentPersistence>;

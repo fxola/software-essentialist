@@ -45,9 +45,28 @@ function studentController(
     }
   };
 
+  const getAllStudents = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const result = await studentService.getAll();
+
+      res.status(201).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
     createStudent,
     giveAssignment,
+    getAllStudents,
   };
 }
 
