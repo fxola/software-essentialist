@@ -51,7 +51,27 @@ function studentDTO() {
     return { studentId, assignmentId };
   };
 
-  return { forCreate, forGiveAssignment };
+  const forGetStudent = (body: unknown) => {
+    const requiredKeys = ["id"];
+    const isInvalid =
+      !body || typeof body !== "object" || isMissingKeys(body, requiredKeys);
+
+    if (isInvalid) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { id } = body as { id: unknown };
+
+    if (typeof id !== "string") {
+      throw new InvalidTypeException("id", "string");
+    }
+
+    if (!isUUID(id)) throw new InvalidUUIDException(id);
+
+    return { id };
+  };
+
+  return { forCreate, forGiveAssignment, forGetStudent };
 }
 
 export type StudentDTO = ReturnType<typeof studentDTO>;

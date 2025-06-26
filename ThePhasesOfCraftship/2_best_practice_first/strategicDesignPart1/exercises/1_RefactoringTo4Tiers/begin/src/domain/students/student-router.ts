@@ -9,6 +9,7 @@ function studentRouter(
   const router = Router();
 
   router.get("/", controller.getAllStudents);
+  router.get("/:id", controller.getStudent);
   router.post("/", controller.createStudent);
   router.post("/assignments", controller.giveAssignment);
 

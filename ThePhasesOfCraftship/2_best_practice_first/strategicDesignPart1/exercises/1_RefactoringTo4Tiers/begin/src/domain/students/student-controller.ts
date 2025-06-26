@@ -35,7 +35,7 @@ function studentController(
       const dto = studentDTO.forGiveAssignment(req.body);
       const result = await studentService.giveAssignment(dto);
 
-      res.status(201).json({
+      res.status(200).json({
         error: undefined,
         data: parseForResponse(result),
         success: true,
@@ -53,7 +53,26 @@ function studentController(
     try {
       const result = await studentService.getAll();
 
-      res.status(201).json({
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  const getStudent = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = studentDTO.forGetStudent(req.body);
+      const result = await studentService.getOne(dto);
+
+      res.status(200).json({
         error: undefined,
         data: parseForResponse(result),
         success: true,
@@ -64,6 +83,7 @@ function studentController(
   };
 
   return {
+    getStudent,
     createStudent,
     giveAssignment,
     getAllStudents,

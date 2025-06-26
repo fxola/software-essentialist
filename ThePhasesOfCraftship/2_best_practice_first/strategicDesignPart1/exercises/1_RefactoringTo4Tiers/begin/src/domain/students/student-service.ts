@@ -39,7 +39,17 @@ function studentService(db: Database) {
     return students;
   };
 
-  return { create, giveAssignment, getAll };
+  const getOne = async (dto: ReturnType<StudentDTO["forGetStudent"]>) => {
+    const { id } = dto;
+
+    const student = await db.students.getOne(id);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+    return student;
+  };
+
+  return { create, giveAssignment, getAll, getOne };
 }
 
 export type StudentService = ReturnType<typeof studentService>;

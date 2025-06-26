@@ -3,9 +3,7 @@ import { PrismaClient } from "@prisma/client";
 function studentPersistence(db: PrismaClient) {
   const create = async (name: string) => {
     const student = await db.student.create({
-      data: {
-        name,
-      },
+      data: { name },
     });
     return student;
   };
@@ -31,9 +29,17 @@ function studentPersistence(db: PrismaClient) {
     });
   };
 
+  const getOne = async (id: string) => {
+    return await db.student.findUnique({
+      where: { id },
+      include: { classes: true, assignments: true, reportCards: true },
+    });
+  };
+
   return {
     create,
     getAll,
+    getOne,
     getById,
     giveAssignment,
   };
