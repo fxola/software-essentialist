@@ -16,6 +16,12 @@ class InvalidUUIDException extends Error {
   }
 }
 
+class InvalidGradeException extends Error {
+  constructor(validGrades: string[]) {
+    super(`grade must be one of ${validGrades.join(",")}`);
+  }
+}
+
 class StudentNotFoundException extends Error {
   constructor() {
     super("Student not found");
@@ -57,4 +63,5 @@ export {
   AssignmentNotFoundException,
   StudentAssignmentNotFoundException,
   InvalidUUIDException,
+  InvalidGradeException,
 };

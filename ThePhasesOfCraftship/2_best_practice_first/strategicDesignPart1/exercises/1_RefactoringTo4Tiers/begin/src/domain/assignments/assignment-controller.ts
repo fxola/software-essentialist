@@ -35,7 +35,7 @@ function assigmentController(
       const dto = assignmentDTO.forSubmit(req.body);
       const result = await assigmentsService.submit(dto);
 
-      res.status(201).json({
+      res.status(200).json({
         error: undefined,
         data: parseForResponse(result),
         success: true,
@@ -45,7 +45,26 @@ function assigmentController(
     }
   };
 
-  return { createAssignment, submitAssignment };
+  const gradeAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = assignmentDTO.forGrade(req.body);
+      const result = await assigmentsService.grade(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return { createAssignment, submitAssignment, gradeAssignment };
 }
 
 export type AssigmentController = ReturnType<typeof assigmentController>;

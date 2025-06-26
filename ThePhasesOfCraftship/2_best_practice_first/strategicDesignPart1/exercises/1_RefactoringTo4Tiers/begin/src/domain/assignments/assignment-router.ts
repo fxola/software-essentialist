@@ -10,6 +10,7 @@ function assignmentRouter(
 
   router.post("/", controller.createAssignment);
   router.post("/submit", controller.submitAssignment);
+  router.post("/grade", controller.gradeAssignment);
 
   router.use(errorHandler);
 
