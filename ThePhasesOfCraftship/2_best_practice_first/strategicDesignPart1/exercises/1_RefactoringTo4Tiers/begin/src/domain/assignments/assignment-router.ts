@@ -8,6 +8,7 @@ function assignmentRouter(
 ) {
   const router = Router();
 
+  router.get("/:id", controller.getAssignment);
   router.post("/", controller.createAssignment);
   router.post("/submit", controller.submitAssignment);
   router.post("/grade", controller.gradeAssignment);

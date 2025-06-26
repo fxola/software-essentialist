@@ -27,10 +27,18 @@ function assignmentPersistence(db: PrismaClient) {
     });
   };
 
+  const getOne = async (id: string) => {
+    return await db.assignment.findUnique({
+      include: { class: true, studentTasks: true },
+      where: { id },
+    });
+  };
+
   return {
     grade,
     create,
     submit,
+    getOne,
     getById,
   };
 }

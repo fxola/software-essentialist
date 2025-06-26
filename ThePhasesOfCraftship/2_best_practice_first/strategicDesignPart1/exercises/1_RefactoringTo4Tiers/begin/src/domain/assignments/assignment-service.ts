@@ -30,7 +30,18 @@ function assigmentsService(db: Database) {
     return await db.assignments.grade(id, grade);
   };
 
-  return { create, submit, grade };
+  const getOne = async (dto: ReturnType<AssignmentDTO["forGetAssignment"]>) => {
+    const { id } = dto;
+
+    const assignment = await db.assignments.getOne(id);
+    if (!assignment) {
+      throw new AssignmentNotFoundException();
+    }
+
+    return assignment;
+  };
+
+  return { create, submit, grade, getOne };
 }
 
 export type AssigmentsService = ReturnType<typeof assigmentsService>;

@@ -64,7 +64,26 @@ function assigmentController(
     }
   };
 
-  return { createAssignment, submitAssignment, gradeAssignment };
+  const getAssignment = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = assignmentDTO.forGetAssignment(req.body);
+      const result = await assigmentsService.getOne(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return { createAssignment, submitAssignment, gradeAssignment, getAssignment };
 }
 
 export type AssigmentController = ReturnType<typeof assigmentController>;
