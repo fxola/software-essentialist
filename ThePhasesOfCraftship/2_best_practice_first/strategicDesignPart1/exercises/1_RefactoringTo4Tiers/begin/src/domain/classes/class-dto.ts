@@ -52,7 +52,27 @@ function classDTO() {
     return { classId, studentId };
   };
 
-  return { forCreate, forCreateEnrollment };
+  const forGetAssignments = (body: unknown) => {
+    const requiredKeys = ["id"];
+    const isInvalid =
+      !body || typeof body !== "object" || isMissingKeys(body, requiredKeys);
+
+    if (isInvalid) {
+      throw new InvalidRequestBodyException(requiredKeys);
+    }
+
+    const { id } = body as { id: unknown };
+
+    if (typeof id !== "string") {
+      throw new InvalidTypeException("id", "string");
+    }
+
+    if (!isUUID(id)) throw new InvalidUUIDException(id);
+
+    return { id };
+  };
+
+  return { forCreate, forCreateEnrollment, forGetAssignments };
 }
 
 export type ClassDTO = ReturnType<typeof classDTO>;

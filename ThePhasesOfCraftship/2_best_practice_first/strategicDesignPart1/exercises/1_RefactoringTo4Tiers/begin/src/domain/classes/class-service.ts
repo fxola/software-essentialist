@@ -34,7 +34,20 @@ function classService(db: Database) {
     return await db.classes.createEnrollment(classId, studentId);
   };
 
-  return { create, createEnrollment };
+  const getAssignments = async (
+    dto: ReturnType<ClassDTO["forGetAssignments"]>
+  ) => {
+    const { id } = dto;
+    const foundClass = await db.classes.getById(id);
+    if (!foundClass) {
+      throw new ClassNotFoundException(id);
+    }
+
+    const classAssignments = await db.classes.getAssignments(id);
+    return classAssignments;
+  };
+
+  return { create, createEnrollment, getAssignments };
 }
 
 export type ClassService = ReturnType<typeof classService>;

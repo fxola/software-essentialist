@@ -42,7 +42,26 @@ function classController(classService: ClassService, classDTO: ClassDTO) {
     }
   };
 
-  return { createClass, createEnrollment };
+  const getAssignments = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = classDTO.forGetAssignments(req.body);
+      const result = await classService.getAssignments(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return { createClass, createEnrollment, getAssignments };
 }
 
 export type ClassController = ReturnType<typeof classController>;

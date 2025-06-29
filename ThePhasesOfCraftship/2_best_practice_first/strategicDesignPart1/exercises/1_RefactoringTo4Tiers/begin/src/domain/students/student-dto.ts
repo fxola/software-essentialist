@@ -51,7 +51,7 @@ function studentDTO() {
     return { studentId, assignmentId };
   };
 
-  const forGetStudent = (body: unknown) => {
+  const forSingleStudent = (body: unknown) => {
     const requiredKeys = ["id"];
     const isInvalid =
       !body || typeof body !== "object" || isMissingKeys(body, requiredKeys);
@@ -71,7 +71,7 @@ function studentDTO() {
     return { id };
   };
 
-  return { forCreate, forGiveAssignment, forGetStudent };
+  return { forCreate, forGiveAssignment, forSingleStudent };
 }
 
 export type StudentDTO = ReturnType<typeof studentDTO>;

@@ -37,12 +37,20 @@ function classPersistence(db: PrismaClient) {
     });
   };
 
+  const getAssignments = async (id: string) => {
+    return await db.assignment.findMany({
+      where: { classId: id },
+      include: { class: true, studentTasks: true },
+    });
+  };
+
   const build = () => {
     return {
       create,
       getById,
       getEnrollment,
       createEnrollment,
+      getAssignments,
     };
   };
 

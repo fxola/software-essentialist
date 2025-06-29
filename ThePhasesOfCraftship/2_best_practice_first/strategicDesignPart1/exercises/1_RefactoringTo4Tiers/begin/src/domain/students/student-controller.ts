@@ -69,8 +69,27 @@ function studentController(
     next: NextFunction
   ) => {
     try {
-      const dto = studentDTO.forGetStudent(req.body);
+      const dto = studentDTO.forSingleStudent(req.body);
       const result = await studentService.getOne(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  const getSubmittedAssignments = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const dto = studentDTO.forSingleStudent(req.body);
+      const result = await studentService.getSubmittedAssignments(dto);
 
       res.status(200).json({
         error: undefined,
@@ -87,6 +106,7 @@ function studentController(
     createStudent,
     giveAssignment,
     getAllStudents,
+    getSubmittedAssignments,
   };
 }
 

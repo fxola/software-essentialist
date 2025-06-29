@@ -36,12 +36,25 @@ function studentPersistence(db: PrismaClient) {
     });
   };
 
+  const getSubmittedAssignments = async (id: string) => {
+    return await db.studentAssignment.findMany({
+      where: {
+        studentId: id,
+        status: "submitted",
+      },
+      include: {
+        assignment: true,
+      },
+    });
+  };
+
   return {
     create,
     getAll,
     getOne,
     getById,
     giveAssignment,
+    getSubmittedAssignments,
   };
 }
 

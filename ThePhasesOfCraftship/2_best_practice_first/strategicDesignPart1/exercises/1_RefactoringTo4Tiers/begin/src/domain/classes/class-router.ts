@@ -7,6 +7,7 @@ function classRouter(controller: ClassController, errorHandler: ErrorHandler) {
 
   router.post("/", controller.createClass);
   router.post("/enrollment", controller.createEnrollment);
+  router.get("/:id/assignments", controller.getAssignments);
 
   router.use(errorHandler);
 

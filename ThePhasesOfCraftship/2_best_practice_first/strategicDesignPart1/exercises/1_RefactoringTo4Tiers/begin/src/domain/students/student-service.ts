@@ -39,7 +39,7 @@ function studentService(db: Database) {
     return students;
   };
 
-  const getOne = async (dto: ReturnType<StudentDTO["forGetStudent"]>) => {
+  const getOne = async (dto: ReturnType<StudentDTO["forSingleStudent"]>) => {
     const { id } = dto;
 
     const student = await db.students.getOne(id);
@@ -49,7 +49,21 @@ function studentService(db: Database) {
     return student;
   };
 
-  return { create, giveAssignment, getAll, getOne };
+  const getSubmittedAssignments = async (
+    dto: ReturnType<StudentDTO["forSingleStudent"]>
+  ) => {
+    const { id } = dto;
+
+    const student = await db.students.getOne(id);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const studentAssignments = await db.students.getSubmittedAssignments(id);
+    return studentAssignments;
+  };
+
+  return { create, giveAssignment, getAll, getOne, getSubmittedAssignments };
 }
 
 export type StudentService = ReturnType<typeof studentService>;
