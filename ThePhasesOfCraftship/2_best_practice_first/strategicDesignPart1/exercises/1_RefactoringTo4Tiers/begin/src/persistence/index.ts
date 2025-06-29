@@ -2,7 +2,7 @@ import { AssignmentPersistence } from "../domain/assignments/assignment-persiste
 import { ClassPersistence } from "../domain/classes/class-persistence";
 import { StudentPersistence } from "../domain/students/student-persistence";
 
-function database(
+export function database(
   assignmentPersistence: AssignmentPersistence,
   studentPersistence: StudentPersistence,
   classPersistence: ClassPersistence

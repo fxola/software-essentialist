@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-function assignmentPersistence(db: PrismaClient) {
+export function assignmentPersistence(db: PrismaClient) {
   const create = async (classId: string, title: string) => {
     return await db.assignment.create({
       data: { classId, title },
@@ -10,6 +10,14 @@ function assignmentPersistence(db: PrismaClient) {
   const getById = async (assignmentId: string) => {
     return await db.assignment.findUnique({
       where: { id: assignmentId },
+    });
+  };
+
+  const getByStudent = async (id: string) => {
+    return await db.studentAssignment.findUnique({
+      where: {
+        id,
+      },
     });
   };
 
@@ -40,6 +48,7 @@ function assignmentPersistence(db: PrismaClient) {
     submit,
     getOne,
     getById,
+    getByStudent,
   };
 }
 

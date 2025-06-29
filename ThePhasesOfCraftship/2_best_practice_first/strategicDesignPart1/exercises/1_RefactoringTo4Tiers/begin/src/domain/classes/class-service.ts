@@ -6,7 +6,7 @@ import {
 } from "../../shared/errors/exceptions";
 import { ClassDTO } from "./class-dto";
 
-function classService(db: Database) {
+export function classService(db: Database) {
   const create = async (dto: ReturnType<ClassDTO["forCreate"]>) => {
     return await db.classes.create(dto.name);
   };

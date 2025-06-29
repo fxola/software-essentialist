@@ -3,7 +3,10 @@ import { parseForResponse } from "../../shared/utils";
 import { ClassDTO } from "./class-dto";
 import { ClassService } from "./class-service";
 
-function classController(classService: ClassService, classDTO: ClassDTO) {
+export function classController(
+  classService: ClassService,
+  classDTO: ClassDTO
+) {
   const createClass = async (
     req: Request,
     res: Response,

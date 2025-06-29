@@ -3,7 +3,7 @@ import { parseForResponse } from "../../shared/utils";
 import { AssignmentDTO } from "./assignment-dto";
 import { AssigmentsService } from "./assignment-service";
 
-function assigmentController(
+export function assigmentController(
   assigmentsService: AssigmentsService,
   assignmentDTO: AssignmentDTO
 ) {

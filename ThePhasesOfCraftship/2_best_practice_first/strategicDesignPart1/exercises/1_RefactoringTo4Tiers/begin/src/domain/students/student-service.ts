@@ -5,7 +5,7 @@ import {
 } from "../../shared/errors/exceptions";
 import { StudentDTO } from "./student-dto";
 
-function studentService(db: Database) {
+export function studentService(db: Database) {
   const create = async (dto: ReturnType<StudentDTO["forCreate"]>) => {
     return await db.students.create(dto.name);
   };
@@ -63,7 +63,26 @@ function studentService(db: Database) {
     return studentAssignments;
   };
 
-  return { create, giveAssignment, getAll, getOne, getSubmittedAssignments };
+  const getGrades = async (dto: ReturnType<StudentDTO["forSingleStudent"]>) => {
+    const { id } = dto;
+
+    const student = await db.students.getOne(id);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const studentAssignments = await db.students.getGrades(id);
+    return studentAssignments;
+  };
+
+  return {
+    create,
+    giveAssignment,
+    getAll,
+    getOne,
+    getGrades,
+    getSubmittedAssignments,
+  };
 }
 
 export type StudentService = ReturnType<typeof studentService>;

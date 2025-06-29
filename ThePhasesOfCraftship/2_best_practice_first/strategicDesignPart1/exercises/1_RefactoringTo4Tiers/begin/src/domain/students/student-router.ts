@@ -2,7 +2,7 @@ import { Router } from "express";
 import { StudentController } from "./student-controller";
 import { ErrorHandler } from "../../shared/errors";
 
-function studentRouter(
+export function studentRouter(
   controller: StudentController,
   errorHandler: ErrorHandler
 ) {
@@ -11,6 +11,7 @@ function studentRouter(
   router.get("/", controller.getAllStudents);
   router.get("/:id", controller.getStudent);
   router.get("/:id/assignments", controller.getSubmittedAssignments);
+  router.get("/:id/grades", controller.getGrades);
   router.post("/", controller.createStudent);
   router.post("/assignments", controller.giveAssignment);
 

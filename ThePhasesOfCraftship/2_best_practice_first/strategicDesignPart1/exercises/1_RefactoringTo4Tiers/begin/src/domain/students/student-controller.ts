@@ -3,7 +3,7 @@ import { StudentDTO } from "./student-dto";
 import { StudentService } from "./student-service";
 import { parseForResponse } from "../../shared/utils";
 
-function studentController(
+export function studentController(
   studentService: StudentService,
   studentDTO: StudentDTO
 ) {
@@ -101,7 +101,23 @@ function studentController(
     }
   };
 
+  const getGrades = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = studentDTO.forSingleStudent(req.body);
+      const result = await studentService.getGrades(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(result),
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   return {
+    getGrades,
     getStudent,
     createStudent,
     giveAssignment,

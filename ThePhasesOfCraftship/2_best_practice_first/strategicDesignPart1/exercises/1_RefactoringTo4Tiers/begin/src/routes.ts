@@ -14,5 +14,11 @@ export function routes(
   routes.use("/students", studentRoutes.router);
   routes.use("/classes", classRouter.router);
 
+  routes.use((req, res) =>
+    res.status(404).json({ error: `${req.url} Not found`, success: false })
+  );
+
   return routes;
 }
+
+export type Routes = ReturnType<typeof routes>;

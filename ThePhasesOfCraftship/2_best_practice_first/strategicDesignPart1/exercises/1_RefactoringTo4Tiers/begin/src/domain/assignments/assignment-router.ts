@@ -2,7 +2,7 @@ import { Router } from "express";
 import { AssigmentController } from "./assignment-controller";
 import { ErrorHandler } from "../../shared/errors";
 
-function assignmentRouter(
+export function assignmentRouter(
   controller: AssigmentController,
   errorHandler: ErrorHandler
 ) {

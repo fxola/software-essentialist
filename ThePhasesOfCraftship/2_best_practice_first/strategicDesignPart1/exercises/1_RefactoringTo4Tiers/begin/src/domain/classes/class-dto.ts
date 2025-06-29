@@ -5,7 +5,7 @@ import {
 } from "../../shared/errors/exceptions";
 import { isMissingKeys, isUUID } from "../../shared/utils";
 
-function classDTO() {
+export function classDTO() {
   const forCreate = (body: unknown) => {
     const requiredKeys = ["name"];
     const isInvalid =

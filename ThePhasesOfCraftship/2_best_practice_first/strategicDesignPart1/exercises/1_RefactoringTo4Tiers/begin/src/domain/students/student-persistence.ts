@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-function studentPersistence(db: PrismaClient) {
+export function studentPersistence(db: PrismaClient) {
   const create = async (name: string) => {
     const student = await db.student.create({
       data: { name },
@@ -48,11 +48,23 @@ function studentPersistence(db: PrismaClient) {
     });
   };
 
+  const getGrades = async (id: string) => {
+    return await db.studentAssignment.findMany({
+      where: {
+        studentId: id,
+        status: "submitted",
+        grade: { not: null },
+      },
+      include: { assignment: true },
+    });
+  };
+
   return {
     create,
     getAll,
     getOne,
     getById,
+    getGrades,
     giveAssignment,
     getSubmittedAssignments,
   };

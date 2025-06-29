@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-function classPersistence(db: PrismaClient) {
+export function classPersistence(db: PrismaClient) {
   const create = async (name: string) => {
     const result = await db.class.create({
       data: {

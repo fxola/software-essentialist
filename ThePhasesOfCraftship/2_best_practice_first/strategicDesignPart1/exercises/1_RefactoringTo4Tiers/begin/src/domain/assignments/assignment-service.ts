@@ -1,8 +1,11 @@
 import { Database } from "../../persistence";
-import { AssignmentNotFoundException } from "../../shared/errors/exceptions";
+import {
+  AssignmentNotFoundException,
+  StudentAssignmentNotFoundException,
+} from "../../shared/errors/exceptions";
 import { AssignmentDTO } from "./assignment-dto";
 
-function assigmentsService(db: Database) {
+export function assigmentService(db: Database) {
   const create = async (dto: ReturnType<AssignmentDTO["forCreate"]>) => {
     const { title, classId } = dto;
     return await db.assignments.create(classId, title);
@@ -11,9 +14,9 @@ function assigmentsService(db: Database) {
   const submit = async (dto: ReturnType<AssignmentDTO["forSubmit"]>) => {
     const { id } = dto;
 
-    const assignment = await db.assignments.getById(id);
+    const assignment = await db.assignments.getByStudent(id);
     if (!assignment) {
-      throw new AssignmentNotFoundException();
+      throw new StudentAssignmentNotFoundException();
     }
 
     return await db.assignments.submit(id);
@@ -22,9 +25,9 @@ function assigmentsService(db: Database) {
   const grade = async (dto: ReturnType<AssignmentDTO["forGrade"]>) => {
     const { id, grade } = dto;
 
-    const assignment = await db.assignments.getById(id);
+    const assignment = await db.assignments.getByStudent(id);
     if (!assignment) {
-      throw new AssignmentNotFoundException();
+      throw new StudentAssignmentNotFoundException();
     }
 
     return await db.assignments.grade(id, grade);
@@ -44,4 +47,4 @@ function assigmentsService(db: Database) {
   return { create, submit, grade, getOne };
 }
 
-export type AssigmentsService = ReturnType<typeof assigmentsService>;
+export type AssigmentsService = ReturnType<typeof assigmentService>;

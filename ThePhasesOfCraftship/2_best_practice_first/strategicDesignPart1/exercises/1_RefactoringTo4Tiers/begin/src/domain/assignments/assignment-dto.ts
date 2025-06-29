@@ -8,7 +8,7 @@ import { isMissingKeys, isUUID } from "../../shared/utils";
 
 type Grade = "A" | "B" | "C" | "D";
 
-const assigmentDTO = () => {
+export const assigmentDTO = () => {
   const forCreate = (body: unknown) => {
     const requiredFields = ["classId", "title"];
     const isInvalid =
