@@ -23,3 +23,14 @@ To run the tests and have them reload when you save, run the following command:
 ```bash
 npm run test:dev
 ```
+
+doings
+- parse start and end time from  string input
+- parse time
+
+knowings
+- start time hr must be lower than end time hr
+- start time has a max hr of 23 and max min of 59
+- "01:12 - 14:32" is a valid time
+- "25:00 - 12:23" is an invalid time
+- "22:00 - 23:12" is a valid time
