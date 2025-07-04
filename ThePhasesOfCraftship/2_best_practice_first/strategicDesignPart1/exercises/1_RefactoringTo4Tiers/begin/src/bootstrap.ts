@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import StudentService from "./domain/students/student-service";
+import StudentService from "./modules/students/student-service";
 import Database from "./persistence";
-import AssignmentService from "./domain/assignments/assignment-service";
-import ClassService from "./domain/classes/class-service";
-import { StudentController } from "./domain/students/student-controller";
+import AssignmentService from "./modules/assignments/assignment-service";
+import ClassService from "./modules/classes/class-service";
+import { StudentController } from "./modules/students/student-controller";
 import { ErrorExceptionHandler } from "./shared/errors";
-import { AssignmentController } from "./domain/assignments/assignment-controller";
-import { ClassController } from "./domain/classes/class-controller";
+import { AssignmentController } from "./modules/assignments/assignment-controller";
+import { ClassController } from "./modules/classes/class-controller";
 import { Application } from "./application";
 import { Routes } from "./routes";
 

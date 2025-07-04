@@ -31,7 +31,7 @@ class ClassService {
       throw new ClassNotFoundException(classId);
     }
 
-    const duplicatedClassEnrollment = this.db.classrooms.getEnrollment(
+    const duplicatedClassEnrollment = await this.db.classrooms.getEnrollment(
       studentId,
       classId
     );

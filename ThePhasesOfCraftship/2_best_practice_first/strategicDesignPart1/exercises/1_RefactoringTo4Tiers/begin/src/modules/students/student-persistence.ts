@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { StudentPersistence } from "../../persistence/types";
 
 class Students {
-  private persistence: StudentPersistence;
+  private persistence;
 
   public getPersistence() {
     return this.persistence;
@@ -12,7 +11,7 @@ class Students {
     this.persistence = this.createStudentPersistence();
   }
 
-  private createStudentPersistence = (): StudentPersistence => {
+  private createStudentPersistence = () => {
     return {
       save: this.saveStudent,
       getAll: this.getAllStudents,

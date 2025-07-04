@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { AssignmentController } from "./domain/assignments/assignment-controller";
-import { ClassController } from "./domain/classes/class-controller";
-import { StudentController } from "./domain/students/student-controller";
+import { AssignmentController } from "./modules/assignments/assignment-controller";
+import { ClassController } from "./modules/classes/class-controller";
+import { StudentController } from "./modules/students/student-controller";
 
 export class Routes {
   private router: Router;

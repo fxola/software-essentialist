@@ -2,9 +2,7 @@ import Database from "../../persistence";
 import {
   AssignmentNotFoundException,
   StudentAssignmentNotFoundException,
-  StudentNotFoundException,
 } from "../../shared/exceptions";
-import { GetStudentAssignmentsDTO } from "../students/student-dto";
 import {
   GradeStudentAssignmentDTO,
   SaveAssignmentDTO,
