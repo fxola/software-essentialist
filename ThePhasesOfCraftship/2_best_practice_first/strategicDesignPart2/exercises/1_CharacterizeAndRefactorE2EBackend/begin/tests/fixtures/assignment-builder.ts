@@ -3,11 +3,15 @@ import { prisma } from "../../src/database";
 import { ClassroomBuilder } from "./classroom-builder";
 
 export class AssignmentBuilder {
-  private classroomBuilder: ClassroomBuilder;
+  private classroomBuilder?: ClassroomBuilder;
   private assignment: Partial<Assignment>;
 
   constructor() {
     this.assignment = {};
+  }
+
+  getTitle() {
+    return this.assignment.title;
   }
 
   withTitle(title: string) {
@@ -26,7 +30,7 @@ export class AssignmentBuilder {
     }
 
     if (!this.assignment.title) {
-      throw new Error("Title must be provided");
+      throw new Error("Title must be provided for this assignment");
     }
 
     const classroom = await this.classroomBuilder.build();

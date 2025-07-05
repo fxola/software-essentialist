@@ -13,6 +13,10 @@ export class ClassroomBuilder {
     return this;
   }
 
+  getClassroom() {
+    return this.classroom;
+  }
+
   async build() {
     const name = this.classroom.name;
 
@@ -20,10 +24,10 @@ export class ClassroomBuilder {
       throw new Error("You need a name to create a classroom");
     }
 
-    return await prisma.class.create({
-      data: {
-        name,
-      },
+    return await prisma.class.upsert({
+      where: { name },
+      create: { name },
+      update: { name },
     });
   }
 }
