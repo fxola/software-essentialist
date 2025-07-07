@@ -1,8 +1,8 @@
-import { ClassroomBuilder } from "../fixtures/classroom-builder";
-import { StudentBuilder } from "../fixtures/student-builder";
+import { ClassroomBuilder } from "./classroom-builder";
+import { StudentBuilder } from "./student-builder";
 import { prisma } from "../../src/database";
 
-export class ClassEnrollmentBuilder {
+export class StudentEnrollmentBuilder {
   private classroomBuilder?: ClassroomBuilder;
   private studentBuilder?: StudentBuilder;
 

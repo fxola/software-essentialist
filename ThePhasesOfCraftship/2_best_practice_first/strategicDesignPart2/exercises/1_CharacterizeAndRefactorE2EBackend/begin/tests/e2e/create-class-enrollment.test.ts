@@ -4,7 +4,7 @@ import request from "supertest";
 import { StudentBuilder } from "../fixtures/student-builder";
 import { Class, ClassEnrollment, Student } from "@prisma/client";
 import { ClassroomBuilder } from "../fixtures/classroom-builder";
-import { ClassEnrollmentBuilder } from "../fixtures/class-enrollment-builder";
+import { StudentEnrollmentBuilder } from "../fixtures/student-enrollment-builder";
 import { app, Errors } from "../../src";
 import { resetDatabase } from "../fixtures/reset";
 import { randomUUID } from "crypto";
@@ -25,12 +25,8 @@ defineFeature(feature, (test) => {
     let classroom: Partial<Class>;
 
     given("a student and class exists", async () => {
-      student = await new StudentBuilder()
-        .withName("Ander Herrera")
-        .withEmail("andy@gmail.com")
-        .build();
-
-      classroom = await new ClassroomBuilder().withName("ECO 101").build();
+      student = await new StudentBuilder().build();
+      classroom = await new ClassroomBuilder().build();
     });
 
     when("I want to enroll the student to the class", async () => {
@@ -62,7 +58,7 @@ defineFeature(feature, (test) => {
     let classroom: Partial<Class>;
 
     given("a class exists", async () => {
-      classroom = await new ClassroomBuilder().withName("ECO 101").build();
+      classroom = await new ClassroomBuilder().build();
     });
 
     when("I want to create an enrollment without a student", async () => {
@@ -95,10 +91,7 @@ defineFeature(feature, (test) => {
     let student: Partial<Student>;
 
     given("a student exists", async () => {
-      student = await new StudentBuilder()
-        .withName("Ander Herrera")
-        .withEmail("andy@gmail.com")
-        .build();
+      student = await new StudentBuilder().build();
     });
 
     when("I want to create an enrollment without a class", async () => {
@@ -131,13 +124,10 @@ defineFeature(feature, (test) => {
     let classEnrollment: Partial<ClassEnrollment>;
 
     given("an enrollment exists", async () => {
-      const classroom = new ClassroomBuilder().withName("BIO 102");
+      const classroom = new ClassroomBuilder();
+      const student = await new StudentBuilder();
 
-      const student = await new StudentBuilder()
-        .withName("Yves Lauren")
-        .withEmail("yves@gmail.com");
-
-      classEnrollment = await new ClassEnrollmentBuilder()
+      classEnrollment = await new StudentEnrollmentBuilder()
         .from(classroom)
         .and(student)
         .build();
@@ -174,10 +164,7 @@ defineFeature(feature, (test) => {
     let student: Partial<Student>;
 
     given("a student exists", async () => {
-      student = await new StudentBuilder()
-        .withName("Paul Pogba")
-        .withEmail("pp@gmail.com")
-        .build();
+      student = await new StudentBuilder().build();
     });
 
     when(

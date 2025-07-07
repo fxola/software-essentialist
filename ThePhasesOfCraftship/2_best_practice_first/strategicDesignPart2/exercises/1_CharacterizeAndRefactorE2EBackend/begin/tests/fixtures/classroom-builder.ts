@@ -1,11 +1,14 @@
 import { Class } from "@prisma/client";
 import { prisma } from "../../src/database";
+import { faker } from "@faker-js/faker";
 
 export class ClassroomBuilder {
   private classroom: Partial<Class>;
 
   constructor() {
-    this.classroom = {};
+    this.classroom = {
+      name: faker.company.name(),
+    };
   }
 
   withName(name: string) {

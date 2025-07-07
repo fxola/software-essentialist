@@ -1,13 +1,16 @@
 import { Assignment } from "@prisma/client";
 import { prisma } from "../../src/database";
 import { ClassroomBuilder } from "./classroom-builder";
+import { faker } from "@faker-js/faker";
 
 export class AssignmentBuilder {
   private classroomBuilder?: ClassroomBuilder;
   private assignment: Partial<Assignment>;
 
   constructor() {
-    this.assignment = {};
+    this.assignment = {
+      title: faker.word.words(),
+    };
   }
 
   getTitle() {
