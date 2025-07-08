@@ -2,7 +2,7 @@ import { StudentEnrollmentBuilder } from "./student-enrollment-builder";
 import { AssignmentBuilder } from "./assignment-builder";
 import { prisma } from "../../src/database";
 
-export class EnrolledStudentAssignmentBuilder {
+export class StudentAssignmentBuilder {
   private studentEnrollmentBuilder?: StudentEnrollmentBuilder;
   private assignmentBuilder?: AssignmentBuilder;
 

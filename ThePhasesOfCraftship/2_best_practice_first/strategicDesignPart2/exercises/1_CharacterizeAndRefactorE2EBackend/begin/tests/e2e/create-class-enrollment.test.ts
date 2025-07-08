@@ -125,7 +125,7 @@ defineFeature(feature, (test) => {
 
     given("an enrollment exists", async () => {
       const classroom = new ClassroomBuilder();
-      const student = await new StudentBuilder();
+      const student = new StudentBuilder();
 
       classEnrollment = await new StudentEnrollmentBuilder()
         .from(classroom)

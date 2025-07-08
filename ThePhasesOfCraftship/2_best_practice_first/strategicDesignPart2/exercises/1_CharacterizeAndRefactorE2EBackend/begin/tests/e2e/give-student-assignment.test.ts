@@ -5,7 +5,7 @@ import { StudentBuilder } from "../fixtures/student-builder";
 import { ClassroomBuilder } from "../fixtures/classroom-builder";
 import { StudentEnrollmentBuilder } from "../fixtures/student-enrollment-builder";
 import { AssignmentBuilder } from "../fixtures/assignment-builder";
-import { EnrolledStudentAssignmentBuilder } from "../fixtures/enrolled-student-assignment-builder";
+import { StudentAssignmentBuilder } from "../fixtures/student-assignment-builder";
 import {
   Assignment,
   ClassEnrollment,
@@ -45,7 +45,6 @@ defineFeature(feature, (test) => {
 
       assignment = await new AssignmentBuilder()
         .withClassRoom(classroom)
-        .withTitle("Random mututation")
         .build();
     });
 
@@ -91,10 +90,8 @@ defineFeature(feature, (test) => {
     given("a student is not enrolled and an assignment exists", async () => {
       student = await new StudentBuilder().build();
 
-      const classroom = new ClassroomBuilder();
-
       assignment = await new AssignmentBuilder()
-        .withClassRoom(classroom)
+        .withClassRoom(new ClassroomBuilder())
         .build();
     });
 
@@ -177,7 +174,7 @@ defineFeature(feature, (test) => {
           .from(classroom)
           .and(new StudentBuilder());
 
-        studentAssignment = await new EnrolledStudentAssignmentBuilder()
+        studentAssignment = await new StudentAssignmentBuilder()
           .from(classEnrollment)
           .and(new AssignmentBuilder().withClassRoom(classroom))
           .build();
