@@ -7,11 +7,7 @@ import { ClassroomBuilder } from "../fixtures/classroom-builder";
 import { StudentBuilder } from "../fixtures/student-builder";
 import { AssignmentBuilder } from "../fixtures/assignment-builder";
 import { SubmittedAssignmentBuilder } from "../fixtures/submitted-assignment-builder";
-import {
-  AssignmentSubmission,
-  ClassEnrollment,
-  StudentAssignment,
-} from "@prisma/client";
+import { ClassEnrollment, StudentAssignment } from "@prisma/client";
 import { app, Errors } from "../../src";
 import { resetDatabase } from "../fixtures/reset";
 import { randomUUID } from "crypto";
