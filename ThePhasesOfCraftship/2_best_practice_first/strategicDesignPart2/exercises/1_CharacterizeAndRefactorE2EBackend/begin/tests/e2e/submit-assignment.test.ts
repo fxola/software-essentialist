@@ -26,7 +26,7 @@ defineFeature(feature, (test) => {
     let studentAssignment: Partial<StudentAssignment>;
 
     given(
-      "I am an enrolled student I have been assigned an assignment",
+      "I am an enrolled student and I have been assigned an assignment",
       async () => {
         const classroom = new ClassroomBuilder();
 
@@ -111,7 +111,7 @@ defineFeature(feature, (test) => {
     let response: any = {};
     let studentAssignment: Partial<StudentAssignment>;
 
-    given("I am an enrolled student", async () => {
+    given("I am an enrolled student with a submitted assignment", async () => {
       const classroom = new ClassroomBuilder();
 
       const studentAssignmentBuilder = new StudentAssignmentBuilder()
@@ -129,7 +129,7 @@ defineFeature(feature, (test) => {
       studentAssignment = submittedAssignment.studentAssignment;
     });
 
-    when("I want to submit an assignment that has been submitted", async () => {
+    when("I want to submit the same assignment again", async () => {
       requestBody = {
         studentId: studentAssignment.studentId,
         assignmentId: studentAssignment.assignmentId,
