@@ -30,8 +30,18 @@ export class StudentEnrollmentBuilder {
     const classroom = await this.classroomBuilder.build();
     const student = await this.studentBuilder.build();
 
-    const classEnrollment = await prisma.classEnrollment.create({
-      data: {
+    const classEnrollment = await prisma.classEnrollment.upsert({
+      where: {
+        studentId_classId: {
+          studentId: student.id,
+          classId: classroom.id,
+        },
+      },
+      update: {
+        studentId: student.id,
+        classId: classroom.id,
+      },
+      create: {
         studentId: student.id,
         classId: classroom.id,
       },

@@ -30,8 +30,14 @@ export class StudentBuilder {
       throw new Error("Email is required to create student");
     }
 
-    const student = await prisma.student.create({
-      data: {
+    const student = await prisma.student.upsert({
+      where: {
+        email: this.student.email,
+      },
+      update: {
+        email: this.student.email,
+      },
+      create: {
         name: this.student.name,
         email: this.student.email,
       },
