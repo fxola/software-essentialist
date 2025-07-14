@@ -1,13 +1,7 @@
 import { defineFeature, loadFeature } from "jest-cucumber";
 import request from "supertest";
 import path from "path";
-import { SubmittedAssignmentBuilder } from "../fixtures/submitted-assignment-builder";
-import { StudentAssignmentBuilder } from "../fixtures/student-assignment-builder";
-import { StudentEnrollmentBuilder } from "../fixtures/student-enrollment-builder";
-import { ClassroomBuilder } from "../fixtures/classroom-builder";
-import { StudentBuilder } from "../fixtures/student-builder";
-import { AssignmentBuilder } from "../fixtures/assignment-builder";
-import { GradeAssignmentBuilder } from "../fixtures/grade-assignment-builder";
+import { aGradedAssignment, aSubmittedAssignment } from "../fixtures";
 import {
   AssignmentSubmission,
   GradedAssignment,
@@ -27,19 +21,7 @@ defineFeature(feature, (test) => {
     let response: any = {};
 
     given("a student submits an assignment", async () => {
-      const classroom = new ClassroomBuilder();
-
-      const enrollment = new StudentEnrollmentBuilder()
-        .from(classroom)
-        .and(new StudentBuilder());
-
-      const studentAssignmentBuilder = new StudentAssignmentBuilder()
-        .from(enrollment)
-        .and(new AssignmentBuilder().withClassRoom(classroom));
-
-      const result = await new SubmittedAssignmentBuilder()
-        .from(studentAssignmentBuilder)
-        .build();
+      const result = await aSubmittedAssignment();
 
       submittedAssignment = result.submittedAssignment;
       studentAssignment = result.studentAssignment;
@@ -79,19 +61,7 @@ defineFeature(feature, (test) => {
     let response: any = {};
 
     given("a student submits an assignment", async () => {
-      const classroom = new ClassroomBuilder();
-
-      const enrollment = new StudentEnrollmentBuilder()
-        .from(classroom)
-        .and(new StudentBuilder());
-
-      const studentAssignmentBuilder = new StudentAssignmentBuilder()
-        .from(enrollment)
-        .and(new AssignmentBuilder().withClassRoom(classroom));
-
-      const result = await new SubmittedAssignmentBuilder()
-        .from(studentAssignmentBuilder)
-        .build();
+      const result = await aSubmittedAssignment();
 
       submittedAssignment = result.submittedAssignment;
       studentAssignment = result.studentAssignment;
@@ -132,24 +102,7 @@ defineFeature(feature, (test) => {
     let response: any = {};
 
     given("a student submits an assignment", async () => {
-      const classroom = new ClassroomBuilder();
-
-      const enrollment = new StudentEnrollmentBuilder()
-        .from(classroom)
-        .and(new StudentBuilder());
-
-      const studentAssignmentbuilder = new StudentAssignmentBuilder()
-        .from(enrollment)
-        .and(new AssignmentBuilder().withClassRoom(classroom));
-
-      const submittedAssignment = new SubmittedAssignmentBuilder().from(
-        studentAssignmentbuilder
-      );
-
-      const result = await new GradeAssignmentBuilder()
-        .from(submittedAssignment)
-        .withGrade("A")
-        .build();
+      const result = await aGradedAssignment({ grade: "A" });
 
       gradedAssignment = result.gradedAssignment;
       studentAssignment = result.studentAssignment;

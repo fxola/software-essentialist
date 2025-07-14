@@ -2,10 +2,10 @@ import { Student } from "@prisma/client";
 import request from "supertest";
 import { defineFeature, loadFeature } from "jest-cucumber";
 import path from "path";
-import { StudentBuilder } from "../fixtures/student-builder";
 import { app, Errors } from "../../src";
 import { resetDatabase } from "../fixtures/reset";
 import { randomUUID } from "crypto";
+import { aStudent } from "../fixtures";
 
 const feature = loadFeature(
   path.join(__dirname, "../features/get-student.feature")
@@ -21,10 +21,7 @@ defineFeature(feature, (test) => {
     let response: any = {};
 
     given("a student exists", async () => {
-      student = await new StudentBuilder()
-        .withName("Jon Snow")
-        .withEmail("js@got.con")
-        .build();
+      student = await aStudent();
     });
 
     when("I request the student", async () => {

@@ -1,16 +1,15 @@
 import { defineFeature, loadFeature } from "jest-cucumber";
 import path from "path";
 import request from "supertest";
-import { StudentAssignmentBuilder } from "../fixtures/student-assignment-builder";
-import { StudentEnrollmentBuilder } from "../fixtures/student-enrollment-builder";
-import { ClassroomBuilder } from "../fixtures/classroom-builder";
-import { StudentBuilder } from "../fixtures/student-builder";
-import { AssignmentBuilder } from "../fixtures/assignment-builder";
-import { SubmittedAssignmentBuilder } from "../fixtures/submitted-assignment-builder";
 import { ClassEnrollment, StudentAssignment } from "@prisma/client";
 import { app, Errors } from "../../src";
 import { resetDatabase } from "../fixtures/reset";
 import { randomUUID } from "crypto";
+import {
+  anEnrollment,
+  aStudentAssignment,
+  aSubmittedAssignment,
+} from "../fixtures";
 
 const feature = loadFeature(
   path.join(__dirname, "../features/submit-student-assignment.feature")
@@ -28,16 +27,7 @@ defineFeature(feature, (test) => {
     given(
       "I am an enrolled student and I have been assigned an assignment",
       async () => {
-        const classroom = new ClassroomBuilder();
-
-        studentAssignment = await new StudentAssignmentBuilder()
-          .from(
-            new StudentEnrollmentBuilder()
-              .from(classroom)
-              .and(new StudentBuilder())
-          )
-          .and(new AssignmentBuilder().withClassRoom(classroom))
-          .build();
+        studentAssignment = await aStudentAssignment();
       }
     );
 
@@ -73,10 +63,7 @@ defineFeature(feature, (test) => {
     let enrolledStudent: Partial<ClassEnrollment>;
 
     given("I am an enrolled student", async () => {
-      enrolledStudent = await new StudentEnrollmentBuilder()
-        .from(new ClassroomBuilder())
-        .and(new StudentBuilder())
-        .build();
+      enrolledStudent = await anEnrollment();
     });
 
     when("I want to submit an assignment that does not exist", async () => {
@@ -112,19 +99,7 @@ defineFeature(feature, (test) => {
     let studentAssignment: Partial<StudentAssignment>;
 
     given("I am an enrolled student with a submitted assignment", async () => {
-      const classroom = new ClassroomBuilder();
-
-      const studentAssignmentBuilder = new StudentAssignmentBuilder()
-        .from(
-          new StudentEnrollmentBuilder()
-            .from(classroom)
-            .and(new StudentBuilder())
-        )
-        .and(new AssignmentBuilder().withClassRoom(classroom));
-
-      const submittedAssignment = await new SubmittedAssignmentBuilder()
-        .from(studentAssignmentBuilder)
-        .build();
+      const submittedAssignment = await aSubmittedAssignment();
 
       studentAssignment = submittedAssignment.studentAssignment;
     });

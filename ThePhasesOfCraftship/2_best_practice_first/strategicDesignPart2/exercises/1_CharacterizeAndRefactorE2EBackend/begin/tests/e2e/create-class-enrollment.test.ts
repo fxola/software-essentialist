@@ -1,13 +1,11 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
 import path from "path";
 import request from "supertest";
-import { StudentBuilder } from "../fixtures/student-builder";
 import { Class, ClassEnrollment, Student } from "@prisma/client";
-import { ClassroomBuilder } from "../fixtures/classroom-builder";
-import { StudentEnrollmentBuilder } from "../fixtures/student-enrollment-builder";
 import { app, Errors } from "../../src";
 import { resetDatabase } from "../fixtures/reset";
 import { randomUUID } from "crypto";
+import { aClassroom, anEnrollment, aStudent } from "../fixtures";
 
 const feature = loadFeature(
   path.join(__dirname, "../features/create-class-enrollment.feature")
@@ -25,8 +23,8 @@ defineFeature(feature, (test) => {
     let classroom: Partial<Class>;
 
     given("a student and class exists", async () => {
-      student = await new StudentBuilder().build();
-      classroom = await new ClassroomBuilder().build();
+      student = await aStudent();
+      classroom = await aClassroom();
     });
 
     when("I want to enroll the student to the class", async () => {
@@ -58,7 +56,7 @@ defineFeature(feature, (test) => {
     let classroom: Partial<Class>;
 
     given("a class exists", async () => {
-      classroom = await new ClassroomBuilder().build();
+      classroom = await aClassroom();
     });
 
     when("I want to create an enrollment without a student", async () => {
@@ -91,7 +89,7 @@ defineFeature(feature, (test) => {
     let student: Partial<Student>;
 
     given("a student exists", async () => {
-      student = await new StudentBuilder().build();
+      student = await aStudent();
     });
 
     when("I want to create an enrollment without a class", async () => {
@@ -124,13 +122,7 @@ defineFeature(feature, (test) => {
     let classEnrollment: Partial<ClassEnrollment>;
 
     given("an enrollment exists", async () => {
-      const classroom = new ClassroomBuilder();
-      const student = new StudentBuilder();
-
-      classEnrollment = await new StudentEnrollmentBuilder()
-        .from(classroom)
-        .and(student)
-        .build();
+      classEnrollment = await anEnrollment();
     });
 
     when("I want to enroll the same student to the same class", async () => {
@@ -164,7 +156,7 @@ defineFeature(feature, (test) => {
     let student: Partial<Student>;
 
     given("a student exists", async () => {
-      student = await new StudentBuilder().build();
+      student = await aStudent();
     });
 
     when(

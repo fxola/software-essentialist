@@ -5,7 +5,6 @@ import { StudentBuilder } from "../fixtures/student-builder";
 import { ClassroomBuilder } from "../fixtures/classroom-builder";
 import { StudentEnrollmentBuilder } from "../fixtures/student-enrollment-builder";
 import { AssignmentBuilder } from "../fixtures/assignment-builder";
-import { StudentAssignmentBuilder } from "../fixtures/student-assignment-builder";
 import {
   Assignment,
   ClassEnrollment,
@@ -15,6 +14,12 @@ import {
 import { app, Errors } from "../../src";
 import { resetDatabase } from "../fixtures/reset";
 import { randomUUID } from "crypto";
+import {
+  anAssignment,
+  anEnrollment,
+  aStudent,
+  aStudentAssignment,
+} from "../fixtures";
 
 const feature = loadFeature(
   path.join(__dirname, "../features/give-student-assignment.feature")
@@ -88,11 +93,8 @@ defineFeature(feature, (test) => {
     let student: Partial<Student>;
 
     given("a student is not enrolled and an assignment exists", async () => {
-      student = await new StudentBuilder().build();
-
-      assignment = await new AssignmentBuilder()
-        .withClassRoom(new ClassroomBuilder())
-        .build();
+      student = await aStudent();
+      assignment = await anAssignment();
     });
 
     when("I want to assign an assignment to the student", async () => {
@@ -126,10 +128,7 @@ defineFeature(feature, (test) => {
     let response: any = {};
 
     given("an enrolled student exists", async () => {
-      enrollment = await new StudentEnrollmentBuilder()
-        .from(new ClassroomBuilder())
-        .and(new StudentBuilder())
-        .build();
+      enrollment = await anEnrollment();
     });
 
     when(
@@ -168,16 +167,7 @@ defineFeature(feature, (test) => {
     given(
       "an assignment has been assigned to an enrolled student",
       async () => {
-        const classroom = new ClassroomBuilder();
-
-        const classEnrollment = new StudentEnrollmentBuilder()
-          .from(classroom)
-          .and(new StudentBuilder());
-
-        studentAssignment = await new StudentAssignmentBuilder()
-          .from(classEnrollment)
-          .and(new AssignmentBuilder().withClassRoom(classroom))
-          .build();
+        studentAssignment = await aStudentAssignment();
       }
     );
 

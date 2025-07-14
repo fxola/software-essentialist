@@ -1,10 +1,10 @@
 import { defineFeature, loadFeature } from "jest-cucumber";
 import path from "path";
 import request from "supertest";
-import { StudentBuilder } from "../fixtures/student-builder";
 import { app } from "../../src";
 import { Student } from "@prisma/client";
 import { resetDatabase } from "../fixtures/reset";
+import { aStudent } from "../fixtures";
 
 const featurePath = path.join(__dirname, "../features/get-students.feature");
 const feature = loadFeature(featurePath);
@@ -19,15 +19,10 @@ defineFeature(feature, (test) => {
     let students: Student[];
 
     given("students exist", async () => {
-      const student = new StudentBuilder()
-        .withName("Tolu")
-        .withEmail("tolu@yahoo.com");
+      const student1 = aStudent();
+      const student2 = aStudent();
 
-      const student2 = new StudentBuilder()
-        .withName("Taiye")
-        .withEmail("tboy@yahoo.com");
-
-      students = await Promise.all([student.build(), student2.build()]);
+      students = await Promise.all([student1, student2]);
     });
 
     when("I request all students", async () => {
