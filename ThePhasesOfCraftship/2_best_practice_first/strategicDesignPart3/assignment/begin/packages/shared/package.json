@@ -1,0 +1,9 @@
+{
+  "name": "@dddforum/shared",
+  "version": "1.0.0",
+  "description": "Shared packages for dddforum across frontend and backend",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
