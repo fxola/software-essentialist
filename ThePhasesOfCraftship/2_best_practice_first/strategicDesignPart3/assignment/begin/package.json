@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "clean": "npm run clean --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --workspaces --if-present",
+    "start:back": "npm run start:dev --workspace=@dddforum/backend",
+    "start:front": "npm run start:dev --workspace=@dddforum/frontend",
+    "test:e2e:back": "npm run test:e2e --workspace=@dddforum/backend",
+    "test:e2e:front": "npm run test:e2e --workspace=@dddforum/frontend"
   },
   "workspaces": [
     "packages/*"

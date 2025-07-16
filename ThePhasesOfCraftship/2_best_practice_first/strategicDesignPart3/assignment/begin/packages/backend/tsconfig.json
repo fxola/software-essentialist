@@ -11,6 +11,6 @@
     "types": ["node", "jest"],
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*.test.ts"],
   "exclude": ["src/**/*.spec.ts"]
 }
