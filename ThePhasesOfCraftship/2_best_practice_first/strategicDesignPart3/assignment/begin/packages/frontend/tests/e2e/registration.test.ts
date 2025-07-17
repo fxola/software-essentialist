@@ -1,8 +1,8 @@
-const { loadFeature, defineFeature } = require("jest-cucumber");
-const path = require("path");
+import { loadFeature, defineFeature } from "jest-cucumber";
+import path from "path";
 
 const feature = loadFeature(
-  path.join(__dirname, "../../../shared/acceptance/registration.feature")
+  path.join(__dirname, "../../../shared/tests/features/registration.feature")
 );
 
 defineFeature(feature, (test) => {
