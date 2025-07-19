@@ -173,6 +173,41 @@ app.get("/posts", async (req: Request, res: Response) => {
       .json({ error: Errors.ServerError, data: undefined, success: false });
   }
 });
+
+app.post("/marketing/new", async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        error: Errors.ValidationError,
+        data: undefined,
+        success: false,
+      });
+    }
+
+    const existingUserByEmail = await prisma.user.findFirst({
+      where: { email: req.body.email },
+    });
+
+    if (!existingUserByEmail) {
+      return res.status(404).json({
+        error: Errors.UserNotFound,
+        data: undefined,
+        success: false,
+      });
+    }
+
+    return res.status(201).json({
+      error: undefined,
+      data: { email, message: "Email added succesfully" },
+      success: true,
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ error: Errors.ServerError, data: undefined, success: false });
+  }
+});
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {

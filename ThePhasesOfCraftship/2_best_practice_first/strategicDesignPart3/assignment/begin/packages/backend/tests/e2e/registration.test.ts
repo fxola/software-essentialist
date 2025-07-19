@@ -55,8 +55,12 @@ defineFeature(feature, (test) => {
     });
 
     and("I should expect to receive marketing emails", () => {
-      // expect(acceptMarketingResponse.status).toBe(201);
-      // expect(acceptMarketingResponse.body.success).toBeTruthy();
+      expect(acceptMarketingResponse.status).toBe(201);
+      expect(acceptMarketingResponse.body.success).toBeTruthy();
+      expect(acceptMarketingResponse.body.data.email).toBe(user.email);
+      expect(acceptMarketingResponse.body.data.message).toBe(
+        "Email added succesfully"
+      );
     });
   });
 
