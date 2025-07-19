@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const Errors = {
+export const Errors = {
   UsernameAlreadyTaken: "UserNameAlreadyTaken",
   EmailAlreadyInUse: "EmailAlreadyInUse",
   ValidationError: "ValidationError",
@@ -15,6 +15,8 @@ const Errors = {
   UserNotFound: "UserNotFound",
 };
 
+export const contactlist: string[] = [];
+
 function isMissingKeys(data: any, keysToCheckFor: string[]) {
   for (let key of keysToCheckFor) {
     if (data[key] === undefined) return true;
@@ -22,7 +24,7 @@ function isMissingKeys(data: any, keysToCheckFor: string[]) {
   return false;
 }
 
-function generateRandomPassword(length: number): string {
+export function generateRandomPassword(length: number): string {
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
   const passwordArray = [];
@@ -176,7 +178,7 @@ app.get("/posts", async (req: Request, res: Response) => {
 
 app.post("/marketing/new", async (req: Request, res: Response) => {
   try {
-    const { email } = req.body;
+    const { email } = req.body as { email: string };
     if (!email) {
       return res.status(400).json({
         error: Errors.ValidationError,
@@ -197,6 +199,8 @@ app.post("/marketing/new", async (req: Request, res: Response) => {
       });
     }
 
+    contactlist.push(email);
+
     return res.status(201).json({
       error: undefined,
       data: { email, message: "Email added succesfully" },
@@ -215,8 +219,3 @@ app.listen(port, () => {
 });
 
 export { app };
-
-prisma.post
-  .findMany({})
-  .then((posts) => console.log(posts))
-  .catch((err) => console.log(err));
