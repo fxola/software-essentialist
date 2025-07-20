@@ -9,3 +9,9 @@ export class UsernameTakenException extends Error {
     super(`This username has already been taken`);
   }
 }
+
+export class UserNotFoundException extends Error {
+  constructor() {
+    super(`User not found`);
+  }
+}

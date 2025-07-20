@@ -27,3 +27,20 @@ export class CreateUserDTO {
     return new CreateUserDTO(email, firstName, lastName, username);
   }
 }
+
+export class GetUserByEmailDTO {
+  constructor(public email: string) {}
+
+  public static prepare(body: unknown) {
+    const requiredKeys = ["email"];
+    const keyIsMissing = isMissingKeys(body, requiredKeys);
+
+    if (keyIsMissing) {
+      throw new InvalidBodyException(requiredKeys);
+    }
+
+    const { email } = body as { email: string };
+
+    return new GetUserByEmailDTO(email);
+  }
+}

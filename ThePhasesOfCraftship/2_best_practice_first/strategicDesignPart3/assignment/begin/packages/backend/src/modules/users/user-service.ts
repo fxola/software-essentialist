@@ -1,9 +1,14 @@
 import { Database } from "../../shared/database";
-import { EmailInUseException, UsernameTakenException } from "./user-exception";
-import { CreateUserDTO } from "./user-dto";
+import {
+  EmailInUseException,
+  UsernameTakenException,
+  UserNotFoundException,
+} from "./user-exception";
+import { CreateUserDTO, GetUserByEmailDTO } from "./user-dto";
 
 export class UserService {
   constructor(private db: Database) {}
+
   save = async (dto: CreateUserDTO) => {
     const { email, username } = dto;
 
@@ -20,5 +25,15 @@ export class UserService {
     const userDetails = await this.db.users.save(dto);
 
     return userDetails;
+  };
+
+  getByEmail = async (dto: GetUserByEmailDTO) => {
+    const user = await this.db.users.findByEmail(dto.email);
+
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
   };
 }

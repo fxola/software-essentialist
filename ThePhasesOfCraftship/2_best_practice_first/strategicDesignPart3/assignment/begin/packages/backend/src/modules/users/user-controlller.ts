@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Errors } from "../../shared/errors/constants";
 import { parseUserForResponse } from "../../shared/utils";
-import { CreateUserDTO } from "./user-dto";
+import { CreateUserDTO, GetUserByEmailDTO } from "./user-dto";
 import { UserService } from "./user-service";
 
 export class UserController {
   constructor(private userService: UserService) {}
 
-  createUser = async (req: Request, res: Response) => {
+  createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const dto = CreateUserDTO.prepare(req.body);
       const { user } = await this.userService.save(dto);
@@ -18,9 +18,22 @@ export class UserController {
         success: true,
       });
     } catch (e) {
-      return res
-        .status(500)
-        .json({ error: Errors.ServerError, data: undefined, success: false });
+      next(e);
+    }
+  };
+
+  getUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const dto = GetUserByEmailDTO.prepare(req.body);
+      const user = await this.userService.getByEmail(dto);
+
+      return res.status(200).json({
+        error: undefined,
+        data: parseUserForResponse(user),
+        success: true,
+      });
+    } catch (e) {
+      next(e);
     }
   };
 }

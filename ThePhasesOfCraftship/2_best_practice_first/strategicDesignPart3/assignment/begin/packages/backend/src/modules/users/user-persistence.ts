@@ -33,7 +33,7 @@ export class UserPersistence {
   };
 
   private findByEmail = async (email: string) => {
-    const foundUser = await this.prisma.user.findFirst({
+    const foundUser = await this.prisma.user.findUnique({
       where: { email },
     });
     return foundUser;

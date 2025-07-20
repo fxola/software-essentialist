@@ -9,6 +9,7 @@ export class UserRoutes {
   }
 
   mountRoutes() {
+    this.router.get("/", this.controller.getUser);
     this.router.post("/new", this.controller.createUser);
   }
 
