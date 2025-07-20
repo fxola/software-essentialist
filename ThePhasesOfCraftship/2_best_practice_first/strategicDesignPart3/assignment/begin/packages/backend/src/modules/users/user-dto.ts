@@ -31,15 +31,15 @@ export class CreateUserDTO {
 export class GetUserByEmailDTO {
   constructor(public email: string) {}
 
-  public static prepare(body: unknown) {
+  public static prepare(query: unknown) {
     const requiredKeys = ["email"];
-    const keyIsMissing = isMissingKeys(body, requiredKeys);
+    const keyIsMissing = isMissingKeys(query, requiredKeys);
 
     if (keyIsMissing) {
       throw new InvalidBodyException(requiredKeys);
     }
 
-    const { email } = body as { email: string };
+    const { email } = query as { email: string };
 
     return new GetUserByEmailDTO(email);
   }

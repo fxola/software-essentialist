@@ -24,7 +24,7 @@ export class UserController {
 
   getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const dto = GetUserByEmailDTO.prepare(req.body);
+      const dto = GetUserByEmailDTO.prepare(req.query);
       const user = await this.userService.getByEmail(dto);
 
       return res.status(200).json({
