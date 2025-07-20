@@ -3,3 +3,9 @@ export class InvalidBodyException extends Error {
     super(`The following fields are required:${missingKeys.join(",")}`);
   }
 }
+
+export class InvalidEmailException extends Error {
+  constructor(email: string) {
+    super(`${email} is not a valid email address.`);
+  }
+}

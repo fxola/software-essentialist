@@ -25,3 +25,8 @@ export function parseUserForResponse(user: User) {
   delete returnData.password;
   return returnData;
 }
+
+export const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
