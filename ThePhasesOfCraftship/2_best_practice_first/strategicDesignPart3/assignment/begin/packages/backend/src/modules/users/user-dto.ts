@@ -1,0 +1,29 @@
+import { InvalidBodyException } from "../../shared/errors";
+import { isMissingKeys } from "../../shared/utils";
+
+export class CreateUserDTO {
+  constructor(
+    public email: string,
+    public firstName: string,
+    public lastName: string,
+    public username: string
+  ) {}
+
+  public static prepare(body: unknown) {
+    const requiredKeys = ["email", "firstName", "lastName", "username"];
+    const keyIsMissing = isMissingKeys(body, requiredKeys);
+
+    if (keyIsMissing) {
+      throw new InvalidBodyException(requiredKeys);
+    }
+
+    const { email, firstName, lastName, username } = body as {
+      email: string;
+      firstName: string;
+      lastName: string;
+      username: string;
+    };
+
+    return new CreateUserDTO(email, firstName, lastName, username);
+  }
+}
