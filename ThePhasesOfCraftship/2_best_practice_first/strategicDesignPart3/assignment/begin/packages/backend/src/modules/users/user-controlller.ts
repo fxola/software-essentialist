@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Errors } from "../../shared/errors/constants";
 import { parseUserForResponse } from "../../shared/utils";
 import { CreateUserDTO, GetUserByEmailDTO } from "./user-dto";
 import { UserService } from "./user-service";

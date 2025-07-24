@@ -16,9 +16,9 @@ export class AppRoutes {
   }
 
   private assembleRoutes = () => {
-    this.router.use("/users", this.userRoutes.getRouter);
-    this.router.use("/posts", this.postRoutes.getRouter);
-    this.router.use("/marketing", this.marketingRoutes.getRouter);
+    this.router.use("/users", this.userRoutes.getRouter());
+    this.router.use("/posts", this.postRoutes.getRouter());
+    this.router.use("/marketing", this.marketingRoutes.getRouter());
   };
 
   public getRoutes() {

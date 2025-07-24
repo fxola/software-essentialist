@@ -6,6 +6,7 @@ export class UserRoutes {
 
   constructor(private controller: UserController) {
     this.router = Router();
+    this.mountRoutes();
   }
 
   mountRoutes() {

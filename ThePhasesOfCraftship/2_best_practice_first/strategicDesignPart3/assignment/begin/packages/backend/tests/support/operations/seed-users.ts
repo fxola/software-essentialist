@@ -1,6 +1,6 @@
-import { generateRandomPassword } from "@dddforum/backend/src";
-import { prisma } from "@dddforum/backend/src/database";
 import { CreateUserInput } from "@dddforum/shared/src/api/users";
+import { generateRandomPassword } from "../../../src/shared/utils";
+import { prisma } from "../../../src/shared/bootstrap";
 
 export const seedUsers = async (users: CreateUserInput[]) => {
   try {

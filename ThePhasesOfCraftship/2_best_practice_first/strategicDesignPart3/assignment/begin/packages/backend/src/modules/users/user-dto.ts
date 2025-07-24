@@ -1,5 +1,7 @@
-import { InvalidBodyException } from "../../shared/errors";
-import { InvalidEmailException } from "../../shared/errors/exceptions";
+import {
+  InvalidEmailException,
+  InvalidBodyException,
+} from "../../shared/errors/exceptions";
 import { isMissingKeys, isValidEmail } from "../../shared/utils";
 
 export class CreateUserDTO {

@@ -1,4 +1,4 @@
-import { prisma } from "../../src/database";
+import { prisma } from "../../../src/shared/bootstrap";
 
 export const resetDatabase = async () => {
   const deleteAllComments = prisma.comment.deleteMany();

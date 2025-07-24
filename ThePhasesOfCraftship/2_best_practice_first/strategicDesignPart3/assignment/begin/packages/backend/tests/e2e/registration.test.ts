@@ -1,27 +1,37 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
 import request from "supertest";
 import path from "path";
-import { resetDatabase } from "../operations/reset-database";
-import { seedUsers } from "../operations/seed-users";
+import { resetDatabase } from "../support/operations/reset-database";
+import { seedUsers } from "../support/operations/seed-users";
 import { CreateUserInput } from "@dddforum/shared/src/api/users";
-import { CreateuserBuilder } from "../builders";
-import { app, contactlist, Errors } from "../../src";
+import { CreateuserBuilder } from "../support/builders";
+import { prisma, app as server } from "../../src/shared/bootstrap";
+import { Errors } from "../../src/shared/errors/constants";
+import { mailingListAPI } from "../../src/shared/bootstrap";
 
 const feature = loadFeature(
   path.join(__dirname, "../../../shared/tests/features/registration.feature")
 );
 
 defineFeature(feature, (test) => {
+  let app = server.getServer();
+
+  beforeEach(async () => {
+    await resetDatabase();
+    mailingListAPI.clearMailingList();
+  });
+
+  afterAll(async () => {
+    await server.stop();
+    await prisma.$disconnect();
+  });
+
   test("Successful registration with marketing emails accepted", ({
     given,
     when,
     then,
     and,
   }) => {
-    beforeEach(async () => {
-      await resetDatabase();
-    });
-
     let createUserResponse: any;
     let acceptMarketingResponse: any;
 
@@ -60,11 +70,9 @@ defineFeature(feature, (test) => {
       expect(acceptMarketingResponse.body.success).toBeTruthy();
       expect(acceptMarketingResponse.body.data.email).toBe(user.email);
       expect(acceptMarketingResponse.body.data.message).toBe(
-        "Email added succesfully"
+        "Email added successfully"
       );
-      expect(contactlist.includes(user.email)).toBeTruthy();
-
-      contactlist.pop();
+      expect(mailingListAPI.contacts.includes(user.email)).toBeTruthy();
     });
   });
 
@@ -97,7 +105,7 @@ defineFeature(feature, (test) => {
     });
 
     and("I should not expect to receive marketing emails", () => {
-      expect(contactlist.includes(user.email)).toBeFalsy();
+      expect(mailingListAPI.contacts.includes(user.email)).toBeFalsy();
     });
   });
 
@@ -128,7 +136,7 @@ defineFeature(feature, (test) => {
     });
 
     and("I should not have been sent access to account details", () => {
-      expect(contactlist.includes(user.email!)).toBeFalsy();
+      expect(mailingListAPI.contacts.includes(user.email!)).toBeFalsy();
     });
   });
 
@@ -168,7 +176,7 @@ defineFeature(feature, (test) => {
 
     and("they should not have been sent access to account details", () => {
       users.forEach((user) => {
-        expect(contactlist.includes(user.email)).toBeFalsy();
+        expect(mailingListAPI.contacts.includes(user.email)).toBeFalsy();
       });
     });
   });
@@ -216,7 +224,7 @@ defineFeature(feature, (test) => {
 
     and("they should not have been sent access to account details", () => {
       users.forEach((user) => {
-        expect(contactlist.includes(user.email)).toBeFalsy();
+        expect(mailingListAPI.contacts.includes(user.email)).toBeFalsy();
       });
     });
   });
