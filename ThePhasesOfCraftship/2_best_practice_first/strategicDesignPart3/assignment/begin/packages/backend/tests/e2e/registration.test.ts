@@ -1,29 +1,37 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
 import request from "supertest";
 import path from "path";
-import { resetDatabase } from "../support/operations/reset-database";
-import { seedUsers } from "../support/operations/seed-users";
+
 import { CreateUserInput } from "@dddforum/shared/src/api/users";
 import { CreateuserBuilder } from "../support/builders";
-import { prisma, app as server } from "../../src/shared/bootstrap";
+import { DatabaseOperation } from "../support/db-operations";
+
 import { Errors } from "../../src/shared/errors/constants";
-import { mailingListAPI } from "../../src/shared/bootstrap";
+import { CompositionRoot } from "../../src/shared/composition-root";
+import { Config } from "../../src/shared/config";
 
 const feature = loadFeature(
   path.join(__dirname, "../../../shared/tests/features/registration.feature")
 );
 
 defineFeature(feature, (test) => {
+  const config = new Config("test-e2e");
+  const composition = CompositionRoot.createCompositionRoot(config);
+  const server = composition.getApplication();
+  const mailingListAPI = composition.getMailingList();
   let app = server.getServer();
 
+  const prisma = composition.getDbConnection();
+  const dbOperation = new DatabaseOperation(prisma.instance);
+
   beforeEach(async () => {
-    await resetDatabase();
+    await dbOperation.resetDatabase();
     mailingListAPI.clearMailingList();
   });
 
   afterAll(async () => {
     await server.stop();
-    await prisma.$disconnect();
+    await prisma.instance.$connect();
   });
 
   test("Successful registration with marketing emails accepted", ({
@@ -154,7 +162,7 @@ defineFeature(feature, (test) => {
           .build();
       });
 
-      await seedUsers(users);
+      await dbOperation.seedUsers(users);
     });
 
     when("new users attempt to register with those emails", async () => {
@@ -196,7 +204,7 @@ defineFeature(feature, (test) => {
             .build();
         });
 
-        await seedUsers(users);
+        await dbOperation.seedUsers(users);
       }
     );
 
