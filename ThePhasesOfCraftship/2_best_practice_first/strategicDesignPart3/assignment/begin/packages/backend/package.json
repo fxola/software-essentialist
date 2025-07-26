@@ -7,6 +7,7 @@
     "build": "rimraf ./build && tsc",
     "generate": "prisma generate --schema=./src/shared/database/prisma/schema.prisma",
     "migrate": "prisma migrate dev --schema=./src/shared/database/prisma/schema.prisma",
+    "migrate:status": "prisma migrate status --schema=./src/shared/database/prisma/schema.prisma",
     "db:seed": "prisma db seed --schema=./src/shared/database/prisma/schema.prisma",
     "db:reset": "rimraf ./dev.db && npm run migrate && npm run generate",
     "start:dev": "npm run migrate && npm run generate && npx nodemon",
