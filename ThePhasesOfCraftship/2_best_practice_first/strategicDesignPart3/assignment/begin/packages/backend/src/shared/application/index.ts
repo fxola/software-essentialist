@@ -1,7 +1,6 @@
 const cors = require("cors");
 
 import express, { Express } from "express";
-import { AppRoutes } from "../routes";
 import { Server } from "http";
 import { errorHandlerType } from "../errors/handler";
 
@@ -9,13 +8,9 @@ export class Application {
   private app: Express;
   private server?: Server;
 
-  constructor(
-    private routes: AppRoutes,
-    private errorHandler: errorHandlerType
-  ) {
+  constructor(private errorHandler: errorHandlerType) {
     this.app = express();
     this.setupMiddleware();
-    this.setupRoutes();
   }
 
   private setupMiddleware() {
@@ -23,22 +18,11 @@ export class Application {
     this.app.use(cors());
   }
 
-  private setupRoutes() {
-    this.app.use("/", this.routes.getRoutes());
+  public setupRouteHandlers() {
     this.app.use(this.errorHandler);
     this.app.use((req, res) =>
       res.status(404).send({ message: `'${req.url}' Not found` })
     );
-  }
-
-  public start(port: number) {
-    this.server = this.app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
-
-    process.on("SIGINT", this.gracefulShutdown);
-    process.on("SIGTERM", this.gracefulShutdown);
-    return this.server;
   }
 
   private gracefulShutdown = async () => {
@@ -51,6 +35,16 @@ export class Application {
     return this.app;
   }
 
+  public start(port: number) {
+    this.server = this.app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+
+    process.on("SIGINT", this.gracefulShutdown);
+    process.on("SIGTERM", this.gracefulShutdown);
+    return this.server;
+  }
+
   public async stop(): Promise<void> {
     if (!this.server) return;
     return new Promise((resolve, reject) => {
@@ -60,5 +54,9 @@ export class Application {
         resolve();
       });
     });
+  }
+
+  public mountRouter(path: string, router: express.Router) {
+    this.app.use(path, router);
   }
 }

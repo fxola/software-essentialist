@@ -1,28 +1,19 @@
 import { MailingListAPI } from "../../modules/marketing/mailing-list-api";
-import { MarketingController } from "../../modules/marketing/marketing-controller";
-import { MarketingRoutes } from "../../modules/marketing/marketing-route";
-import { MarketingService } from "../../modules/marketing/marketing-service";
-import { PostController } from "../../modules/posts/post-controller";
-import { PostRoutes } from "../../modules/posts/post-route";
-import { PostService } from "../../modules/posts/post-service";
-import { UserController } from "../../modules/users/user-controlller";
-import { UserRoutes } from "../../modules/users/user-routes";
-import { UserService } from "../../modules/users/user-service";
+import { Database } from "../database";
 import { Application } from "../application";
 import { Config } from "../config";
-import { Database } from "../database";
 import { errorHandler, errorHandlerType } from "../errors/handler";
-import { AppRoutes } from "../routes";
+import { MarketingModule, PostModule, UserModule } from "../../modules";
 
 export class CompositionRoot {
   private static instance: CompositionRoot | null = null;
 
   private config: Config;
   private app: Application;
-  private appRoutes: AppRoutes;
-  private userRoutes: UserRoutes;
-  private postRoutes: PostRoutes;
-  private marketingRoutes: MarketingRoutes;
+  private userModule: UserModule;
+  private postModule: PostModule;
+  private marketingModule: MarketingModule;
+
   private dbConnection: Database;
   private mailingList: MailingListAPI;
   private errorHandler: errorHandlerType;
@@ -40,12 +31,12 @@ export class CompositionRoot {
     this.mailingList = this.createMailingList();
     this.errorHandler = errorHandler;
 
-    this.userRoutes = this.createUserRoutes();
-    this.postRoutes = this.createPostRoutes();
-    this.marketingRoutes = this.createMarketingRoutes();
+    this.userModule = this.createUserModule();
+    this.postModule = this.createPostModule();
+    this.marketingModule = this.createMarketingModule();
 
-    this.appRoutes = this.createAppRoutes();
     this.app = this.createApplication();
+    this.mountAppRoutes();
   }
 
   public getDbConnection() {
@@ -76,34 +67,26 @@ export class CompositionRoot {
     return this.mailingList;
   }
 
-  private createUserRoutes() {
-    const userService = new UserService(this.dbConnection);
-    const userController = new UserController(userService);
-    return new UserRoutes(userController);
+  private createUserModule() {
+    return UserModule.build(this.dbConnection);
   }
 
-  private createPostRoutes() {
-    const postService = new PostService(this.dbConnection);
-    const postController = new PostController(postService);
-    return new PostRoutes(postController);
+  private createPostModule() {
+    return PostModule.build(this.dbConnection);
   }
 
-  private createMarketingRoutes() {
-    const marketingService = new MarketingService(this.mailingList);
-    const marketingController = new MarketingController(marketingService);
-    return new MarketingRoutes(marketingController);
-  }
-
-  private createAppRoutes() {
-    return new AppRoutes(
-      this.userRoutes,
-      this.postRoutes,
-      this.marketingRoutes
-    );
+  private createMarketingModule() {
+    return MarketingModule.build(this.mailingList);
   }
 
   private createApplication() {
-    const app = new Application(this.appRoutes, this.errorHandler);
-    return app;
+    return new Application(this.errorHandler);
+  }
+
+  private mountAppRoutes() {
+    this.app.mountRouter("/users", this.userModule.getRouter());
+    this.app.mountRouter("/posts", this.postModule.getRouter());
+    this.app.mountRouter("/marketing", this.marketingModule.getRouter());
+    this.app.setupRouteHandlers();
   }
 }
