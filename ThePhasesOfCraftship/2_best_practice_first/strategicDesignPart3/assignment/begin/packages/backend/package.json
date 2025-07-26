@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "generate": "prisma generate",
-    "migrate": "prisma migrate dev",
-    "db:seed": "prisma db seed",
+    "generate": "prisma generate --schema=./src/shared/database/prisma/schema.prisma",
+    "migrate": "prisma migrate dev --schema=./src/shared/database/prisma/schema.prisma",
+    "db:seed": "prisma db seed --schema=./src/shared/database/prisma/schema.prisma",
     "db:reset": "rimraf ./dev.db && npm run migrate && npm run generate",
     "start:dev": "npm run migrate && npm run generate && npx nodemon",
     "start": "npm run build && node build/src/index.js",
@@ -30,7 +30,7 @@
     }
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node ./src/shared/database/prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
