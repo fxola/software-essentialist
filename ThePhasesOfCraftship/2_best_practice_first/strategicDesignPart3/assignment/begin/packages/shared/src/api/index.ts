@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { createUserAPI } from "./users";
 import { createPostAPI } from "./posts";
 import { createMarketingAPI } from "./marketing";
@@ -9,15 +9,25 @@ export type Error<U> = {
 };
 
 export type APIResponse<T, U> = {
-  success: boolean;
-  data: T;
-  error: Error<U>;
+  body: {
+    success: boolean;
+    data: T;
+    error: Error<U>;
+  };
+  status: number;
 };
 
 export type ValidationError = "ValidationError";
 export type ServerError = "ServerError";
 export type UnknownError = "UnknownError";
 export type GenericErrors = ValidationError | ServerError | UnknownError;
+
+export const formatAPIResponse = (response: AxiosResponse<any, any>) => {
+  return {
+    body: { ...response.data },
+    status: response.status,
+  };
+};
 
 export function getErrorMessage(e: unknown): string {
   if (e instanceof Error) return e.message;
@@ -26,12 +36,16 @@ export function getErrorMessage(e: unknown): string {
 
 export function handleAPIError<T>(e: unknown): T {
   if (axios.isAxiosError(e) && e.response) {
-    return e.response.data as T;
+    return formatAPIResponse(e.response) as T;
   }
 
   return {
-    error: { error: "UnknownError", message: getErrorMessage(e) },
-    success: false,
+    body: {
+      error: "UnknownError",
+      message: getErrorMessage(e),
+      success: false,
+    },
+    status: 500,
   } as T;
 }
 

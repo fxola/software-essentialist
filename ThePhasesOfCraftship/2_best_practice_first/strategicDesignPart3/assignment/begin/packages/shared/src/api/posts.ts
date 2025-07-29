@@ -1,5 +1,10 @@
 import axios from "axios";
-import { APIResponse, GenericErrors, handleAPIError } from ".";
+import {
+  APIResponse,
+  formatAPIResponse,
+  GenericErrors,
+  handleAPIError,
+} from ".";
 import { User } from "./users";
 type GetPostsErrors = GenericErrors;
 
@@ -49,7 +54,7 @@ export const createPostAPI = (baseURL: string) => {
     get: async (sort: GetPostsFilter): Promise<GetPostsAPIResponse> => {
       try {
         const response = await axios.get(`${baseURL}posts?sort=${sort}`);
-        return response.data;
+        return formatAPIResponse(response);
       } catch (e) {
         return handleAPIError<GetPostsAPIResponse>(e);
       }

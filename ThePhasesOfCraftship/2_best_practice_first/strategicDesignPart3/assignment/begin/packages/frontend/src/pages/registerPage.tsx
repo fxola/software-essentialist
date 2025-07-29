@@ -43,7 +43,7 @@ export const RegisterPage = () => {
     spinner.activate();
     try {
       // Make API call
-      const response = await api.users.register(input);
+      const { body: response } = await api.users.register(input);
       if (response.success) {
         setUser(response.data);
         spinner.deactivate();
