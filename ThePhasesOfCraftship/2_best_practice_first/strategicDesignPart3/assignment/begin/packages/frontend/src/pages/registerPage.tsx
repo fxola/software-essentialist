@@ -65,11 +65,11 @@ export const RegisterPage = () => {
         case "ServerError":
         case "UnknownError":
         default:
-          toast.error("Something went wrong.Please try again");
+          toast.error("Something went wrong. Please try again");
       }
     } catch (err) {
       spinner.deactivate();
-      return toast.error("Something went wrong.Please try again");
+      return toast.error("Something went wrong. Please try again");
     }
   };
 
