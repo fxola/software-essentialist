@@ -13,7 +13,7 @@ export class MailingListAPI {
 
   removeEmail = async (email: string) => {
     console.log(`${email} has been successfully removed from the list`);
-    this.contacts = this.contacts.filter((e) => e === email);
+    this.contacts = this.contacts.filter((e) => e !== email);
   };
 
   clearMailingList = () => {

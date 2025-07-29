@@ -1,5 +1,4 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
-import request from "supertest";
 import path from "path";
 
 import { CreateUserInput } from "@dddforum/shared/src/api/users";
@@ -9,6 +8,7 @@ import { DatabaseOperation } from "../support/db-operations";
 import { Errors } from "../../src/shared/errors/constants";
 import { CompositionRoot } from "../../src/shared/composition-root";
 import { Config } from "../../src/shared/config";
+import { createAPIClient } from "@dddforum/shared/src/api";
 
 const feature = loadFeature(
   path.join(__dirname, "../../../shared/tests/features/registration.feature")
@@ -17,12 +17,14 @@ const feature = loadFeature(
 defineFeature(feature, (test) => {
   const config = new Config("test-e2e");
   const composition = CompositionRoot.createCompositionRoot(config);
-  const server = composition.getApplication();
   const mailingListAPI = composition.getMailingList();
-  let app = server.getServer();
 
   const prisma = composition.getDbConnection();
   const dbOperation = new DatabaseOperation(prisma.instance);
+
+  const server = composition.getApplication();
+  server.start(3000);
+  const apiclient = createAPIClient("http://localhost:3000/");
 
   beforeEach(async () => {
     await dbOperation.resetDatabase();
@@ -31,7 +33,7 @@ defineFeature(feature, (test) => {
 
   afterAll(async () => {
     await server.stop();
-    await prisma.instance.$connect();
+    await prisma.instance.$disconnect();
   });
 
   test("Successful registration with marketing emails accepted", ({
@@ -57,11 +59,10 @@ defineFeature(feature, (test) => {
     when(
       "I register with valid account details accepting marketing emails",
       async () => {
-        createUserResponse = await request(app).post("/users/new").send(user);
-
-        acceptMarketingResponse = await request(app)
-          .post("/marketing/new")
-          .send({ email: user.email });
+        createUserResponse = await apiclient.users.register(user);
+        acceptMarketingResponse = await apiclient.marketing.addEmail({
+          email: user.email,
+        });
       }
     );
 
@@ -100,7 +101,7 @@ defineFeature(feature, (test) => {
     when(
       "I register with valid account details declining marketing emails",
       async () => {
-        createUserResponse = await request(app).post("/users/new").send(user);
+        createUserResponse = await apiclient.users.register(user);
       }
     );
 
@@ -134,7 +135,8 @@ defineFeature(feature, (test) => {
     });
 
     when("I register with invalid account details", async () => {
-      createUserResponse = await request(app).post("/users/new").send(user);
+      //@ts-ignore
+      createUserResponse = await apiclient.users.register(user);
     });
 
     then("I should see an error notifying me that my input is invalid", () => {
@@ -167,7 +169,7 @@ defineFeature(feature, (test) => {
 
     when("new users attempt to register with those emails", async () => {
       createUserResponses = await Promise.all(
-        users.map((user) => request(app).post("/users/new").send(user))
+        users.map((user) => apiclient.users.register(user))
       );
     });
 
@@ -212,9 +214,7 @@ defineFeature(feature, (test) => {
       "new users attempt to register with already taken usernames",
       async (table) => {
         createUserResponses = await Promise.all(
-          table.map((user: CreateUserInput) =>
-            request(app).post("/users/new").send(user)
-          )
+          table.map((user: CreateUserInput) => apiclient.users.register(user))
         );
       }
     );

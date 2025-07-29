@@ -10,8 +10,9 @@ export const MainPage = () => {
 
   const loadPosts = async () => {
     try {
-      let response = await api.posts.get("recent");
-      setPosts(response.data.posts);
+      const response = await api.posts.get("recent");
+      const posts = response.body.data.posts;
+      setPosts(posts);
     } catch (err) {
       console.log(err);
     }

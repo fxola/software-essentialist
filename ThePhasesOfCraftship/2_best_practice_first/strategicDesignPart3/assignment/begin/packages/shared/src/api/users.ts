@@ -1,5 +1,10 @@
 import axios from "axios";
-import { APIResponse, GenericErrors, handleAPIError } from ".";
+import {
+  APIResponse,
+  formatAPIResponse,
+  GenericErrors,
+  handleAPIError,
+} from ".";
 
 export interface CreateUserInput {
   firstName: string;
@@ -31,7 +36,7 @@ export const createUserAPI = (baseURL: string) => {
     ): Promise<CreateUserAPIResponse> => {
       try {
         const response = await axios.post(`${baseURL}users/new`, input);
-        return response.data;
+        return formatAPIResponse(response);
       } catch (e: unknown) {
         return handleAPIError<CreateUserAPIResponse>(e);
       }
@@ -39,7 +44,7 @@ export const createUserAPI = (baseURL: string) => {
     getByEmail: async (email: string): Promise<GetUserbyEmailAPIResponse> => {
       try {
         const response = await axios.get(`${baseURL}users?email=${email}`);
-        return response.data;
+        return formatAPIResponse(response);
       } catch (e: unknown) {
         return handleAPIError<GetUserbyEmailAPIResponse>(e);
       }

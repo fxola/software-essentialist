@@ -1,5 +1,10 @@
 import axios from "axios";
-import { APIResponse, GenericErrors, handleAPIError } from ".";
+import {
+  APIResponse,
+  formatAPIResponse,
+  GenericErrors,
+  handleAPIError,
+} from ".";
 
 type AddEmailMarketingError = GenericErrors;
 
@@ -24,7 +29,7 @@ export const createMarketingAPI = (baseURL: string) => {
     ): Promise<AddEmailMarketingAPIResponse> => {
       try {
         const response = await axios.post(`${baseURL}marketing/new`, input);
-        return response.data;
+        return formatAPIResponse(response);
       } catch (e) {
         return handleAPIError<AddEmailMarketingAPIResponse>(e);
       }
