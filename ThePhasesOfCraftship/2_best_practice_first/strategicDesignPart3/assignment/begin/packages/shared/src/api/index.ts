@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createUserAPI } from "./users";
+import { createPostAPI } from "./posts";
 
 export type Error<U> = {
   message?: string;
@@ -36,5 +37,6 @@ export function handleAPIError<T>(e: unknown): T {
 export const createAPIClient = (baseURL: string) => {
   return {
     users: createUserAPI(baseURL),
+    posts: createPostAPI(baseURL),
   };
 };

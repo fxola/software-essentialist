@@ -1,4 +1,4 @@
-import { User, Post, Vote, Comment } from "@prisma/client";
+import { User, Post, Vote, Comment, Member } from "@prisma/client";
 import { dbConnection } from "../../bootstrap";
 
 const prisma = dbConnection.instance;
@@ -97,37 +97,81 @@ const initialPostComments: Comment[] = [
 ];
 
 async function seed() {
-  for (const user of initialUsers) {
-    const newUser = await prisma.user.create({
-      data: user,
-    });
+  const createdMembers: { user: User; member: Member }[] = [];
 
-    await prisma.member.create({
+  for (const user of initialUsers) {
+    const newUser = await prisma.user.create({ data: user });
+    const newMember = await prisma.member.create({
+      data: { user: { connect: { id: newUser.id } } },
+    });
+    createdMembers.push({ user: newUser, member: newMember });
+  }
+
+  // Create posts
+  const createdPosts: Post[] = [];
+  for (const post of initialPosts) {
+    // Find the member from createdMembers using matching userId
+    const target = createdMembers.find(
+      (m) => m.member.id && m.user.id === post.memberId
+    );
+    if (!target) {
+      console.warn(
+        `Skipping post: could not find member for memberId=${post.memberId}`
+      );
+      continue;
+    }
+
+    const newPost = await prisma.post.create({
       data: {
-        user: {
-          connect: { id: newUser.id },
-        },
+        title: post.title,
+        content: post.content,
+        postType: post.postType,
+        dateCreated: post.dateCreated,
+        memberId: target.member.id,
+      },
+    });
+    createdPosts.push(newPost);
+  }
+
+  // Create votes
+  for (const vote of initialPostVotes) {
+    const targetMember = createdMembers.find(
+      (m) => m.user.id === vote.memberId
+    );
+    const targetPost = createdPosts.find((p) => p.id === vote.postId);
+    if (!targetMember || !targetPost) {
+      console.warn(`Skipping vote: missing member or post`);
+      continue;
+    }
+
+    await prisma.vote.create({
+      data: {
+        voteType: vote.voteType,
+        memberId: targetMember.member.id,
+        postId: targetPost.id,
       },
     });
   }
 
-  for (const post of initialPosts) {
-    await prisma.post.create({
-      data: post,
-    });
-  }
-
-  for (const vote of initialPostVotes) {
-    await prisma.vote.create({
-      data: vote,
-    });
-  }
-
+  // Create comments
   for (const comment of initialPostComments) {
+    const targetMember = createdMembers.find(
+      (m) => m.user.id === comment.memberId
+    );
+    const targetPost = createdPosts.find((p) => p.id === comment.postId);
+    if (!targetMember || !targetPost) {
+      console.warn(`Skipping comment: missing member or post`);
+      continue;
+    }
+
     await prisma.comment.create({
-      data: comment,
+      data: {
+        text: comment.text,
+        memberId: targetMember.member.id,
+        postId: targetPost.id,
+        parentCommentId: comment.parentCommentId,
+      },
     });
   }
 }
-
 seed();
