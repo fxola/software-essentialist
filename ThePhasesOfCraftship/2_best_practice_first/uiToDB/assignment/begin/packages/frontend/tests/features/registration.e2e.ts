@@ -3,7 +3,7 @@ import { sharedTestRoot } from "@dddforum/shared/src/paths";
 import { CreateUserParams } from "@dddforum/shared/src/api/users";
 
 import * as path from "path";
-import { DatabaseFixture } from "@dddforum/shared/tests/support/fixtures/databaseFixture";
+// import { DatabaseFixture } from "@dddforum/shared/tests/support/fixtures/databaseFixture";
 
 const feature = loadFeature(
   path.join(sharedTestRoot, "features/registration.feature"),
@@ -11,16 +11,16 @@ const feature = loadFeature(
 );
 
 defineFeature(feature, (test) => {
-  let databaseFixture: DatabaseFixture;
+  // let databaseFixture: DatabaseFixture;
 
   beforeAll(async () => {
-    databaseFixture = new DatabaseFixture();
+    // databaseFixture = new DatabaseFixture();
   });
 
   afterAll(async () => {});
 
   afterEach(async () => {
-    await databaseFixture.resetDatabase();
+    // await databaseFixture.resetDatabase();
   });
 
   // Need to put timeout here.
