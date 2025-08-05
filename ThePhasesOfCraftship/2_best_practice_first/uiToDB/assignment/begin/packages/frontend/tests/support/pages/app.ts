@@ -1,24 +1,28 @@
+class RegistrationPage {}
+class MainPage {}
+class HeaderComponent {}
+class NotificationsComponent {}
 
-import { AppNotifications, HeaderComponent  } from "../components";
-import { PuppeteerPageDriver } from "../driver";
-import { RegistrationPage } from "./registrationPage";
-
-export interface App {
-  pages: Pages;
-  header: HeaderComponent;
-  notifications: AppNotifications;
+interface App {
+  pages: {
+    main: MainPage;
+    registration: RegistrationPage;
+  };
+  layout: {
+    header: HeaderComponent;
+  };
+  notifications: NotificationsComponent;
 }
 
-interface Pages {
-  registration: RegistrationPage;
-}
-
-export function createAppObject(pageDriver: PuppeteerPageDriver): App {  
+export const createAppObject = (): App => {
   return {
     pages: {
-      registration: new RegistrationPage(pageDriver)
+      main: new MainPage(),
+      registration: new RegistrationPage(),
     },
-    header: new HeaderComponent(pageDriver),
-    notifications: new AppNotifications(pageDriver)
-  }
-}
+    layout: {
+      header: new HeaderComponent(),
+    },
+    notifications: new NotificationsComponent(),
+  };
+};

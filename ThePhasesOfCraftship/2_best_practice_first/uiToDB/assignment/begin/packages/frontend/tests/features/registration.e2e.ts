@@ -1,9 +1,10 @@
 import { defineFeature, loadFeature } from "jest-cucumber";
 import { sharedTestRoot } from "@dddforum/shared/src/paths";
 import { CreateUserParams } from "@dddforum/shared/src/api/users";
+import { CreateUserBuilder } from "@dddforum/shared/tests/support/builders/createUserBuilder";
 
 import * as path from "path";
-// import { DatabaseFixture } from "@dddforum/shared/tests/support/fixtures/databaseFixture";
+import { DatabaseFixture } from "@dddforum/shared/tests/support/fixtures/databaseFixture";
 
 const feature = loadFeature(
   path.join(sharedTestRoot, "features/registration.feature"),
@@ -11,16 +12,16 @@ const feature = loadFeature(
 );
 
 defineFeature(feature, (test) => {
-  // let databaseFixture: DatabaseFixture;
+  let databaseFixture: DatabaseFixture;
 
   beforeAll(async () => {
-    // databaseFixture = new DatabaseFixture();
+    databaseFixture = new DatabaseFixture();
   });
 
   afterAll(async () => {});
 
   afterEach(async () => {
-    // await databaseFixture.resetDatabase();
+    await databaseFixture.resetDatabase();
   });
 
   // Need to put timeout here.
@@ -32,14 +33,24 @@ defineFeature(feature, (test) => {
     then,
     and,
   }) => {
-    given("I am a new user", async () => {});
+    let user: CreateUserParams;
+    given("I am a new user", async () => {
+      user = new CreateUserBuilder().withAllRandomDetails().build();
+      await pages.registration.open();
+    });
 
     when(
       "I register with valid account details accepting marketing emails",
-      async () => {},
+      async () => {
+        await pages.registration.enterUserDetails(user);
+        await pages.registration.acceptMarketingEmail();
+      },
     );
 
-    then("I should be granted access to my account", async () => {});
+    then("I should be granted access to my account", async () => {
+      const loggedInUsername = await layout.header.getLoggedInUsername();
+      expect(loggedInUsername).toContain(user.username);
+    });
 
     and("I should expect to receive marketing emails", () => {
       // @See backend
