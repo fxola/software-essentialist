@@ -1,4 +1,9 @@
-import { Component, PageElements } from "../page-elements";
+import { newSelectors } from "../../../src/shared/selectors";
+import {
+  Component,
+  PageElementConfigValue,
+  PageElements,
+} from "../page-elements";
 import { PuppeteerProtocolDriver } from "../protocol-driver";
 
 export class HeaderComponent extends Component {
@@ -10,9 +15,7 @@ export class HeaderComponent extends Component {
 
   private createHeaderElements() {
     return new PageElements(
-      {
-        header: { selector: ".header.username", type: "div" },
-      },
+      { header: newSelectors.headerComponent.header as PageElementConfigValue },
       this.driver,
     );
   }

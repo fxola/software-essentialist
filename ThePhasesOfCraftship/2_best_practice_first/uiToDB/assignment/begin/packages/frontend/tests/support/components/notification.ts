@@ -1,4 +1,9 @@
-import { Component, PageElements } from "../page-elements";
+import { newSelectors } from "../../../src/shared/selectors";
+import {
+  Component,
+  PageElementConfigValue,
+  PageElements,
+} from "../page-elements";
 import { PuppeteerProtocolDriver } from "../protocol-driver";
 
 export class NotificationsComponent extends Component {
@@ -12,7 +17,8 @@ export class NotificationsComponent extends Component {
   private createNotificationElements() {
     return new PageElements(
       {
-        errorMessage: { selector: "#failure-toast", type: "div" },
+        errorMessage: newSelectors.notifications
+          .errorMessage as PageElementConfigValue,
       },
       this.driver,
     );

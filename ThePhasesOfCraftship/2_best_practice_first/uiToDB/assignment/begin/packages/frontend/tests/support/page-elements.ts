@@ -7,11 +7,11 @@ export abstract class Component {
   constructor(protected driver: PuppeteerProtocolDriver) {}
 }
 
-type PageElementConfigValue =
+export type PageElementConfigValue =
   | { selector: string; type: ElementType }
   | Component;
 
-type PageElementsConfig = {
+export type PageElementsConfig = {
   [key: string]: PageElementConfigValue;
 };
 
