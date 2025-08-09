@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { CreateUserParams } from '@dddforum/shared/src/api/users'
-import { appSelectors, toClass } from "../shared/selectors";
+import { CreateUserParams } from "@dddforum/shared/src/api/users";
+import { newSelectors, toClass } from "../shared/selectors";
 
 interface RegistrationFormProps {
-  onSubmit: (formDetails: CreateUserParams, allowMarketingEmails: boolean) => void;
+  onSubmit: (
+    formDetails: CreateUserParams,
+    allowMarketingEmails: boolean,
+  ) => void;
 }
 
 export const RegistrationForm = (props: RegistrationFormProps) => {
-
-  const selectors = appSelectors.registration.registrationForm;
+  const selectors = newSelectors.registrationPage;
 
   const [email, setEmail] = useState("email");
   const [username, setUsername] = useState("username");
@@ -22,12 +24,15 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
   };
 
   const handleSubmit = () => {
-    props.onSubmit({
-      email,
-      username,
-      firstName,
-      lastName,
-    }, allowMarketingEmails);
+    props.onSubmit(
+      {
+        email,
+        username,
+        firstName,
+        lastName,
+      },
+      allowMarketingEmails,
+    );
   };
 
   return (
@@ -45,30 +50,30 @@ export const RegistrationForm = (props: RegistrationFormProps) => {
         onChange={(e) => setUsername(e.target.value)}
       ></input>
       <input
-        className={toClass(selectors.firstname.selector)}
+        className={toClass(selectors.firstName.selector)}
         type="text"
         placeholder="first name"
         onChange={(e) => setFirstName(e.target.value)}
       ></input>
       <input
-        className={toClass(selectors.lastname.selector)}
+        className={toClass(selectors.lastName.selector)}
         type="text"
         placeholder="last name"
         onChange={(e) => setLastName(e.target.value)}
       ></input>
-      <br/>
-      <br/>
+      <br />
+      <br />
       <div>
         <button
           onClick={() => handleSubmit()}
-          className={toClass(selectors.submit.selector)}
+          className={toClass(selectors.submitButton.selector)}
           type="submit"
         >
           Submit
         </button>
         <label>
           <input
-            className={toClass(selectors.marketingCheckbox.selector)}
+            className={toClass(selectors.marketingCheckBox.selector)}
             type="checkbox"
             checked={allowMarketingEmails}
             onChange={() => toggleAllowMarketingEmails()}

@@ -32,3 +32,22 @@ export function toId(input: string): string {
   // Remove the leading hash symbol
   return input.slice(1);
 }
+
+export const newSelectors = {
+  registrationPage: {
+    email: { selector: ".registration.email", type: "input" },
+    firstName: { selector: ".registration.first-name", type: "input" },
+    lastName: { selector: ".registration.last-name", type: "input" },
+    username: { selector: ".registration.username", type: "input" },
+    marketingCheckBox: {
+      selector: ".registration.marketing-emails",
+      type: "checkbox",
+    },
+    submitButton: {
+      selector: ".registration.submit-button",
+      type: "button",
+    },
+  },
+  headerComponent: { header: { selector: ".header.username", type: "div" } },
+  notifications: { errorMessage: { selector: "#failure-toast", type: "div" } },
+};

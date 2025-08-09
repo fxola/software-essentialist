@@ -1,24 +1,23 @@
-
 import { PuppeteerPageDriver } from "../driver";
 
 type ElementType = "input" | "button" | "div" | "checkbox";
 
-export type PageElementsSelector = { selector: string; type: ElementType } | Component;
+export type PageElementsSelector =
+  | { selector: string; type: ElementType }
+  | Component;
 
 export interface PageElementsConfig {
   [key: string]: PageElementsSelector;
 }
 
 export abstract class Component {
-  constructor (protected driver: PuppeteerPageDriver) {
-   
-  }
+  constructor(protected driver: PuppeteerPageDriver) {}
 }
 
 export class PageElements {
   constructor(
     private config: PageElementsConfig,
-    private driver: PuppeteerPageDriver
+    private driver: PuppeteerPageDriver,
   ) {}
 
   async get(nameKey: string, timeout?: number) {
@@ -26,11 +25,13 @@ export class PageElements {
     let element;
 
     if (component instanceof Component) {
-      return component
+      return component;
     }
 
     try {
-      element = await this.driver.page.waitForSelector(component.selector, { timeout });
+      element = await this.driver.page.waitForSelector(component.selector, {
+        timeout,
+      });
     } catch (err) {
       console.log("Element not found");
       throw new Error(`Element ${nameKey} not found!`);
@@ -38,7 +39,7 @@ export class PageElements {
 
     if (!element) {
       throw new Error(
-        `Could not load component's element ${nameKey}: maybe it's not on the page yet.`
+        `Could not load component's element ${nameKey}: maybe it's not on the page yet.`,
       );
     }
 
