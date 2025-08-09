@@ -18,10 +18,11 @@ defineFeature(feature, (test) => {
   let app: App;
   let pages: App["pages"];
   let layout: App["layout"];
+  let driver: PuppeteerProtocolDriver;
 
   beforeAll(async () => {
     databaseFixture = new DatabaseFixture();
-    const driver = await PuppeteerProtocolDriver.create({
+    driver = await PuppeteerProtocolDriver.create({
       headless: false,
       slowMo: 50,
     });
@@ -31,7 +32,9 @@ defineFeature(feature, (test) => {
     layout = app.layout;
   });
 
-  afterAll(async () => {});
+  afterAll(async () => {
+    await driver.close();
+  });
 
   afterEach(async () => {
     await databaseFixture.resetDatabase();

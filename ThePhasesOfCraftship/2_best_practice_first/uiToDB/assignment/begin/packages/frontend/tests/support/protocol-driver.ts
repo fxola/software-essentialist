@@ -11,4 +11,8 @@ export class PuppeteerProtocolDriver {
     const page = await browserInstance.newPage();
     return new PuppeteerProtocolDriver(browserInstance, page);
   }
+
+  public async close() {
+    await this.browser.close();
+  }
 }
