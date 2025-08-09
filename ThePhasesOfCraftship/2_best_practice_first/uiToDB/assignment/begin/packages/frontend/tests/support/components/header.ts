@@ -18,7 +18,11 @@ export class HeaderComponent extends Component {
   }
 
   async getLoggedInUsername() {
-    const header = await this.elements.get("header");
-    return header?.evaluate((e) => e.textContent);
+    try {
+      const header = await this.elements.get("header");
+      return header?.evaluate((e) => e.textContent);
+    } catch (e) {
+      return undefined;
+    }
   }
 }

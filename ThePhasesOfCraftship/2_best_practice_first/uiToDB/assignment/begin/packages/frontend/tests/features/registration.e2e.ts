@@ -80,17 +80,35 @@ defineFeature(feature, (test) => {
     then,
     and,
   }) => {
-    given("I am a new user", async () => {});
+    let invalidUser: CreateUserParams;
+    given("I am a new user", async () => {
+      invalidUser = new CreateUserBuilder()
+        .withFirstName("Jon")
+        .withLastName("Bellion")
+        .withUsername("JB")
+        .build();
 
-    when("I register with invalid account details", async () => {});
+      await pages.registration.open();
+    });
+
+    when("I register with invalid account details", async () => {
+      invalidUser.email = "providinganinvalidemail";
+
+      await pages.registration.enterUserDetails(invalidUser);
+      await pages.registration.submitRegistrationForm();
+    });
 
     then(
       "I should see an error notifying me that my input is invalid",
-      async () => {},
+      async () => {
+        const errorText = await app.notifications.getErrorMessage();
+        expect(errorText).toContain("Email invalid");
+      },
     );
 
-    and("I should not have been sent access to account details", () => {
-      // @See backend
+    and("I should not have been sent access to account details", async () => {
+      const loggedInUsername = await layout.header.getLoggedInUsername();
+      expect(loggedInUsername).toBeUndefined();
     });
   });
 
