@@ -1,9 +1,10 @@
-class RegistrationPage {}
-class MainPage {}
-class HeaderComponent {}
-class NotificationsComponent {}
+import { PuppeteerProtocolDriver } from "../protocol-driver";
+import { RegistrationPage } from "./registration";
+import { MainPage } from "./main";
+import { HeaderComponent } from "../components/header";
+import { NotificationsComponent } from "../components/notification";
 
-interface App {
+export interface App {
   pages: {
     main: MainPage;
     registration: RegistrationPage;
@@ -14,15 +15,18 @@ interface App {
   notifications: NotificationsComponent;
 }
 
-export const createAppObject = (): App => {
+export const createAppObject = (
+  driver: PuppeteerProtocolDriver,
+  baseUrl: string,
+): App => {
   return {
     pages: {
-      main: new MainPage(),
-      registration: new RegistrationPage(),
+      main: new MainPage(driver),
+      registration: new RegistrationPage(driver, baseUrl),
     },
     layout: {
-      header: new HeaderComponent(),
+      header: new HeaderComponent(driver),
     },
-    notifications: new NotificationsComponent(),
+    notifications: new NotificationsComponent(driver),
   };
 };

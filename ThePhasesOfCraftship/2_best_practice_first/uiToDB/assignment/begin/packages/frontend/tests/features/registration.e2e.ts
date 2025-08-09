@@ -2,9 +2,11 @@ import { defineFeature, loadFeature } from "jest-cucumber";
 import { sharedTestRoot } from "@dddforum/shared/src/paths";
 import { CreateUserParams } from "@dddforum/shared/src/api/users";
 import { CreateUserBuilder } from "@dddforum/shared/tests/support/builders/createUserBuilder";
+import { App, createAppObject } from "../support/pages/app";
 
 import * as path from "path";
 import { DatabaseFixture } from "@dddforum/shared/tests/support/fixtures/databaseFixture";
+import { PuppeteerProtocolDriver } from "../support/protocol-driver";
 
 const feature = loadFeature(
   path.join(sharedTestRoot, "features/registration.feature"),
@@ -13,9 +15,20 @@ const feature = loadFeature(
 
 defineFeature(feature, (test) => {
   let databaseFixture: DatabaseFixture;
+  let app: App;
+  let pages: App["pages"];
+  let layout: App["layout"];
 
   beforeAll(async () => {
     databaseFixture = new DatabaseFixture();
+    const driver = await PuppeteerProtocolDriver.create({
+      headless: false,
+      slowMo: 50,
+    });
+
+    app = createAppObject(driver, "http://localhost:5173");
+    pages = app.pages;
+    layout = app.layout;
   });
 
   afterAll(async () => {});
@@ -44,6 +57,7 @@ defineFeature(feature, (test) => {
       async () => {
         await pages.registration.enterUserDetails(user);
         await pages.registration.acceptMarketingEmail();
+        await pages.registration.submitRegistrationForm();
       },
     );
 
