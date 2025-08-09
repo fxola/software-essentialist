@@ -113,20 +113,47 @@ defineFeature(feature, (test) => {
   });
 
   test("Account already created with email", ({ given, when, then, and }) => {
+    let users: CreateUserParams[] = [];
     given(
       "a set of users already created accounts",
-      async (table: CreateUserParams[]) => {},
+      async (table: CreateUserParams[]) => {
+        table.forEach((user) => {
+          const newUser = new CreateUserBuilder()
+            .withEmail(user.email)
+            .withFirstName(user.firstName)
+            .withLastName(user.lastName)
+            .withUsername(user.firstName + user.lastName)
+            .build();
+
+          users.push(newUser);
+        });
+
+        await databaseFixture.setupWithExistingUsers(users);
+      },
     );
 
-    when("new users attempt to register with those emails", async () => {});
+    when("new users attempt to register with those emails", async () => {
+      await pages.registration.open();
+
+      const registeredUser = users[0];
+      await pages.registration.enterUserDetails(registeredUser);
+      await pages.registration.submitRegistrationForm();
+    });
 
     then(
       "they should see an error notifying them that the account already exists",
-      async () => {},
+      async () => {
+        const errorText = await app.notifications.getErrorMessage();
+        expect(errorText).toContain("Email already in use");
+      },
     );
 
-    and("they should not have been sent access to account details", () => {
-      // @See backend
-    });
+    and(
+      "they should not have been sent access to account details",
+      async () => {
+        const loggedInUsername = await layout.header.getLoggedInUsername();
+        expect(loggedInUsername).toBeUndefined();
+      },
+    );
   });
 });
