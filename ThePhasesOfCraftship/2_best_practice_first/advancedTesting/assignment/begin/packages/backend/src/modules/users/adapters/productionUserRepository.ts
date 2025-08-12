@@ -5,6 +5,7 @@ import { generateRandomPassword } from "../../../shared/utils";
 
 export class ProductionUserRepository implements UserRepository {
   constructor(private db: PrismaClient) {}
+
   save = async (
     user: CreateUserParams,
   ): Promise<User & { password: string }> => {
