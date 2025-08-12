@@ -1,4 +1,3 @@
-import { Database } from "@dddforum/backend/src/shared/database";
 import { CreateUserCommand } from "./usersCommand";
 import {
   EmailAlreadyInUseException,
@@ -7,29 +6,30 @@ import {
 } from "./usersExceptions";
 import { User } from "@dddforum/shared/src/api/users";
 import { TransactionalEmailAPI } from "../notifications/transactionalEmailAPI";
+import { UserRepository } from "./ports/userRepository";
 
 export class UsersService {
   constructor(
-    private db: Database,
+    private repository: UserRepository,
     private emailAPI: TransactionalEmailAPI,
   ) {}
 
   async createUser(userData: CreateUserCommand): Promise<User> {
-    const existingUserByEmail = await this.db.users.findUserByEmail(
+    const existingUserByEmail = await this.repository.findUserByEmail(
       userData.email,
     );
     if (existingUserByEmail) {
       throw new EmailAlreadyInUseException(userData.email);
     }
 
-    const existingUserByUsername = await this.db.users.findUserByUsername(
+    const existingUserByUsername = await this.repository.findUserByUsername(
       userData.username,
     );
     if (existingUserByUsername) {
       throw new UsernameAlreadyTakenException(userData.username);
     }
 
-    const { password, ...user } = await this.db.users.save(userData);
+    const { password, ...user } = await this.repository.save(userData);
 
     await this.emailAPI.sendMail({
       to: user.email,
@@ -43,7 +43,7 @@ export class UsersService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.db.users.findUserByEmail(email);
+    const user = await this.repository.findUserByEmail(email);
     if (!user) {
       throw new UserNotFoundException(email);
     }
