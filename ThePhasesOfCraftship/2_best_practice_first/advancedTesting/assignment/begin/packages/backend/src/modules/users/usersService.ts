@@ -5,13 +5,13 @@ import {
   UsernameAlreadyTakenException,
 } from "./usersExceptions";
 import { User } from "@dddforum/shared/src/api/users";
-import { TransactionalEmailAPI } from "../notifications/transactionalEmailAPI";
 import { UserRepository } from "./ports/userRepository";
+import { EmailNotificationAPI } from "../notifications/ports/emailNotificationAPI";
 
 export class UsersService {
   constructor(
     private repository: UserRepository,
-    private emailAPI: TransactionalEmailAPI,
+    private emailAPI: EmailNotificationAPI,
   ) {}
 
   async createUser(userData: CreateUserCommand): Promise<User> {

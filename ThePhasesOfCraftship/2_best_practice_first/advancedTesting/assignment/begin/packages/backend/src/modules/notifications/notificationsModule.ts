@@ -1,10 +1,11 @@
-import { TransactionalEmailAPI } from "./transactionalEmailAPI";
+import { MailGunEmailNotificationAPI } from "./adapters/mailGunEmailNotificationAPI";
+import { EmailNotificationAPI } from "./ports/emailNotificationAPI";
 
 export class NotificationsModule {
-  private transactionalEmailAPI: TransactionalEmailAPI;
+  private emailNotificationAPI: EmailNotificationAPI;
 
   private constructor() {
-    this.transactionalEmailAPI = this.createTransactionalEmailAPI();
+    this.emailNotificationAPI = this.createEmailNotificationAPI();
   }
 
   static build() {
@@ -12,10 +13,10 @@ export class NotificationsModule {
   }
 
   public getTransactionalEmailAPI() {
-    return this.transactionalEmailAPI;
+    return this.emailNotificationAPI;
   }
 
-  private createTransactionalEmailAPI() {
-    return new TransactionalEmailAPI();
+  private createEmailNotificationAPI() {
+    return new MailGunEmailNotificationAPI();
   }
 }
