@@ -1,16 +1,17 @@
 import { WebServer } from "../../shared/http/webServer";
-import { ContactListAPI } from "./contactListAPI";
+import { MailGunMarketingAPI } from "./adapters/mailgunMarketingAPI";
 import { MarketingController } from "./marketingController";
 import { marketingErrorHandler } from "./marketingErrors";
 import { MarketingService } from "./marketingService";
+import { MailingListAPI } from "./ports/mailingListAPI";
 
 export class MarketingModule {
   private marketingService: MarketingService;
   private marketingController: MarketingController;
-  private contactListAPI: ContactListAPI;
+  private mailingListAPI: MailingListAPI;
 
   private constructor() {
-    this.contactListAPI = this.buildContactListAPI();
+    this.mailingListAPI = this.buildContactListAPI();
     this.marketingService = this.createMarketingService();
     this.marketingController = this.createMarketingController();
   }
@@ -20,7 +21,7 @@ export class MarketingModule {
   }
 
   private createMarketingService() {
-    return new MarketingService(this.contactListAPI);
+    return new MarketingService(this.mailingListAPI);
   }
 
   private createMarketingController() {
@@ -31,7 +32,7 @@ export class MarketingModule {
   }
 
   private buildContactListAPI() {
-    return new ContactListAPI();
+    return new MailGunMarketingAPI();
   }
 
   public getMarketingController() {

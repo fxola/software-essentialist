@@ -29,7 +29,7 @@ export class UsersService {
       throw new UsernameAlreadyTakenException(userData.username);
     }
 
-    const { password, ...user } = await this.repository.save(userData);
+    const { password, ...user } = await this.repository.save(userData.props);
 
     await this.emailAPI.sendMail({
       to: user.email,

@@ -5,13 +5,13 @@
     "lib": ["es6"],
     "allowJs": true,
     "outDir": "build",
-    "rootDir": "src",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node","jest", "../../node_modules/.prisma/client"],
+    "types": ["node", "jest", "../../node_modules/.prisma/client"],
     "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": ["src/**/*.spec.ts"]
 }

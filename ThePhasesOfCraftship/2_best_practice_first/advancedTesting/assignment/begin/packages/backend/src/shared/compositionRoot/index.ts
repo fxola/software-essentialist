@@ -38,22 +38,23 @@ export class CompositionRoot {
     this.mountRoutes();
   }
 
-  createNotificationsModule () {
+  createNotificationsModule() {
     return NotificationsModule.build();
   }
 
-  createMarketingModule () {
+  createMarketingModule() {
     return MarketingModule.build();
   }
 
-  createUsersModule () {
+  createUsersModule() {
     return UsersModule.build(
       this.dbConnection,
       this.notificationsModule.getTransactionalEmailAPI(),
+      this.config,
     );
   }
 
-  createPostsModule () {
+  createPostsModule() {
     return PostsModule.build(this.dbConnection);
   }
 
@@ -68,6 +69,12 @@ export class CompositionRoot {
 
   getWebServer() {
     return this.webServer;
+  }
+
+  getRepositories() {
+    return {
+      users: this.usersModule.getUsersRepository(),
+    };
   }
 
   private mountRoutes() {

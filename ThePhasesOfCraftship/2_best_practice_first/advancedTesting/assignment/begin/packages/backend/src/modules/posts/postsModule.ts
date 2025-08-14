@@ -1,5 +1,7 @@
 import { Database } from "../../shared/database";
 import { WebServer } from "../../shared/http/webServer";
+import { ProductionPostRepository } from "./adapters/productionPostsRepository";
+import { PostsRepository } from "./ports/postsRepository";
 import { PostsController } from "./postsController";
 import { postsErrorHandler } from "./postsErrors";
 import { PostsService } from "./postsService";
@@ -7,8 +9,10 @@ import { PostsService } from "./postsService";
 export class PostsModule {
   private postsService: PostsService;
   private postsController: PostsController;
+  private postsRepository: PostsRepository;
 
   private constructor(private dbConnection: Database) {
+    this.postsRepository = this.createPostsRepository();
     this.postsService = this.createPostsService();
     this.postsController = this.createPostsController();
   }
@@ -18,7 +22,11 @@ export class PostsModule {
   }
 
   private createPostsService() {
-    return new PostsService(this.dbConnection);
+    return new PostsService(this.postsRepository);
+  }
+
+  private createPostsRepository() {
+    return new ProductionPostRepository(this.dbConnection.getConnection());
   }
 
   private createPostsController() {
