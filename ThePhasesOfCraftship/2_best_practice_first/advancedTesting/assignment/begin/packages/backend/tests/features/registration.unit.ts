@@ -10,7 +10,6 @@ import { CompositionRoot } from "../../src/shared/compositionRoot";
 import { Config } from "../../src/shared/config";
 import { createAPIClient } from "@dddforum/shared/src/api";
 import { AddEmailToListResponse } from "@dddforum/shared/src/api/marketing";
-import { InMemoryUserRepository } from "../../src/modules/users/adapters/inMemoryUserRepository";
 import { UserRepository } from "../../src/modules/users/ports/userRepository";
 
 const feature = loadFeature(
@@ -68,7 +67,7 @@ defineFeature(feature, (test) => {
     });
 
     and("I should expect to receive marketing emails", () => {
-      //laster
+      //todo
     });
   });
 
@@ -78,16 +77,37 @@ defineFeature(feature, (test) => {
     then,
     and,
   }) => {
-    given("I am a new user", () => {});
+    let user: CreateUserParams;
+    let createUserResponse: CreateUserResponse;
+
+    given("I am a new user", async () => {
+      user = new CreateUserBuilder().withAllRandomDetails().build();
+    });
 
     when(
       "I register with valid account details declining marketing emails",
-      () => {},
+      async () => {
+        createUserResponse = await apiClient.users.register(user);
+      },
     );
 
-    then("I should be granted access to my account", () => {});
+    then("I should be granted access to my account", async () => {
+      expect(createUserResponse.success).toBeTruthy();
+      expect(createUserResponse.data.id).toBeTruthy();
+      expect(createUserResponse.data.email).toBe(user.email);
+      expect(createUserResponse.data.firstName).toBe(user.firstName);
+      expect(createUserResponse.data.lastName).toBe(user.lastName);
+      expect(createUserResponse.data.lastName).toBe(user.lastName);
 
-    and("I should not expect to receive marketing emails", () => {});
+      const fetchedUser = await apiClient.users.getUserByEmail(
+        createUserResponse.data.email,
+      );
+      expect(fetchedUser.data.email).toBe(createUserResponse.data.email);
+    });
+
+    and("I should not expect to receive marketing emails", () => {
+      //todo
+    });
   });
 
   test("Invalid or missing registration details", ({
@@ -96,47 +116,103 @@ defineFeature(feature, (test) => {
     then,
     and,
   }) => {
-    given("I am a new user", () => {});
+    let user: CreateUserParams;
+    let createUserResponse: CreateUserResponse;
+    given("I am a new user", () => {
+      user = new CreateUserBuilder().withAllRandomDetails().build();
+    });
 
-    when("I register with invalid account details", () => {});
+    when("I register with invalid account details", async () => {
+      const { firstName, ...invalidUser } = user;
 
-    then(
-      "I should see an error notifying me that my input is invalid",
-      () => {},
-    );
+      createUserResponse = await apiClient.users.register(
+        invalidUser as CreateUserParams,
+      );
+    });
 
-    and("I should not have been sent access to account details", () => {});
+    then("I should see an error notifying me that my input is invalid", () => {
+      expect(createUserResponse.success).toBeFalsy();
+      expect(createUserResponse.error).toBeTruthy();
+      expect(createUserResponse.error.code).toBe("ValidationError");
+    });
+
+    and("I should not have been sent access to account details", () => {
+      //todo
+    });
   });
 
   test("Account already created with email", ({ given, when, then, and }) => {
-    given("a set of users already created accounts", (table) => {});
+    let users: CreateUserParams[] = [];
+    let createUserResponse: CreateUserResponse;
 
-    when("new users attempt to register with those emails", () => {});
+    given("a set of users already created accounts", async (table) => {
+      for (let user of table) {
+        users.push(user);
+        await apiClient.users.register(user);
+      }
+    });
+
+    when("new users attempt to register with those emails", async () => {
+      const newUser = new CreateUserBuilder()
+        .withAllRandomDetails()
+        .withEmail(users[0].email)
+        .build();
+
+      createUserResponse = await apiClient.users.register(newUser);
+    });
 
     then(
       "they should see an error notifying them that the account already exists",
-      () => {},
+      () => {
+        expect(createUserResponse.success).toBeFalsy();
+        expect(createUserResponse.error.code).toBe("EmailAlreadyInUse");
+      },
     );
 
-    and("they should not have been sent access to account details", () => {});
+    and("they should not have been sent access to account details", () => {
+      //todo
+    });
   });
 
   test("Username already taken", ({ given, when, then, and }) => {
+    let users: CreateUserParams[] = [];
+    let createUserResponse: CreateUserResponse;
     given(
       "a set of users have already created their accounts with valid details",
-      (table) => {},
+      async (table) => {
+        for (let user of table) {
+          const idx = table.findIndex(
+            (u: CreateUserParams) => u.email === user.email,
+          );
+          const userWithUsername = { ...user, username: `username-${idx}` };
+          users.push(userWithUsername);
+          await apiClient.users.register(userWithUsername);
+        }
+      },
     );
 
     when(
       "new users attempt to register with already taken usernames",
-      (table) => {},
+      async (table) => {
+        const newUser = new CreateUserBuilder()
+          .withAllRandomDetails()
+          .withUsername(users[0].username)
+          .build();
+
+        createUserResponse = await apiClient.users.register(newUser);
+      },
     );
 
     then(
       "they see an error notifying them that the username has already been taken",
-      () => {},
+      () => {
+        expect(createUserResponse.success).toBeFalsy();
+        expect(createUserResponse.error.code).toBe("UsernameAlreadyTaken");
+      },
     );
 
-    and("they should not have been sent access to account details", () => {});
+    and("they should not have been sent access to account details", () => {
+      //todo
+    });
   });
 });

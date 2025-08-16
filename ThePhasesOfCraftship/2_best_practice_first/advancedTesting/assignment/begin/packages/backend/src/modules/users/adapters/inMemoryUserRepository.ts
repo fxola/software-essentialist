@@ -31,4 +31,8 @@ export class InMemoryUserRepository implements UserRepository {
     }
     return Promise.resolve(user);
   }
+
+  public reset() {
+    this.users = [];
+  }
 }
