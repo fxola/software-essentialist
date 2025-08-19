@@ -12,6 +12,7 @@ import { createAPIClient } from "@dddforum/shared/src/api";
 import { AddEmailToListResponse } from "@dddforum/shared/src/api/marketing";
 import { WebServer } from "../../src/shared/http";
 import { InMemoryUserRepositorySpy } from "../../src/modules/users/adapters/inMemoryUserRepositorySpy";
+import { MailgunMarketingAPISpy } from "../../src/modules/marketing/adapters/mailgunMarketingAPISpy";
 
 const feature = loadFeature(
   path.join(sharedTestRoot, "features/registration.feature"),
@@ -25,6 +26,7 @@ defineFeature(feature, (test) => {
 
   let addEmailToListResponse: AddEmailToListResponse;
   let fakeUserRepo: InMemoryUserRepositorySpy;
+  let fakeMarketingAPI: MailgunMarketingAPISpy;
 
   beforeAll(async () => {
     composition = CompositionRoot.createCompositionRoot(config);
@@ -33,10 +35,14 @@ defineFeature(feature, (test) => {
 
     fakeUserRepo = composition.getRepositories()
       .users as InMemoryUserRepositorySpy;
+
+    fakeMarketingAPI = composition.getServices()
+      .marketing as MailgunMarketingAPISpy;
   });
 
   afterEach(() => {
     fakeUserRepo.reset();
+    fakeMarketingAPI.reset();
   });
 
   afterAll(async () => {
@@ -79,10 +85,18 @@ defineFeature(feature, (test) => {
       );
       expect(fetchedUser.data.email).toBe(createUserResponse.data.email);
       expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(1);
+
+      expect(addEmailToListResponse.success).toBe(true);
     });
 
     and("I should expect to receive marketing emails", () => {
-      //todo
+      expect(fakeMarketingAPI.getNumberOfTimesCalled("addEmailToList")).toBe(1);
+      expect(
+        fakeMarketingAPI.methodToHaveBeenCalledWith("addEmailToList", [
+          user.email,
+        ]),
+      ).toBe(true);
+      expect(fakeMarketingAPI.mailingList).toContain(user.email);
     });
   });
 
@@ -122,7 +136,8 @@ defineFeature(feature, (test) => {
     });
 
     and("I should not expect to receive marketing emails", () => {
-      //todo
+      expect(fakeMarketingAPI.getNumberOfTimesCalled("addEmailToList")).toBe(0);
+      expect(fakeMarketingAPI.mailingList.length).toBe(0);
     });
   });
 

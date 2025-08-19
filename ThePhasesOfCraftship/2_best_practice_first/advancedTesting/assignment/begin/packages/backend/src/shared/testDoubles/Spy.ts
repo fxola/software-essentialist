@@ -37,6 +37,14 @@ export class Spy<T> {
     return calls.length;
   }
 
+  methodToHaveBeenCalledWith<MethodName extends ValidMethodNames<T>>(
+    methodName: MethodName,
+    methodArgs: any,
+  ) {
+    const args = this.calls.find((c) => (c.methodName = methodName))?.args;
+    return JSON.stringify(args) === JSON.stringify(methodArgs);
+  }
+
   resetCalls() {
     this.calls = [];
   }

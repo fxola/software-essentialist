@@ -43,7 +43,7 @@ export class CompositionRoot {
   }
 
   createMarketingModule() {
-    return MarketingModule.build();
+    return MarketingModule.build(this.config);
   }
 
   createUsersModule() {
@@ -77,6 +77,11 @@ export class CompositionRoot {
     };
   }
 
+  getServices() {
+    return {
+      marketing: this.marketingModule.getMarketingAPI(),
+    };
+  }
   private mountRoutes() {
     this.marketingModule.mountRouter(this.webServer);
     this.usersModule.mountRouter(this.webServer);
