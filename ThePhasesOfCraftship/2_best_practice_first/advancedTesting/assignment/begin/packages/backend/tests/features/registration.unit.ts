@@ -1,16 +1,17 @@
+import path from "path";
+import { defineFeature, loadFeature } from "jest-cucumber";
 import {
   CreateUserParams,
   CreateUserResponse,
 } from "@dddforum/shared/src/api/users";
 import { sharedTestRoot } from "@dddforum/shared/src/paths";
 import { CreateUserBuilder } from "@dddforum/shared/tests/support/builders/createUserBuilder";
-import { defineFeature, loadFeature } from "jest-cucumber";
-import path from "path";
 import { CompositionRoot } from "../../src/shared/compositionRoot";
 import { Config } from "../../src/shared/config";
 import { createAPIClient } from "@dddforum/shared/src/api";
 import { AddEmailToListResponse } from "@dddforum/shared/src/api/marketing";
-import { UserRepository } from "../../src/modules/users/ports/userRepository";
+import { WebServer } from "../../src/shared/http";
+import { InMemoryUserRepositorySpy } from "../../src/modules/users/adapters/inMemoryUserRepositorySpy";
 
 const feature = loadFeature(
   path.join(sharedTestRoot, "features/registration.feature"),
@@ -20,13 +21,26 @@ defineFeature(feature, (test) => {
   const apiClient = createAPIClient("http://localhost:3000");
   let composition: CompositionRoot;
   const config = new Config("test:unit");
+  let server: WebServer;
 
   let addEmailToListResponse: AddEmailToListResponse;
-  let fakeUserRepo: UserRepository;
+  let fakeUserRepo: InMemoryUserRepositorySpy;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     composition = CompositionRoot.createCompositionRoot(config);
-    fakeUserRepo = composition.getRepositories().users;
+    server = composition.getWebServer();
+    await server.start();
+
+    fakeUserRepo = composition.getRepositories()
+      .users as InMemoryUserRepositorySpy;
+  });
+
+  afterEach(() => {
+    fakeUserRepo.reset();
+  });
+
+  afterAll(async () => {
+    await server.stop();
   });
 
   test("Successful registration with marketing emails accepted", ({
@@ -64,6 +78,7 @@ defineFeature(feature, (test) => {
         createUserResponse.data.email,
       );
       expect(fetchedUser.data.email).toBe(createUserResponse.data.email);
+      expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(1);
     });
 
     and("I should expect to receive marketing emails", () => {
@@ -103,6 +118,7 @@ defineFeature(feature, (test) => {
         createUserResponse.data.email,
       );
       expect(fetchedUser.data.email).toBe(createUserResponse.data.email);
+      expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(1);
     });
 
     and("I should not expect to receive marketing emails", () => {
@@ -134,6 +150,7 @@ defineFeature(feature, (test) => {
       expect(createUserResponse.success).toBeFalsy();
       expect(createUserResponse.error).toBeTruthy();
       expect(createUserResponse.error.code).toBe("ValidationError");
+      expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(0);
     });
 
     and("I should not have been sent access to account details", () => {
@@ -147,9 +164,12 @@ defineFeature(feature, (test) => {
 
     given("a set of users already created accounts", async (table) => {
       for (let user of table) {
-        users.push(user);
+        user.username = user.firstName + user.lastName;
         await apiClient.users.register(user);
+        users.push(user);
       }
+
+      fakeUserRepo.resetCalls();
     });
 
     when("new users attempt to register with those emails", async () => {
@@ -166,6 +186,7 @@ defineFeature(feature, (test) => {
       () => {
         expect(createUserResponse.success).toBeFalsy();
         expect(createUserResponse.error.code).toBe("EmailAlreadyInUse");
+        expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(0);
       },
     );
 
@@ -175,39 +196,36 @@ defineFeature(feature, (test) => {
   });
 
   test("Username already taken", ({ given, when, then, and }) => {
-    let users: CreateUserParams[] = [];
-    let createUserResponse: CreateUserResponse;
+    let createUserResponses: CreateUserResponse[] = [];
     given(
       "a set of users have already created their accounts with valid details",
       async (table) => {
         for (let user of table) {
-          const idx = table.findIndex(
-            (u: CreateUserParams) => u.email === user.email,
-          );
-          const userWithUsername = { ...user, username: `username-${idx}` };
-          users.push(userWithUsername);
-          await apiClient.users.register(userWithUsername);
+          await apiClient.users.register(user);
         }
+
+        fakeUserRepo.resetCalls();
       },
     );
 
     when(
       "new users attempt to register with already taken usernames",
       async (table) => {
-        const newUser = new CreateUserBuilder()
-          .withAllRandomDetails()
-          .withUsername(users[0].username)
-          .build();
-
-        createUserResponse = await apiClient.users.register(newUser);
+        for (let user of table) {
+          const response = await apiClient.users.register(user);
+          createUserResponses.push(response);
+        }
       },
     );
 
     then(
       "they see an error notifying them that the username has already been taken",
       () => {
-        expect(createUserResponse.success).toBeFalsy();
-        expect(createUserResponse.error.code).toBe("UsernameAlreadyTaken");
+        for (let createUserResponse of createUserResponses) {
+          expect(createUserResponse.success).toBeFalsy();
+          expect(createUserResponse.error.code).toBe("UsernameAlreadyTaken");
+          expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(0);
+        }
       },
     );
 

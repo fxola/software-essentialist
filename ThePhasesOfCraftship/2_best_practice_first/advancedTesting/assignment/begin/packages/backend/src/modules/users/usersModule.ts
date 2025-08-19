@@ -7,7 +7,7 @@ import { ProductionUserRepository } from "./adapters/productionUserRepository";
 import { UserRepository } from "./ports/userRepository";
 import { EmailNotificationAPI } from "../notifications/ports/emailNotificationAPI";
 import { Config } from "../../shared/config";
-import { InMemoryUserRepository } from "./adapters/inMemoryUserRepository";
+import { InMemoryUserRepositorySpy } from "./adapters/inMemoryUserRepositorySpy";
 
 export class UsersModule {
   private usersService: UsersService;
@@ -46,7 +46,7 @@ export class UsersModule {
     if (this.userRepository) return this.userRepository;
 
     if (this.shouldBuildFakeRepository()) {
-      return new InMemoryUserRepository();
+      return new InMemoryUserRepositorySpy();
     }
     return new ProductionUserRepository(this.dbConnection.getConnection());
   }
