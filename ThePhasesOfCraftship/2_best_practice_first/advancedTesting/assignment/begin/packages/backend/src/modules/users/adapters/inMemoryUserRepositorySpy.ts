@@ -38,6 +38,10 @@ export class InMemoryUserRepositorySpy
     return Promise.resolve(user);
   }
 
+  getAllUsers(): Promise<User[]> {
+    return Promise.resolve(this.users);
+  }
+
   public reset() {
     this.users = [];
     this.calls = [];

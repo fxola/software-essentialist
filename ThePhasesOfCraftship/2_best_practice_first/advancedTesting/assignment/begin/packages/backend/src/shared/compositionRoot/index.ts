@@ -39,7 +39,7 @@ export class CompositionRoot {
   }
 
   createNotificationsModule() {
-    return NotificationsModule.build();
+    return NotificationsModule.build(this.config);
   }
 
   createMarketingModule() {
@@ -49,7 +49,7 @@ export class CompositionRoot {
   createUsersModule() {
     return UsersModule.build(
       this.dbConnection,
-      this.notificationsModule.getTransactionalEmailAPI(),
+      this.notificationsModule.getEmailNotificationAPI(),
       this.config,
     );
   }
@@ -80,6 +80,9 @@ export class CompositionRoot {
   getServices() {
     return {
       marketing: this.marketingModule.getMarketingAPI(),
+      notifications: {
+        email: this.notificationsModule.getEmailNotificationAPI(),
+      },
     };
   }
   private mountRoutes() {

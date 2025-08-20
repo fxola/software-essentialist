@@ -32,7 +32,11 @@ export class ProductionUserRepository implements UserRepository {
     return this.db.user.findFirst({ where: { email } });
   }
 
-  findUserByUsername(username: string): Promise<User | null> {
+  async findUserByUsername(username: string): Promise<User | null> {
     return this.db.user.findFirst({ where: { username } });
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return this.db.user.findMany();
   }
 }

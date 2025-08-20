@@ -28,8 +28,8 @@ export class MarketingModule {
 
   private shouldBuildFakeMarketingAPI() {
     const isDev = this.config.getEnvironment() === "development";
-    const isTest = this.config.getScript() === "test:unit";
-    return isDev || isTest;
+    const isUnitTest = this.config.getScript() === "test:unit";
+    return isDev || isUnitTest;
   }
 
   private createMarketingController() {

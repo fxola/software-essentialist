@@ -13,6 +13,7 @@ import { AddEmailToListResponse } from "@dddforum/shared/src/api/marketing";
 import { WebServer } from "../../src/shared/http";
 import { InMemoryUserRepositorySpy } from "../../src/modules/users/adapters/inMemoryUserRepositorySpy";
 import { MailgunMarketingAPISpy } from "../../src/modules/marketing/adapters/mailgunMarketingAPISpy";
+import { MailGunEmailNotificationAPISPy } from "../../src/modules/notifications/adapters/mailgunEmailNotificationAPISpy";
 
 const feature = loadFeature(
   path.join(sharedTestRoot, "features/registration.feature"),
@@ -25,24 +26,30 @@ defineFeature(feature, (test) => {
   let server: WebServer;
 
   let addEmailToListResponse: AddEmailToListResponse;
-  let fakeUserRepo: InMemoryUserRepositorySpy;
-  let fakeMarketingAPI: MailgunMarketingAPISpy;
+  let userRepoSpy: InMemoryUserRepositorySpy;
+  let marketingAPISpy: MailgunMarketingAPISpy;
+  let emailNotificationSpy: MailGunEmailNotificationAPISPy;
 
   beforeAll(async () => {
     composition = CompositionRoot.createCompositionRoot(config);
     server = composition.getWebServer();
+
     await server.start();
 
-    fakeUserRepo = composition.getRepositories()
+    userRepoSpy = composition.getRepositories()
       .users as InMemoryUserRepositorySpy;
 
-    fakeMarketingAPI = composition.getServices()
+    marketingAPISpy = composition.getServices()
       .marketing as MailgunMarketingAPISpy;
+
+    emailNotificationSpy = composition.getServices().notifications
+      .email as MailGunEmailNotificationAPISPy;
   });
 
   afterEach(() => {
-    fakeUserRepo.reset();
-    fakeMarketingAPI.reset();
+    userRepoSpy.reset();
+    marketingAPISpy.reset();
+    emailNotificationSpy.reset();
   });
 
   afterAll(async () => {
@@ -84,19 +91,20 @@ defineFeature(feature, (test) => {
         createUserResponse.data.email,
       );
       expect(fetchedUser.data.email).toBe(createUserResponse.data.email);
-      expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(1);
+      expect(userRepoSpy.getNumberOfTimesCalled("save")).toBe(1);
 
+      expect(emailNotificationSpy.getNumberOfTimesCalled("sendMail")).toBe(1);
       expect(addEmailToListResponse.success).toBe(true);
     });
 
     and("I should expect to receive marketing emails", () => {
-      expect(fakeMarketingAPI.getNumberOfTimesCalled("addEmailToList")).toBe(1);
+      expect(marketingAPISpy.getNumberOfTimesCalled("addEmailToList")).toBe(1);
       expect(
-        fakeMarketingAPI.methodToHaveBeenCalledWith("addEmailToList", [
+        marketingAPISpy.methodToHaveBeenCalledWith("addEmailToList", [
           user.email,
         ]),
       ).toBe(true);
-      expect(fakeMarketingAPI.mailingList).toContain(user.email);
+      expect(marketingAPISpy.mailingList).toContain(user.email);
     });
   });
 
@@ -132,12 +140,14 @@ defineFeature(feature, (test) => {
         createUserResponse.data.email,
       );
       expect(fetchedUser.data.email).toBe(createUserResponse.data.email);
-      expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(1);
+      expect(userRepoSpy.getNumberOfTimesCalled("save")).toBe(1);
+
+      expect(emailNotificationSpy.getNumberOfTimesCalled("sendMail")).toBe(1);
     });
 
     and("I should not expect to receive marketing emails", () => {
-      expect(fakeMarketingAPI.getNumberOfTimesCalled("addEmailToList")).toBe(0);
-      expect(fakeMarketingAPI.mailingList.length).toBe(0);
+      expect(marketingAPISpy.getNumberOfTimesCalled("addEmailToList")).toBe(0);
+      expect(marketingAPISpy.mailingList.length).toBe(0);
     });
   });
 
@@ -165,11 +175,11 @@ defineFeature(feature, (test) => {
       expect(createUserResponse.success).toBeFalsy();
       expect(createUserResponse.error).toBeTruthy();
       expect(createUserResponse.error.code).toBe("ValidationError");
-      expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(0);
+      expect(userRepoSpy.getNumberOfTimesCalled("save")).toBe(0);
     });
 
     and("I should not have been sent access to account details", () => {
-      //todo
+      expect(emailNotificationSpy.getNumberOfTimesCalled("sendMail")).toBe(0);
     });
   });
 
@@ -184,7 +194,8 @@ defineFeature(feature, (test) => {
         users.push(user);
       }
 
-      fakeUserRepo.resetCalls();
+      userRepoSpy.resetCalls();
+      emailNotificationSpy.resetCalls();
     });
 
     when("new users attempt to register with those emails", async () => {
@@ -201,12 +212,12 @@ defineFeature(feature, (test) => {
       () => {
         expect(createUserResponse.success).toBeFalsy();
         expect(createUserResponse.error.code).toBe("EmailAlreadyInUse");
-        expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(0);
+        expect(userRepoSpy.getNumberOfTimesCalled("save")).toBe(0);
       },
     );
 
     and("they should not have been sent access to account details", () => {
-      //todo
+      expect(emailNotificationSpy.getNumberOfTimesCalled("sendMail")).toBe(0);
     });
   });
 
@@ -219,7 +230,8 @@ defineFeature(feature, (test) => {
           await apiClient.users.register(user);
         }
 
-        fakeUserRepo.resetCalls();
+        userRepoSpy.resetCalls();
+        emailNotificationSpy.resetCalls();
       },
     );
 
@@ -239,13 +251,13 @@ defineFeature(feature, (test) => {
         for (let createUserResponse of createUserResponses) {
           expect(createUserResponse.success).toBeFalsy();
           expect(createUserResponse.error.code).toBe("UsernameAlreadyTaken");
-          expect(fakeUserRepo.getNumberOfTimesCalled("save")).toBe(0);
+          expect(userRepoSpy.getNumberOfTimesCalled("save")).toBe(0);
         }
       },
     );
 
     and("they should not have been sent access to account details", () => {
-      //todo
+      expect(emailNotificationSpy.getNumberOfTimesCalled("sendMail")).toBe(0);
     });
   });
 });
