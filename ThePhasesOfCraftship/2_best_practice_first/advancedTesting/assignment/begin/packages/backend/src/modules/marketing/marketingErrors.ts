@@ -21,6 +21,18 @@ export function marketingErrorHandler(
     return res.status(400).json(responseBody);
   }
 
+  if (error.type === "InvalidEmailException") {
+    responseBody = {
+      success: false,
+      data: null,
+      error: {
+        message: error.message,
+        code: "ValidationError",
+      },
+    };
+    return res.status(400).json(responseBody);
+  }
+
   responseBody = {
     success: false,
     data: null,
