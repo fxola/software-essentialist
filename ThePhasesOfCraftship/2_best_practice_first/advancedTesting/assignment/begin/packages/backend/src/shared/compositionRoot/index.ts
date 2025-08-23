@@ -1,3 +1,21 @@
+import { MailGunMarketingAPI } from "../../modules/marketing/adapters/mailgunMarketingAPI";
+import { MailgunMarketingAPISpy } from "../../modules/marketing/adapters/mailgunMarketingAPISpy";
+import { MarketingController } from "../../modules/marketing/marketingController";
+import { marketingErrorHandler } from "../../modules/marketing/marketingErrors";
+import { MarketingService } from "../../modules/marketing/marketingService";
+import { MailingListAPI } from "../../modules/marketing/ports/mailingListAPI";
+import { ProductionPostRepository } from "../../modules/posts/adapters/productionPostsRepository";
+import { PostsRepository } from "../../modules/posts/ports/postsRepository";
+import { PostsController } from "../../modules/posts/postsController";
+import { postsErrorHandler } from "../../modules/posts/postsErrors";
+import { PostsService } from "../../modules/posts/postsService";
+import { InMemoryUserRepositorySpy } from "../../modules/users/adapters/inMemoryUserRepositorySpy";
+import { ProductionUserRepository } from "../../modules/users/adapters/productionUserRepository";
+import { UserRepository } from "../../modules/users/ports/userRepository";
+import { UsersController } from "../../modules/users/usersController";
+import { userErrorHandler } from "../../modules/users/usersErrors";
+import { UsersService } from "../../modules/users/usersService";
+import { Application } from "../application";
 import { Config } from "../config";
 import { Database } from "../database";
 import { WebServer } from "../http";
@@ -15,6 +33,20 @@ export class CompositionRoot {
   private dbConnection: Database;
   private config: Config;
 
+  private userRepository: UserRepository;
+  private usersService: UsersService;
+  private usersController?: UsersController;
+
+  private postsRepository: PostsRepository;
+  private postsService: PostsService;
+  private postsController?: PostsController;
+
+  private mailingListAPI: MailingListAPI;
+  private marketingService: MarketingService;
+  private marketingController?: MarketingController;
+
+  private application: Application;
+
   private usersModule: UsersModule;
   private marketingModule: MarketingModule;
   private postsModule: PostsModule;
@@ -31,6 +63,22 @@ export class CompositionRoot {
     this.config = config;
     this.dbConnection = this.createDBConnection();
     this.notificationsModule = this.createNotificationsModule();
+
+    this.userRepository = this.createUserRepository();
+    this.usersService = this.createUsersService();
+
+    this.mailingListAPI = this.buildMailingListAPI();
+    this.marketingService = this.createMarketingService();
+
+    this.postsRepository = this.createPostsRepository();
+    this.postsService = this.createPostsService();
+
+    this.application = {
+      users: this.usersService,
+      posts: this.postsService,
+      marketing: this.marketingService,
+    };
+
     this.marketingModule = this.createMarketingModule();
     this.usersModule = this.createUsersModule();
     this.postsModule = this.createPostsModule();
@@ -43,19 +91,74 @@ export class CompositionRoot {
   }
 
   createMarketingModule() {
-    return MarketingModule.build(this.config);
-  }
-
-  createUsersModule() {
-    return UsersModule.build(
-      this.dbConnection,
-      this.notificationsModule.getEmailNotificationAPI(),
-      this.config,
-    );
+    this.marketingController = this.createMarketingController();
+    return MarketingModule.build(this.marketingController);
   }
 
   createPostsModule() {
-    return PostsModule.build(this.dbConnection);
+    this.postsController = this.createPostsController();
+    return PostsModule.build(this.postsController);
+  }
+
+  createUsersModule() {
+    this.usersController = this.createUsersController();
+    return UsersModule.build(this.usersController);
+  }
+
+  private shouldBuildFakeInstance() {
+    const isDev = this.config.getEnvironment() === "development";
+    const isUnitTest = this.config.getScript() === "test:unit";
+    return isDev || isUnitTest;
+  }
+
+  private createUserRepository() {
+    if (this.userRepository) return this.userRepository;
+
+    if (this.shouldBuildFakeInstance()) {
+      return new InMemoryUserRepositorySpy();
+    }
+    return new ProductionUserRepository(this.dbConnection.getConnection());
+  }
+
+  private createUsersService() {
+    return new UsersService(
+      this.userRepository,
+      this.notificationsModule.getEmailNotificationAPI(),
+    );
+  }
+
+  private createUsersController() {
+    return new UsersController(this.application, userErrorHandler);
+  }
+
+  private buildMailingListAPI() {
+    if (this.mailingListAPI) return this.mailingListAPI;
+
+    if (this.shouldBuildFakeInstance()) {
+      return new MailgunMarketingAPISpy();
+    }
+
+    return new MailGunMarketingAPI();
+  }
+
+  private createMarketingService() {
+    return new MarketingService(this.mailingListAPI);
+  }
+
+  private createMarketingController() {
+    return new MarketingController(this.application, marketingErrorHandler);
+  }
+
+  private createPostsService() {
+    return new PostsService(this.postsRepository);
+  }
+
+  private createPostsRepository() {
+    return new ProductionPostRepository(this.dbConnection.getConnection());
+  }
+
+  private createPostsController() {
+    return new PostsController(this.application, postsErrorHandler);
   }
 
   getDBConnection() {
@@ -71,20 +174,25 @@ export class CompositionRoot {
     return this.webServer;
   }
 
-  getRepositories() {
+  public getRepositories() {
     return {
-      users: this.usersModule.getUsersRepository(),
+      users: this.userRepository,
     };
   }
 
-  getServices() {
+  public getServices() {
     return {
-      marketing: this.marketingModule.getMarketingAPI(),
+      marketing: this.mailingListAPI,
       notifications: {
         email: this.notificationsModule.getEmailNotificationAPI(),
       },
     };
   }
+
+  public getApplication() {
+    return this.application;
+  }
+
   private mountRoutes() {
     this.marketingModule.mountRouter(this.webServer);
     this.usersModule.mountRouter(this.webServer);

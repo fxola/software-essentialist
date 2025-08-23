@@ -1,14 +1,14 @@
 import express from "express";
 import { GetPostsQuery } from "./postsQuery";
 import { GetPostsResponse } from "@dddforum/shared/src/api/posts";
-import { PostsService } from "./postsService";
 import { ErrorHandler } from "../../shared/errors";
+import { Application } from "../../shared/application";
 
 export class PostsController {
   private router: express.Router;
 
   constructor(
-    private postsService: PostsService,
+    private application: Application,
     private errorHandler: ErrorHandler,
   ) {
     this.router = express.Router();
@@ -35,7 +35,7 @@ export class PostsController {
   ) {
     try {
       const query = GetPostsQuery.fromRequest(req.query);
-      const posts = await this.postsService.getPosts(query);
+      const posts = await this.application.posts.getPosts(query);
       const response: GetPostsResponse = {
         success: true,
         data: posts,

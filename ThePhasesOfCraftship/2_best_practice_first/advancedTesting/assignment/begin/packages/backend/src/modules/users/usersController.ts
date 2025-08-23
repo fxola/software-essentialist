@@ -1,17 +1,17 @@
 import express from "express";
-import { UsersService } from "./usersService";
 import { CreateUserCommand } from "./usersCommand";
 import {
   CreateUserResponse,
   GetUserByEmailResponse,
 } from "@dddforum/shared/src/api/users";
 import { ErrorHandler } from "../../shared/errors";
+import { Application } from "../../shared/application";
 
 export class UsersController {
   private router: express.Router;
 
   constructor(
-    private usersService: UsersService,
+    private application: Application,
     private errorHandler: ErrorHandler,
   ) {
     this.router = express.Router();
@@ -39,7 +39,7 @@ export class UsersController {
   ) {
     try {
       const command = CreateUserCommand.fromRequest(req.body);
-      const user = await this.usersService.createUser(command);
+      const user = await this.application.users.createUser(command);
       const response: CreateUserResponse = {
         success: true,
         data: user,
@@ -58,7 +58,7 @@ export class UsersController {
   ) {
     try {
       const email = req.params.email;
-      const user = await this.usersService.getUserByEmail(email);
+      const user = await this.application.users.getUserByEmail(email);
       const response: GetUserByEmailResponse = {
         success: true,
         data: user,
