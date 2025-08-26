@@ -1,13 +1,13 @@
 
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, } from "@prisma/client";
 import { UsersRepository } from "../ports/usersRepository";
 import { generateRandomPassword } from "../../../shared/utils";
-import { ValidatedUser } from "@dddforum/shared/src/api/users";
+import { UserDTO, ValidatedUser } from "@dddforum/shared/src/api/users";
 
 export class ProductionUserRepository implements UsersRepository {
   constructor(private prisma: PrismaClient) {}
 
-  async findUserByEmail(email: string): Promise<User | null> {
+  async findUserByEmail(email: string): Promise<UserDTO | null> {
     try {
       const maybeUser = await this.prisma.user.findFirst({ where: { email } });
       if (!maybeUser) return null;
@@ -17,7 +17,7 @@ export class ProductionUserRepository implements UsersRepository {
     }
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: number): Promise<UserDTO | null> {
     try {
       const maybeUser = await this.prisma.user.findFirst({ where: { id } });
       if (!maybeUser) return null;
@@ -60,7 +60,7 @@ export class ProductionUserRepository implements UsersRepository {
     ]);
   }
 
-  async findUserByUsername(username: string): Promise<User | null> {
+  async findUserByUsername(username: string): Promise<UserDTO | null> {
     try {
       const maybeUser = await this.prisma.user.findFirst({
         where: { username },
@@ -75,7 +75,7 @@ export class ProductionUserRepository implements UsersRepository {
   async update(
     id: number,
     props: Partial<ValidatedUser>,
-  ): Promise<User | null> {
+  ): Promise<UserDTO | null> {
     const prismaUser = await this.prisma.user.update({
       where: { id },
       data: props,

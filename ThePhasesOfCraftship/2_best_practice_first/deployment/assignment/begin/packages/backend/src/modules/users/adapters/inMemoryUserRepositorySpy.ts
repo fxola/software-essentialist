@@ -1,21 +1,20 @@
-import { ValidatedUser } from "@dddforum/shared/src/api/users";
+import { UserDTO, ValidatedUser } from "@dddforum/shared/src/api/users";
 import { Spy } from "../../../shared/testDoubles/spy";
 import { UsersRepository } from "../ports/usersRepository";
 import { CreateUserCommand } from "../usersCommand";
-import { User } from "@prisma/client";
 
 export class InMemoryUserRepositorySpy
   extends Spy<UsersRepository>
   implements UsersRepository
 {
-  private users: User[];
+  private users: UserDTO[];
 
   constructor() {
     super();
     this.users = [];
   }
 
-  save(user: ValidatedUser): Promise<User> {
+  save(user: ValidatedUser): Promise<UserDTO> {
     this.addCall("save", [user]);
     const newUser = {
       ...user,
@@ -26,7 +25,7 @@ export class InMemoryUserRepositorySpy
     return Promise.resolve({ ...newUser, password: "password" });
   }
 
-  findById(id: number): Promise<User | null> {
+  findById(id: number): Promise<UserDTO | null> {
     return Promise.resolve(this.users.find((user) => user.id === id) || null);
   }
 
@@ -41,7 +40,7 @@ export class InMemoryUserRepositorySpy
   async update(
     id: number,
     props: Partial<CreateUserCommand>,
-  ): Promise<User | null> {
+  ): Promise<UserDTO | null> {
     const userIndex = this.users.findIndex((user) => user.id === id);
     if (userIndex !== -1) {
       this.users[userIndex] = { ...this.users[userIndex], ...props };
@@ -51,13 +50,13 @@ export class InMemoryUserRepositorySpy
     return Promise.resolve(null);
   }
 
-  async findUserByEmail(email: string): Promise<User | null> {
+  async findUserByEmail(email: string): Promise<UserDTO | null> {
     return Promise.resolve(
       this.users.find((user) => user.email === email) || null,
     );
   }
 
-  async findUserByUsername(username: string): Promise<User | null> {
+  async findUserByUsername(username: string): Promise<UserDTO | null> {
     return Promise.resolve(
       this.users.find((user) => user.username === username) || null,
     );

@@ -33,7 +33,7 @@ defineFeature(feature, (test) => {
     application = composition.getApplication();
     contactListAPISpy = composition.getContactListAPI() as ContactListAPISpy;
     transactionalEmailAPISpy = composition.getTransactionalEmailAPI() as TransactionalEmailAPISpy;
-    userRepoSpy = composition.getRepositories().users as InMemoryUserRepositorySpy;
+    userRepoSpy = composition.getRepositories().users as unknown as InMemoryUserRepositorySpy;
     createUserResponses = []
     databaseFixture = new DatabaseFixture(composition);
   })
