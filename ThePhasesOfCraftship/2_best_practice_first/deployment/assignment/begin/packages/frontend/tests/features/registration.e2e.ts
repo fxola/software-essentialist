@@ -98,34 +98,34 @@ defineFeature(feature, (test) => {
     });
   });
 
-  // test('Account already created with email', ({ given, when, then, and }) => {
-  //   given('a set of users already created accounts', async (table: CreateUserParams[]) => {
-  //     users = table.map((user) => {
-  //       return new CreateUserCommandBuilder()
-  //         .withAllRandomDetails()
-  //         .withEmail(user.email)
-  //         .withFirstName(user.firstName)
-  //         .withLastName(user.lastName)
-  //         .build();
-  //     });
+  test('Account already created with email', ({ given, when, then, and }) => {
+    given('a set of users already created accounts', async (table: CreateUserParams[]) => {
+      users = table.map((user) => {
+        return new CreateUserCommandBuilder()
+          .withAllRandomDetails()
+          .withEmail(user.email)
+          .withFirstName(user.firstName)
+          .withLastName(user.lastName)
+          .build();
+      });
 
-  //     await databaseFixture.setupWithExistingUsers(users);
-  //     await pages.registration.open();
-  //     await pages.registration.acceptMarketingEmails();
-  //   });
+      await databaseFixture.setupWithExistingUsers(users);
+      await pages.registration.open();
+      await pages.registration.acceptMarketingEmails();
+    });
   
-  //   when('new users attempt to register with those emails', async () => {
-  //     await pages.registration.enterAccountDetails(users[0]);
-  //     await pages.registration.submitRegistrationForm();
-  //   });
+    when('new users attempt to register with those emails', async () => {
+      await pages.registration.enterAccountDetails(users[0]);
+      await pages.registration.submitRegistrationForm();
+    });
   
-  //   then('they should see an error notifying them that the account already exists', async () => {
-  //     expect(await app.notifications.getErrorNotificationText()).toBeDefined();
-  //     expect(await app.notifications.getErrorNotificationText()).toContain('in use');
-  //   });
+    then('they should see an error notifying them that the account already exists', async () => {
+      expect(await app.notifications.getErrorNotificationText()).toBeDefined();
+      expect(await app.notifications.getErrorNotificationText()).toContain('in use');
+    });
 
-  //   and('they should not have been sent access to account details', () => {
-  //     // @See backend 
-  //   })
-  // });
+    and('they should not have been sent access to account details', () => {
+      // @See backend 
+    })
+  });
 });
