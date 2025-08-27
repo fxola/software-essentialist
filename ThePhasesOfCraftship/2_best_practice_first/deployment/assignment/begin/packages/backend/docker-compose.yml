@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: development-postgres
+    ports:
+      - "5200:5432"
+    environment:
+      POSTGRES_DB: dddforum
+      POSTGRES_USER: dddforum_user
+      POSTGRES_PASSWORD: dddforum_password
+    volumes:
+      - pg-storage-data:/var/lib/postgresql/data
+
+volumes:
+  pg-storage-data:
+    driver: local

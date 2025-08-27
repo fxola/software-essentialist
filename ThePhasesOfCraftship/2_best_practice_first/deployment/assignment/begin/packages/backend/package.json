@@ -19,7 +19,8 @@
     "test:infra": "jest -c jest.config.infra.ts",
     "test:infra:dev": "jest -c jest.config.infra.ts --watch",
     "test:unit": "jest -c jest.config.unit.ts",
-    "test:unit:dev": "jest -c jest.config.unit.ts --watchAll"
+    "test:unit:dev": "jest -c jest.config.unit.ts --watchAll",
+    "start:db:dev": "docker-compose up -d"
   },
   "husky": {
     "hooks": {

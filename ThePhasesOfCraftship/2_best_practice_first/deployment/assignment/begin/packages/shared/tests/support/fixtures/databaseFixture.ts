@@ -3,6 +3,7 @@ import { CreateUserParams } from "@dddforum/shared/src/api/users";
 import { CreateUserCommand } from "@dddforum/backend/src/modules/users/usersCommand";
 import { CompositionRoot } from "@dddforum/backend/src/shared/compositionRoot";
 
+
 export class DatabaseFixture {
   constructor(private composition: CompositionRoot) {
   }
