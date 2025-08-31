@@ -20,7 +20,8 @@
     "test:infra:dev": "jest -c jest.config.infra.ts --watch",
     "test:unit": "jest -c jest.config.unit.ts",
     "test:unit:dev": "jest -c jest.config.unit.ts --watchAll",
-    "start:db:dev": "docker-compose up -d"
+    "start:db:dev": "docker-compose up -d",
+    "start": "npm run migrate && npm run db:seed && node build/index.js"
   },
   "husky": {
     "hooks": {
