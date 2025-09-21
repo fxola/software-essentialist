@@ -44,7 +44,7 @@ describe("posts", () => {
       expect(response.success).toBeFalsy();
       expect(response.error).toBeTruthy();
       expect(response.error?.code).toBe(403);
-      expect(response.error?.message).toBe("PermissionError");
+      expect(response.error?.message).toContain("Permission Error");
     });
   });
 

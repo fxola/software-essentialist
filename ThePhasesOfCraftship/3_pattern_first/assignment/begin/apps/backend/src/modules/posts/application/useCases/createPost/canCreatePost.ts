@@ -1,11 +1,10 @@
-
 import { Member } from "../../../../members/domain/member";
-import { Types } from '@dddforum/api/members'
 
 export class CanCreatePostPolicy {
-
   public static isAllowed(member: Member): boolean {
-    // Implement!
-    throw new Error('To be implemented')
+    const isLevel2Member = member.reputationLevel === "Level2";
+    const isLevel3Member = member.reputationLevel === "Level3";
+
+    return isLevel2Member || isLevel3Member;
   }
 }
