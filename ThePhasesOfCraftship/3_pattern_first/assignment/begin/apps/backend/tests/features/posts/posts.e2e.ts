@@ -40,7 +40,7 @@ describe("posts", () => {
       };
 
       const response = await apiClient.posts.create(post, token);
-      console.log({ response });
+
       expect(response.success).toBeFalsy();
       expect(response.error).toBeTruthy();
       expect(response.error?.code).toBe(403);
@@ -81,7 +81,10 @@ describe("posts", () => {
       throw new Error("Not yet implemented");
     });
 
-    it("can fetch recent posts", () => {
+    it("can fetch recent posts", async () => {
+      const { token, userId } = await createFakeIdToken();
+      const level2Member = await setupLevel2Member(apiClient, token, userId, databaseFixture);
+      console.log({ level2Member });
       // Not yet implemented
       throw new Error("Not yet implemented");
     });

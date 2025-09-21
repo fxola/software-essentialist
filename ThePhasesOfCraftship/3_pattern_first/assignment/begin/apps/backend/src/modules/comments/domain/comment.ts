@@ -1,4 +1,4 @@
-import { AggregateRoot } from "@dddforum/core";
+import { AggregateRoot, success } from "@dddforum/core";
 import { CommentModel } from "@dddforum/database";
 import { ApplicationErrors } from "@dddforum/errors/application";
 import { randomUUID } from "node:crypto";
@@ -19,17 +19,27 @@ type InputProps = {
   text: string;
   memberId: string;
   parentCommentId?: string;
-}
+};
 
 export class Comment extends AggregateRoot {
   private constructor(private props: CommentProps) {
-    super()
+    super();
   }
 
   public static create(props: InputProps): Comment | ApplicationErrors.ValidationError {
     // Note: You can improve the domain layer encapsulation by validating value objects
     // at the command level.
-    throw new Error('Not yet implemented')
+    if (!props.text) {
+      return new ApplicationErrors.ValidationError("Comment can not be empty");
+    }
+
+    if (props.text.length > 1000) {
+      return new ApplicationErrors.ValidationError("Comment must be less than 1000 characters");
+    }
+
+    const comment = new Comment({ ...props, id: randomUUID(), createdAt: new Date(), voteScore: 0 });
+    comment.addEvent(new CommentPosted(comment.id, props.memberId, props.postId));
+    return comment;
   }
 
   get id() {
@@ -56,11 +66,11 @@ export class Comment extends AggregateRoot {
     return this.props.voteScore;
   }
 
-  get memberId () {
-    return this.props.memberId
+  get memberId() {
+    return this.props.memberId;
   }
 
-  public static toDomain (commentModel: CommentModel): Comment {
+  public static toDomain(commentModel: CommentModel): Comment {
     return new Comment({
       id: commentModel.id,
       postId: commentModel.postId,
@@ -68,21 +78,20 @@ export class Comment extends AggregateRoot {
       memberId: commentModel.memberId,
       parentCommentId: commentModel.parentCommentId || "",
       createdAt: commentModel.dateCreated,
-      voteScore: commentModel.voteScore
+      voteScore: commentModel.voteScore,
     });
   }
 
-  toPersistence () {
+  toPersistence() {
     return {
       id: this.props.id,
       postId: this.props.postId,
       text: this.props.text,
       memberId: this.props.memberId,
       parentCommentId: this.props.parentCommentId || null,
-      voteScore: this.props.voteScore
-    }
+      voteScore: this.props.voteScore,
+    };
   }
-  
 
   toDTO(): CommentProps {
     return {
@@ -92,7 +101,7 @@ export class Comment extends AggregateRoot {
       memberId: this.props.memberId,
       parentCommentId: this.props.parentCommentId,
       createdAt: this.props.createdAt,
-      voteScore: this.props.voteScore
+      voteScore: this.props.voteScore,
     };
   }
 }
