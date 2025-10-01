@@ -21,8 +21,8 @@ export class VotesSubscriptions {
     this.eventBus.subscribe<PostUpvoted>(PostUpvoted.name, this.onPostOrCommentVoteChanged.bind(this));
     this.eventBus.subscribe<PostDownvoted>(PostDownvoted.name, this.onPostOrCommentVoteChanged.bind(this));
     this.eventBus.subscribe<CommentUpvoted>(CommentUpvoted.name, this.onPostOrCommentVoteChanged.bind(this));
-    this.eventBus.subscribe<PostCreated>(PostCreated.name, this.onPostCreatedCastInitiaUpvote.bind(this));
     this.eventBus.subscribe<CommentDownvoted>(CommentDownvoted.name, this.onPostOrCommentVoteChanged.bind(this));
+    this.eventBus.subscribe<PostCreated>(PostCreated.name, this.onPostCreatedCastInitiaUpvote.bind(this));
     this.eventBus.subscribe<CommentPosted>(CommentPosted.name, this.onCommentPostedCastInitiaUpvote.bind(this));
   }
 
