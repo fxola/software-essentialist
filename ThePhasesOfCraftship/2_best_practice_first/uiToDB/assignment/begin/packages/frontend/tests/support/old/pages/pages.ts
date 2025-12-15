@@ -5,8 +5,8 @@ export interface Pages {
   registration: RegistrationPage;
 }
 
-export function createPageObjects(pageDriver: PuppeteerPageDriver): Pages {  
+export function createPageObjects(pageDriver: PuppeteerPageDriver): Pages {
   return {
-    registration: new RegistrationPage(pageDriver)
-  }
+    registration: new RegistrationPage(pageDriver),
+  };
 }
