@@ -1,4 +1,3 @@
-
 import { VoteRepository } from "../ports/voteRepository";
 import { MemberCommentVotesRoundup } from "../../domain/memberCommentVotesRoundup";
 import { MemberPostVotesRoundup } from "../../domain/memberPostVotesRoundup";
@@ -7,8 +6,7 @@ import { CommentVote } from "../../domain/commentVote";
 import { PostVote } from "../../domain/postVote";
 
 export class ProductionVotesRepository implements VoteRepository {
-  constructor (private database: Database) {
-  }
+  constructor(private database: Database) {}
 
   async getMemberCommentVotesRoundup(memberId: string): Promise<MemberCommentVotesRoundup> {
     const connection = this.database.getConnection();
@@ -17,25 +15,28 @@ export class ProductionVotesRepository implements VoteRepository {
         where: { memberId },
       }),
       connection.commentVote.count({
-        where: { 
+        where: {
           commentBelongsTo: {
             memberId,
           },
-          value: 1
+          value: 1,
         },
       }),
       connection.commentVote.count({
-        where: { 
+        where: {
           commentBelongsTo: {
             memberId,
           },
-          value: -1
+          value: -1,
         },
-      })
-    ])
+      }),
+    ]);
 
     const roundup = MemberCommentVotesRoundup.toDomain({
-      memberId, allCommentsCount, upvotesCount, downvotesCount
+      memberId,
+      allCommentsCount,
+      upvotesCount,
+      downvotesCount,
     });
 
     return roundup;
@@ -46,51 +47,53 @@ export class ProductionVotesRepository implements VoteRepository {
       const connection = this.database.getConnection();
       const [allPostsCount, upvotesCount, downvotesCount] = await Promise.all([
         connection.postVote.count({
-          where: { 
+          where: {
             postBelongsTo: {
-              memberId
-            }
+              memberId,
+            },
           },
         }),
         connection.postVote.count({
-          where: { 
+          where: {
             postBelongsTo: {
-              memberId
+              memberId,
             },
-            value: 1
+            value: 1,
           },
         }),
         connection.postVote.count({
-          where: { 
+          where: {
             postBelongsTo: {
-              memberId
+              memberId,
             },
-            value: -1
+            value: -1,
           },
-        })
-      ])
-  
+        }),
+      ]);
+
       const roundup = MemberPostVotesRoundup.toDomain({
-        memberId, allPostsCount, upvotesCount, downvotesCount
+        memberId,
+        allPostsCount,
+        upvotesCount,
+        downvotesCount,
       });
-  
+
       return roundup;
     } catch (err) {
       console.log(err);
-      throw new Error('Error getting member post votes roundup');
-      
+      throw new Error("Error getting member post votes roundup");
     }
   }
-  
+
   async findVoteByMemberAndCommentId(memberId: string, commentId: string): Promise<CommentVote | null> {
     const connection = this.database.getConnection();
     const vote = await connection.commentVote.findUnique({
       where: {
         memberId_commentId: {
           memberId,
-          commentId
-        }
-      }
+          commentId,
+        },
+      },
     });
 
     if (!vote) return null;
@@ -99,7 +102,7 @@ export class ProductionVotesRepository implements VoteRepository {
       id: vote.id,
       memberId: vote.memberId,
       commentId: vote.commentId,
-      voteState: vote.value === 1 ? 'Upvoted' : vote.value === -1 ? 'Downvoted' : 'Default'
+      voteState: vote.value === 1 ? "Upvoted" : vote.value === -1 ? "Downvoted" : "Default",
     });
   }
 
@@ -109,9 +112,9 @@ export class ProductionVotesRepository implements VoteRepository {
       where: {
         memberId_postId: {
           memberId,
-          postId
-        }
-      }
+          postId,
+        },
+      },
     });
 
     if (!vote) return null;
@@ -120,12 +123,48 @@ export class ProductionVotesRepository implements VoteRepository {
       id: vote.id,
       memberId: vote.memberId,
       postId: vote.postId,
-      voteState: vote.value === 1 ? 'Upvoted' : vote.value === -1 ? 'Downvoted' : 'Default'
+      voteState: vote.value === 1 ? "Upvoted" : vote.value === -1 ? "Downvoted" : "Default",
     });
   }
 
   async save(vote: PostVote | CommentVote, transaction?: Prisma.TransactionClient) {
-    // implement
-    throw new Error("Not yet implemented")
+    const connection = this.database.getConnection();
+    const prismaInstance = transaction || connection;
+
+    if (vote instanceof PostVote) {
+      await prismaInstance.postVote.upsert({
+        where: {
+          memberId_postId: {
+            memberId: vote.memberId,
+            postId: vote.postId,
+          },
+        },
+        update: {
+          value: vote.getValue(),
+        },
+        create: {
+          memberId: vote.memberId,
+          postId: vote.postId,
+          value: vote.getValue(),
+        },
+      });
+    } else if (vote instanceof CommentVote) {
+      await prismaInstance.commentVote.upsert({
+        where: {
+          memberId_commentId: {
+            memberId: vote.memberId,
+            commentId: vote.commentId,
+          },
+        },
+        update: {
+          value: vote.getValue(),
+        },
+        create: {
+          memberId: vote.memberId,
+          commentId: vote.commentId,
+          value: vote.getValue(),
+        },
+      });
+    }
   }
 }

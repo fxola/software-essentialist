@@ -28,6 +28,7 @@
     "prettier-watch:win32": "onchange \"src/**/*.ts\" -- prettier --write {{changed}}",
     "prettier-watch:darwin:linux": "onchange 'src/**/*.ts' -- prettier --write {{changed}}",
     "prettier-watch:default": "onchange 'src/**/*.ts' -- prettier --write {{changed}}",
+    "seed": "cd packages/database && ts-node scripts/seed.ts",
     "dev": "pnpm -r run dev",
     "test": "pnpm -r run test"
   },
