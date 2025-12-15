@@ -1,13 +1,14 @@
 import express from "express";
-import { MarketingService } from "./marketingService";
 import { AddEmailToListResponse } from "@dddforum/shared/src/api/marketing";
 import { ErrorHandler } from "../../shared/errors";
+import { Application } from "../../shared/application";
+import { AddEmailCommand } from "./marketingCommand";
 
 export class MarketingController {
   private router: express.Router;
 
   constructor(
-    private marketingService: MarketingService,
+    private application: Application,
     private errorHandler: ErrorHandler,
   ) {
     this.router = express.Router();
@@ -33,8 +34,8 @@ export class MarketingController {
     next: express.NextFunction,
   ) {
     try {
-      const email = req.body.email;
-      const result = await this.marketingService.addEmailToList(email);
+      const { email } = AddEmailCommand.fromRequest(req.body);
+      const result = await this.application.marketing.addEmailToList(email);
       const response: AddEmailToListResponse = {
         success: true,
         data: result,

@@ -1,37 +1,11 @@
 import { WebServer } from "../../shared/http/webServer";
-import { ContactListAPI } from "./contactListAPI";
 import { MarketingController } from "./marketingController";
-import { marketingErrorHandler } from "./marketingErrors";
-import { MarketingService } from "./marketingService";
 
 export class MarketingModule {
-  private marketingService: MarketingService;
-  private marketingController: MarketingController;
-  private contactListAPI: ContactListAPI;
+  private constructor(private marketingController: MarketingController) {}
 
-  private constructor() {
-    this.contactListAPI = this.buildContactListAPI();
-    this.marketingService = this.createMarketingService();
-    this.marketingController = this.createMarketingController();
-  }
-
-  static build() {
-    return new MarketingModule();
-  }
-
-  private createMarketingService() {
-    return new MarketingService(this.contactListAPI);
-  }
-
-  private createMarketingController() {
-    return new MarketingController(
-      this.marketingService,
-      marketingErrorHandler,
-    );
-  }
-
-  private buildContactListAPI() {
-    return new ContactListAPI();
+  static build(marketingController: MarketingController) {
+    return new MarketingModule(marketingController);
   }
 
   public getMarketingController() {

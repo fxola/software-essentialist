@@ -39,8 +39,15 @@ class ServerErrorException extends CustomException {
   }
 }
 
+class InvalidEmailException extends CustomException {
+  constructor() {
+    super("Email is invalid", "InvalidEmailException");
+  }
+}
+
 export {
   InvalidRequestBodyException,
+  InvalidEmailException,
   ServerErrorException,
   InvalidRequestParamsException,
   MissingRequestParamsException,

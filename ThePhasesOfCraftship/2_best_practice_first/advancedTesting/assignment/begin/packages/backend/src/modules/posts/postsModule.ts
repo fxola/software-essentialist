@@ -1,28 +1,11 @@
-import { Database } from "../../shared/database";
 import { WebServer } from "../../shared/http/webServer";
 import { PostsController } from "./postsController";
-import { postsErrorHandler } from "./postsErrors";
-import { PostsService } from "./postsService";
 
 export class PostsModule {
-  private postsService: PostsService;
-  private postsController: PostsController;
+  private constructor(private postsController: PostsController) {}
 
-  private constructor(private dbConnection: Database) {
-    this.postsService = this.createPostsService();
-    this.postsController = this.createPostsController();
-  }
-
-  static build(dbConnection: Database) {
-    return new PostsModule(dbConnection);
-  }
-
-  private createPostsService() {
-    return new PostsService(this.dbConnection);
-  }
-
-  private createPostsController() {
-    return new PostsController(this.postsService, postsErrorHandler);
+  static build(postsController: PostsController) {
+    return new PostsModule(postsController);
   }
 
   public getPostsController() {
