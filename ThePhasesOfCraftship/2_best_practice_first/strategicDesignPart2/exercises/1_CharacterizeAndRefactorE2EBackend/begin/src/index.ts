@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const Errors = {
+export const Errors = {
   ValidationError: "ValidationError",
   StudentNotFound: "StudentNotFound",
   ClassNotFound: "ClassNotFound",
@@ -18,8 +18,8 @@ const Errors = {
   StudentNotEnrolled: "StudentNotEnrolled",
   AssignmentAlreadySubmitted: "AssignmentAlreadySubmitted",
   NotSubmittedError: "NotSubmittedError",
-  AlreadyAssignedAssignmentToStudent: 'AlreadyAssignedAssignmentToStudent',
-  AlreadyGradedAssignment: 'AlreadyGradedAssignment'
+  AlreadyAssignedAssignmentToStudent: "AlreadyAssignedAssignmentToStudent",
+  AlreadyGradedAssignment: "AlreadyGradedAssignment",
 };
 
 function isMissingKeys(data: any, keysToCheckFor: string[]) {
@@ -86,12 +86,14 @@ app.post("/classes", async (req: Request, res: Response) => {
 
     const { name } = req.body;
 
-    const classroomExists = await prisma.class.findUnique({ where: { name }})
+    const classroomExists = await prisma.class.findUnique({ where: { name } });
 
     if (classroomExists) {
-      return res
-      .status(409)
-      .json({ error: Errors.ClassAlreadyExists, data: undefined, success: false });
+      return res.status(409).json({
+        error: Errors.ClassAlreadyExists,
+        data: undefined,
+        success: false,
+      });
     }
 
     const cls = await prisma.class.create({
@@ -276,11 +278,11 @@ app.post("/student-assignments", async (req: Request, res: Response) => {
       });
     }
 
-    const alreadyAssignedAssignment = await prisma.studentAssignment.findFirst({ 
+    const alreadyAssignedAssignment = await prisma.studentAssignment.findFirst({
       where: {
         studentId: studentId,
-        assignmentId: assignmentId
-      }
+        assignmentId: assignmentId,
+      },
     });
 
     if (alreadyAssignedAssignment) {
@@ -344,8 +346,8 @@ app.post("/student-assignments/submit", async (req: Request, res: Response) => {
     // Check if assignment submission exists
     const assignmentSubmission = await prisma.assignmentSubmission.findFirst({
       where: {
-        studentAssignmentId: studentAssignment.id
-      }
+        studentAssignmentId: studentAssignment.id,
+      },
     });
 
     if (assignmentSubmission) {
@@ -358,9 +360,9 @@ app.post("/student-assignments/submit", async (req: Request, res: Response) => {
 
     const studentAssignmentUpdated = await prisma.assignmentSubmission.create({
       data: {
-        studentAssignmentId: studentAssignment.id
+        studentAssignmentId: studentAssignment.id,
       },
-    },);
+    });
 
     res.status(201).json({
       error: undefined,
@@ -415,11 +417,12 @@ app.post("/student-assignments/grade", async (req: Request, res: Response) => {
     }
 
     // Check if student assignment submitted
-    const studentAssignmentSubmission = await prisma.assignmentSubmission.findFirst({
-      where: {
-        studentAssignmentId: studentAssignment.id
-      }
-    })
+    const studentAssignmentSubmission =
+      await prisma.assignmentSubmission.findFirst({
+        where: {
+          studentAssignmentId: studentAssignment.id,
+        },
+      });
 
     if (!studentAssignmentSubmission) {
       return res.status(400).json({
@@ -433,10 +436,10 @@ app.post("/student-assignments/grade", async (req: Request, res: Response) => {
       where: {
         assignmentSubmission: {
           studentAssignment: {
-            assignmentId: assignmentId
-          }
-        }
-      }
+            assignmentId: assignmentId,
+          },
+        },
+      },
     });
 
     if (alreadyGradedAssignment) {
@@ -450,8 +453,8 @@ app.post("/student-assignments/grade", async (req: Request, res: Response) => {
     const studentAssignmentGrade = await prisma.gradedAssignment.create({
       data: {
         grade,
-        assignmentSubmissionId: studentAssignmentSubmission?.id as string
-      }
+        assignmentSubmissionId: studentAssignmentSubmission?.id as string,
+      },
     });
 
     res.status(201).json({
@@ -650,7 +653,7 @@ app.get("/student/:id/assignments", async (req: Request, res: Response) => {
 
     const studentAssignments = await prisma.studentAssignment.findMany({
       where: {
-        studentId: id
+        studentId: id,
       },
       include: {
         assignment: true,
@@ -700,15 +703,15 @@ app.get("/student/:id/grades", async (req: Request, res: Response) => {
       where: {
         assignmentSubmission: {
           studentAssignment: {
-            studentId: id
-          }
-        }
+            studentId: id,
+          },
+        },
       },
       include: {
         assignmentSubmission: {
           include: {
-            studentAssignment: true
-          }
+            studentAssignment: true,
+          },
         },
       },
     });
